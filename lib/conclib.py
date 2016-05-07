@@ -1277,10 +1277,10 @@ def get_conc(corp, minsize=None, q=[], fromp=0, pagesize=0, async=0, save=0,
                                          fullsize)
                     sleeptime = 0.1
                     time.sleep(sleeptime)
-                    conc.save(cachefile, False, True)  # partial
+                    conc.save(cachefile, False, True, False)  # partial
                     while not conc.finished():
                         conc.save(
-                            cachefile, False, True, True)  # partial + append
+                            cachefile, False, True, False)  # partial + append
                         time.sleep(sleeptime)
                         sleeptime += 0.1
                     tmp_cachefile = cachefile + ".tmp"
