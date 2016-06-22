@@ -32,7 +32,7 @@ export function init():void {
     let opts:AAI.AaiOptions = {};
 
     //if ever port is needed (eg. testing other tomcat) it should be in responseUrl and target
-    opts.port = Number(window.location.port === '' ? '' : ':' + window.location.port);
+    opts.port = window.location.port === '' ? '' : ':' + window.location.port;
     opts.host = window.location.protocol + '//' +
         window.location.hostname;
     opts.repoPath = '/repository/xmlui';
