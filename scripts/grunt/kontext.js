@@ -64,7 +64,7 @@
             return s.indexOf(subs) === s.length - subs.length;
         }
         var ans = [];
-        findPluginTags(doc).forEach(functiom(item) {
+        findPluginTags(doc).forEach(function(item) {
             var dirPath;
             if (item['jsModule']) {
                 dirPath = pluginDir + '/' + item['jsModule'];
