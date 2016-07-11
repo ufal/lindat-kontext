@@ -27,9 +27,13 @@
     var merge = require('merge');
 
     function camelizeName(s) {
-        return s.split('_')
-                .map((x, i) => i > 0 ? x.substr(0, 1).toUpperCase() + x.substr(1) : x)
-                .join('');
+        var splits = s.split('_');
+        var ret = '';
+        for (var i=0; i < splits.length; ++i) {
+           var x = splits[i]
+           ret += 0 < i ? x.substr(0, 1).toUpperCase() + x.substr(1) : x; 
+        }
+        return ret;
     }
 
     function findPluginTags(doc) {
@@ -60,7 +64,7 @@
             return s.indexOf(subs) === s.length - subs.length;
         }
         var ans = [];
-        findPluginTags(doc).forEach((item) => {
+        findPluginTags(doc).forEach(functiom(item) {
             var dirPath;
             if (item['jsModule']) {
                 dirPath = pluginDir + '/' + item['jsModule'];
@@ -151,7 +155,7 @@
             'vendor/d3': 'vendor/d3.min',
             'SoundManager' : 'vendor/soundmanager2.min',
         };
-        findPluginTags(doc).forEach((item) => {
+        findPluginTags(doc).forEach(function(item) {
             pluginMap['plugins/' + item.canonicalName] = item.jsModule ? 'plugins/' + item.jsModule : 'empty:';
         });
         return pluginMap;
@@ -216,7 +220,7 @@
 
     function findAllMessageFiles(startDir) {
         var ans = [];
-        fs.readdirSync(startDir).forEach((item) => {
+        fs.readdirSync(startDir).forEach(function(item) {
             var fullPath = startDir + '/' + item;
             if (fs.lstatSync(fullPath).isDirectory() && ['min'].indexOf(item) === -1) {
                 ans = ans.concat(findAllMessageFiles(fullPath));
@@ -231,7 +235,7 @@
     module.exports.mergeTranslations = function (startDir, destFile) {
         var files = findAllMessageFiles(startDir);
         var translations = {};
-        files.forEach((item) => {
+        files.forEach(function(item) {
            translations = merge.recursive(translations, JSON.parse(fs.readFileSync(item)));
         });
         if (!destFile || destFile.length === 0) {
@@ -240,7 +244,7 @@
         } else if (Object.prototype.toString.call(destFile) !== '[object Array]') {
             destFile = [destFile];
         }
-        destFile.forEach((destItem) => {
+        destFile.forEach(function(destItem) {
             fs.writeFileSync(destItem, "define([], function () { return "
                 + JSON.stringify(translations) + "; });");
         });
