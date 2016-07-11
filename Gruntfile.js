@@ -3,7 +3,7 @@
 
     module.exports = function (grunt) {
 
-        let kontext = require('./scripts/grunt/kontext');
+        var kontext = require('./scripts/grunt/kontext');
         grunt.loadNpmTasks('grunt-exec');
         grunt.loadNpmTasks('assemble-less');
         grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -91,7 +91,7 @@
                 production: {
                     files: {
                         "public/files/css/kontext.min.css": (function () {
-                            let ans = [
+                            var ans = [
                                 "public/files/css/kontext.less",
                                 "public/files/css/view.less",
                                 "public/files/css/widgets.less",
