@@ -27,7 +27,7 @@
 
 export function init():void {
     if (!('aai' in window)) {
-        throw 'Failed to find LINDAT/CLARIN AAI object. See https://redmine.ms.mff.cuni.cz/projects/lindat-aai for more details!';
+        throw 'Failed to find LINDAT/CLARIN AAI object!';
     }
     let opts:AAI.AaiOptions = {};
 
@@ -39,7 +39,7 @@ export function init():void {
     if (opts.repoPath.charAt(opts.repoPath.length - 1) !== '/') {
         opts.repoPath = opts.repoPath + '/';
     }
-    opts.target = opts.host + opts.port + '/services/kontext-dev/run.cgi/loginx?redirectTo=' + encodeURIComponent(window.location.href);
+    opts.target = opts.host + opts.port + '/kontext/run.cgi/loginx?redirectTo=' + encodeURIComponent(window.location.href);
     //In order to use the discojuice store (improve score of used IDPs)
     //Works only with "verified" SPs - ie. ufal-point, displays error on ufal-point-dev
     opts.responseUrl =

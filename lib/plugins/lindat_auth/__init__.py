@@ -37,8 +37,12 @@ class DbConnection(object):
 
 
 def open_db(conf):
-    conn = MySQLdb.connect(host=conf['lindat:auth_db_host'], user=conf['lindat:auth_db_username'],
-                           passwd=conf['lindat:auth_db_password'], db=conf['lindat:auth_db_name'])
+    conn = MySQLdb.connect(
+        host=conf['lindat:auth_db_host'],
+        user=conf['lindat:auth_db_username'],
+        passwd=conf['lindat:auth_db_password'] or "",
+        db=conf['lindat:auth_db_name']
+    )
     conn.set_character_set('utf8')
     return DbConnection(conn)
 
@@ -77,7 +81,8 @@ class LINDATAuth(AbstractSemiInternalAuth):
         if username is not None and username != '':
             cols = ('id', 'user', 'pass', 'firstName', 'surname')
             cursor = self.db_conn.cursor()
-            cursor.execute("SELECT %s FROM user WHERE user = %%s" % ','.join(cols), (username, ))
+            cursor.execute("SELECT %s FROM user WHERE user = %%s" %
+                           ','.join(cols), (username, ))
             row = cursor.fetchone()
             if row and crypt.crypt(password, row[2]) == row[2]:
                 row = dict(zip(cols, row))
@@ -90,7 +95,8 @@ class LINDATAuth(AbstractSemiInternalAuth):
                             fullname='%s %s' % (row['firstName'], row['surname']))
             return self.anonymous_user()
         else:
-            username = getenv('HTTP_EPPN') or getenv('HTTP_PERSISTENT_ID') or getenv('HTTP_MAIL')
+            username = getenv('HTTP_EPPN') or getenv(
+                'HTTP_PERSISTENT_ID') or getenv('HTTP_MAIL')
             if username is None or username == '':
                 return self.anonymous_user()
             first_name = getenv('HTTP_GIVENNAME')
@@ -100,7 +106,8 @@ class LINDATAuth(AbstractSemiInternalAuth):
                 first_name, surname = self.parse_full_name(full_name)
             cols = ('id', 'user', 'pass', 'firstName', 'surname')
             cursor = self.db_conn.cursor()
-            cursor.execute("SELECT %s FROM user WHERE user = %%s" % ','.join(cols), (username, ))
+            cursor.execute("SELECT %s FROM user WHERE user = %%s" %
+                           ','.join(cols), (username, ))
             row = cursor.fetchone()
             if not row:
                 cursor.execute("INSERT INTO user (user, firstName, surname) VALUES (%s, %s, %s)",
@@ -153,7 +160,8 @@ def _load_corplist(corptree_path):
 @plugins.inject('sessions')
 def create_instance(conf, sessions):
     plugin_conf = conf.get('plugins', 'auth')
-    allowed_corplist = _load_corplist(conf.get('plugins', 'auth')['lindat:corptree_path'])
+    allowed_corplist = _load_corplist(
+        conf.get('plugins', 'auth')['lindat:corptree_path'])
     return LINDATAuth(db_conn=open_db(plugin_conf).get(),
                       sessions=sessions,
                       corplist=allowed_corplist,

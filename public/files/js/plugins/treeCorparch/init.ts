@@ -139,7 +139,7 @@ export class TreeWidgetStore extends util.SimplePageStore {
  * @param pluginApi
  * @param options A configuration for the widget
  */
-export function create(selectElm:HTMLElement, pluginApi:Kontext.QueryPagePluginApi,
+export function create(selectElm:HTMLElement, targetAction:string, pluginApi:Kontext.QueryPagePluginApi,
                        options:CorpusArchive.Options) {
     let widgetWrapper = window.document.createElement('div');
     $(widgetWrapper).addClass('corp-tree-wrapper');

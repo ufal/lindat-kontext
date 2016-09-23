@@ -1,0 +1,182 @@
+<kontext>
+    <theme>
+        <name>lindat</name>
+        <logo>kontext-logo.svg</logo>
+        <logo_mouseover>kontext-logo.svg</logo_mouseover>
+        <logo_href>/kontext/</logo_href>
+        <logo_inline_css>width: auto;height: 3em</logo_inline_css>
+        <css>
+            <item>//lindat.mff.cuni.cz/aai/discojuice/discojuice.css</item>
+            <item>public/css/lindat.css</item>
+        </css>
+    </theme>
+    <global>
+        <deployment_id>20160421_b</deployment_id>
+        <manatee_path>/opt/kontext/bits/noske/manatee-open/current</manatee_path>
+        <umask>002</umask>
+        <debug>true</debug>
+        <maintenance>false</maintenance>
+        <profile_log_path>/optional/path/used/for/profiling/output/if/debug/level/is/2</profile_log_path>
+        <max_attr_list_size>30</max_attr_list_size>
+        <translations>
+            <language label="česky">cs_CZ</language>
+            <language label="English">en_US</language>
+        </translations>
+        <error_report_url>http://acmecorpora.org/support</error_report_url>
+        <error_report_params>
+          <param name="queryurl">@_get_current_url</param>
+        </error_report_params>
+        <upload_cache_dir>/tmp/kontext-upload</upload_cache_dir>
+        <periodic_tasks conf="/opt/kontext/installation/conf/beatconfig.py">celery</periodic_tasks>
+        <calc_backend conf="/opt/kontext/installation/conf/celeryconfig.py">celery</calc_backend>
+        <conc_line_max_group_num>99</conc_line_max_group_num>
+        <action_path_prefix>/kontext</action_path_prefix>
+        <static_files_prefix>/kon-files/files</static_files_prefix>
+        <use_conc_toolbar>true</use_conc_toolbar>
+    </global>
+    <mailing>
+        <smtp_server>acme.localdomain</smtp_server>
+        <sender>acme@localdomain</sender>
+    </mailing>
+    <logging>
+        <path>/var/log/kontext/application.log</path>
+        <file_size>1000000</file_size>
+        <num_files>5</num_files>
+        <values>
+            <item>environ:REMOTE_ADDR</item>
+            <item>environ:HTTP_USER_AGENT</item>
+            <item>date</item>
+            <item>user</item>
+            <item>user_id</item>
+            <item>action</item>
+            <item>params</item>
+            <item>settings</item>
+            <item>proc_time</item>
+            <item>pid</item>
+        </values>
+    </logging>
+    <corpora>
+        <calc_pid_dir>/opt/kontext/pids/</calc_pid_dir>
+        <manatee_registry>/opt/kontext/data/registry</manatee_registry>
+        <users_subcpath>/opt/kontext/data/subcorp</users_subcpath>
+        <freqs_precalc_dir>/var/local/corpora/freqs-precalc</freqs_precalc_dir> <!-- this is optional -->
+        <freqs_cache_dir>/var/local/corpora/freqs-cache</freqs_cache_dir>
+        <freqs_cache_ttl>3600</freqs_cache_ttl>
+        <freqs_cache_min_lines>100</freqs_cache_min_lines>
+        <conc_dir>/opt/kontext/data/corpora/conc</conc_dir>
+        <options_dir>/opt/kontext/data/registry/options</options_dir>
+        <cache_dir>/opt/kontext/data/cache</cache_dir>
+        <subcpath>/opt/kontext/data/subcorp/GLOBAL</subcpath>
+        <users_subcpath>/opt/kontext/data/subcorp</users_subcpath>
+        <tags_src_dir>/opt/kontext/data/tags/data</tags_src_dir>
+        <tags_cache_dir>/opt/kontext/data/tags/cache</tags_cache_dir>
+        <conc_dir>/opt/kontext/data/conc</conc_dir>
+        <wseval_dir></wseval_dir>
+        <helpsite>https://trac.sketchengine.co.uk/wiki/SkE/Help/PageSpecificHelp/</helpsite>
+        <default_corpora>
+            <item>ovm_cs_w</item>
+        </default_corpora>
+        <speech_files_path>/opt/kontext/data/speech</speech_files_path>
+        <kwicline_max_context>500</kwicline_max_context>
+        <use_db_whitelist>1</use_db_whitelist>
+        <empty_attr_value_placeholder>[empty]</empty_attr_value_placeholder>
+        <multilevel_freq_dist_max_levels>10</multilevel_freq_dist_max_levels>
+    </corpora>
+    <plugins>
+        <db>
+            <module>default_db</module>
+            <name extension-by="default">lindat-kontext</name>
+            <host extension-by="default">localhost</host>
+            <password extension-by="default">root</password>
+            <username extension-by="default"></username>
+            <db_path extension-by="default">./db.sqlite</db_path>
+        </db>
+        <auth>
+            <module>lindat_auth</module>
+            <auth_cookie_name>kontext_session</auth_cookie_name>
+            <anonymous_user_id>0</anonymous_user_id>
+            <login_url>/kontext/user/login</login_url>
+            <logout_url>/kontext/user/logoutx</logout_url>
+            <corptree_path extension-by="lindat">/opt/kontext/installation/conf/corplist.xml</corptree_path>
+            <auth_db_host extension-by="lindat">localhost</auth_db_host>
+            <auth_db_username extension-by="lindat">root</auth_db_username>
+            <auth_db_password extension-by="lindat"></auth_db_password>
+            <auth_db_name extension-by="lindat">lindat-kontext</auth_db_name>
+        </auth>
+        <getlang>
+            <module>default_getlang</module>
+            <cookie extension-by="default">kontext_toolbar_lang</cookie>
+            <fallback_lang extension-by="default">cs_CZ</fallback_lang>
+        </getlang>
+        <query_storage>
+            <module>default_query_storage</module>
+            <js_module>ucnkQueryStorage</js_module>
+            <history_max_query_size>250</history_max_query_size>
+            <page_num_records extension-by="default">10</page_num_records>
+            <page_append_records>5</page_append_records>
+            <num_kept_records>10</num_kept_records>
+        </query_storage>
+        <conc_persistence>
+            <module>default_conc_persistence</module>
+            <ttl_days extension-by="default">100</ttl_days>
+            <anonymous_user_ttl_days extension-by="default">7</anonymous_user_ttl_days>
+        </conc_persistence>
+        <conc_cache>
+            <module>default_conc_cache</module>
+            <cache_dir extension-by="default">/opt/kontext/data/cache</cache_dir>
+        </conc_cache>
+        <live_attributes>
+        </live_attributes>
+        <settings_storage>
+            <module>default_settings_storage</module>
+            <excluded_users>
+                <item>1</item>
+                <item>3</item>
+            </excluded_users>
+        </settings_storage>
+        <sessions>
+            <module>default_sessions</module>
+            <ttl>14400</ttl>
+        </sessions>
+        <corparch>
+            <module>tree_corparch</module>
+            <js_module>treeCorparch</js_module>
+            <file>/opt/kontext/installation/conf/corplist.xml</file>
+            <root_elm_path>/corplist</root_elm_path>
+            <tag_prefix extension-by="default">+</tag_prefix>
+            <max_num_hints extension-by="default">10</max_num_hints>
+        </corparch>
+        <export>
+            <csv>default_csv</csv>
+            <xlsx>default_xlsx</xlsx>
+        </export>
+        <subc_restore>
+        </subc_restore>
+        <taghelper>
+            <module>default_taghelper</module>
+            <clear_interval extension-by="default">86400</clear_interval>
+            <tags_cache_dir extension-by="default">/path/to/tags/cache</tags_cache_dir>
+            <taglist_path extension-by="default">/path/to/tag/xml/def</taglist_path>
+            <tags_src_dir extension-by="default">/path/to/tag/src/data</tags_src_dir>
+        </taghelper>
+        <user_items>
+            <module>default_user_items</module>
+        </user_items>
+        <menu_items>
+            <module>default_menu_items</module>
+            <data_path extension-by="default">/opt/kontext/installation/conf/main-menu.sample.json</data_path>
+        </menu_items>
+        <application_bar>
+            <module>lindat_appbar</module>
+            <js_module>lindatAppBar</js_module>
+            <template_cs extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/topbar-cs.html</template_cs>
+            <template_en extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/topbar-en.html</template_en>
+            <css_url extension-by="lindat">https://lindat.mff.cuni.cz/services/kontext/files/themes/lindat/public/css/lindat.css</css_url>
+        </application_bar>
+        <footer_bar>
+            <module>lindat_footer_bar</module>
+            <js_module>lindatFooterBar</js_module>
+        </footer_bar>
+    </plugins>
+</kontext>
+

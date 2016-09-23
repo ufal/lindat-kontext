@@ -46,6 +46,15 @@ class DefaultDb(KeyValueStorage):
         conf -- a dictionary containing 'settings' module compatible configuration of the plug-in
         """
         self.conf = conf
+        self._init_if_needed()
+
+    def _init_if_needed(self):
+        cursor = self._conn().cursor()
+        cursor.execute('create table if not exists data (key text, value text, updated text)')
+        ans = cursor.fetchall()
+        if ans:
+            return ans
+        return None
 
     def _conn(self):
         """
@@ -211,4 +220,4 @@ def create_instance(conf):
     Arguments:
     conf -- a dictionary containing imported XML configuration of the plugin
     """
-    return DefaultDb(conf)
+    return DefaultDb(conf.get('plugins', 'db'))

@@ -78,7 +78,6 @@ def setup_plugins():
     init_plugin('export', module=plugins.export)
     init_plugin('user_items')
     init_plugin('menu_items')
-
     init_plugin('getlang', optional=True)
     init_plugin('corparch', optional=True)
     init_plugin('query_storage', optional=True)
@@ -89,4 +88,3 @@ def setup_plugins():
     init_plugin('taghelper', optional=True)
     init_plugin('syntax_viewer', optional=True)
     init_plugin('subcmixer', optional=True)
-
