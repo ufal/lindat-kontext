@@ -34,6 +34,10 @@ sudo chown -R $USER:$USER $INSTALLDIR/..
 # =========
 # OS prereq
 
+#prereqs from ../doc/INSTALL.md, libicu to prevent fatal error: unicode/utypes.h: No such file or directory
+sudo apt-get install -y libxml2-dev libxslt-dev python-dev libicu-dev
+
+
 if [[ -f $FS/apt-requirements.txt ]]; then
     minisep "apt-ing"
     sudo apt-get -qq update > /dev/null
@@ -139,7 +143,7 @@ sudo mkdir -p /var/local/corpora/{freqs-precalc,freqs-cache}
 # kontext
 
 # mysql should be already present!
-mysql -u$MYSQLUSER -e 'CREATE DATABASE IF NOT EXISTS lindat-kontext;'
+mysql -u$MYSQLUSER -e 'CREATE DATABASE IF NOT EXISTS kontext-test;'
 
 
 minisep "Using test configs"

@@ -85,10 +85,10 @@
     <plugins>
         <db>
             <module>default_db</module>
-            <name extension-by="default">lindat-kontext</name>
+            <name extension-by="default">kontext-test</name>
             <host extension-by="default">localhost</host>
-            <password extension-by="default">root</password>
-            <username extension-by="default"></username>
+            <password extension-by="default"></password>
+            <username extension-by="default">root</username>
             <db_path extension-by="default">./db.sqlite</db_path>
         </db>
         <auth>
