@@ -1,0 +1,279 @@
+#!/bin/bash
+set -e -o pipefail
+
+THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+echo "Working in `pwd`"
+source ${THISDIR}/functions.sh
+
+if [[ "x$REPO_NAME" == "x" ]]; then
+    REPO_NAME=kontext
+fi
+
+THISSCRIPT=`basename "$0"`
+minisep "$THISSCRIPT ($REPO_NAME)" 
+start=`date +%s`
+
+# =========
+# env
+
+MANATEE_FROM_PACKAGES=false
+MANATEE_OS_VERSION=1604
+
+export FS=${THISDIR}/..
+
+# allow multiple instances
+if [[ "x$KONTEXT_PREFIX" == "x" ]]; then
+    export KONTEXT_PREFIX=/opt/kontext
+fi
+
+export DEPSDIR=${KONTEXT_PREFIX}/bits
+export DATADIR=${KONTEXT_PREFIX}/data
+export CACHEDIR=${KONTEXT_PREFIX}/cache
+
+# allow having source code somewhere else
+if [[ "x$KONTEXTDIR" == "x" ]]; then
+    export KONTEXTDIR=${KONTEXT_PREFIX}/installation
+fi
+
+export CONFIGDIR=${KONTEXTDIR}/conf
+
+export DEPS_PREFIX=${KONTEXT_PREFIX}
+export DEPSLIBDIR=${DEPS_PREFIX}/lib
+export DEPSINCLUDEDIR=${DEPS_PREFIX}/include
+
+if [[ "x$PORT" == "x" ]]; then
+    export PORT=5000
+fi
+
+if [[ "x$MYSQLUSER" == "x" ]]; then
+    export MYSQLUSER=root
+fi
+if [[ "x$MYSQLPASS" == "x" ]]; then
+    export MYSQLPASS=
+fi
+
+mkdir -p ${DEPSDIR}
+sudo chown -R ${USER}:${USER} /opt/kontext
+if [[ ! -d ${KONTEXTDIR} ]]; then
+    ln -sf ${FS} ${KONTEXTDIR}
+fi
+
+# =========
+# prereq
+
+if [[ -f ${FS}/apt-requirements.txt ]]; then
+    minisep "apt-ing"
+    sudo apt-get -qq update > /dev/null
+    minisep "apt-ing $FS/apt-requirements.txt"
+    sudo xargs apt-get -q install -y < ${FS}/apt-requirements.txt
+fi
+
+if [[ -f ${FS}/requirements.txt ]]; then
+    minisep "pip-ing"
+    pip install -U --ignore-installed -r ${FS}/requirements.txt || echo "problematic pip"
+fi
+
+minisep "node"
+NODE_VER=`node --version || true`
+if [[ "x$NODE_VER" == "x" ]]; then
+    curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - > /dev/null
+    sudo apt-get install -y nodejs
+fi
+echo ${NODE_VER}
+which npm || true
+
+
+minisep "redis"
+REDIS_TEST_INSTANCE=false
+REDIS_VER=`redis-server --version || true`
+if [[ "x$REDIS_VER" == "x" ]]; then
+    echo "You have to install (and secure) redis!"
+    # exit
+    cd ${DEPSDIR}
+    curl -O http://download.redis.io/redis-stable.tar.gz
+    tar xzvf redis-stable.tar.gz
+    cd redis-stable
+    make
+    sudo make install
+    REDIS_TEST_INSTANCE=true
+    #exit
+fi
+echo ${REDIS_VER}
+
+
+# =========
+# manatee
+
+cd ${DEPSDIR}
+if [[ "x$MANATEE_FROM_PACKAGES" == "xtrue" ]]; then
+    minisep "Installing manatee and dependencies"
+    if [[ ! -d corpora.fi.muni.cz ]]; then
+        URL=http://corpora.fi.muni.cz/noske/deb/${MANATEE_OS_VERSION}
+        for i in antlr3c finlib manatee-open; do
+            wget -r --accept "*.deb" --level 1 ${URL}/${i}
+        done
+        for p in libantlr3c_ finlib_ manatee-open_ manatee-open-python_; do
+            find corpora.fi.muni.cz/ -name "*$p*.deb" -exec bash -c 'echo "installing $0" && (sudo dpkg -i $0 || echo "install failed softly")' {} \;
+        done
+    else
+        echo "Already present"
+    fi
+
+else
+    minisep "Installing antlr"
+    mkdir -p ${DEPSDIR}/antlr && cd ${DEPSDIR}/antlr
+    VER=3.4
+    PACKAGE=libantlr3c-${VER}
+    FILE=${PACKAGE}.tar.gz
+    URL=http://www.antlr3.org/download/C/${FILE}
+    install ${FILE} ${PACKAGE} ${URL} "tar xzf" "--enable-64bit --disable-abiflags --prefix=$DEPS_PREFIX"
+    sudo ldconfig
+
+    minisep "Installing finlib"
+    mkdir -p ${DEPSDIR}/finlib && cd ${DEPSDIR}/finlib
+    VER=2.35.2
+    PACKAGE=finlib-${VER}
+    FILE=${PACKAGE}.tar.gz
+    URL=$(url_exists_archive http://corpora.fi.muni.cz/noske/src/finlib ${FILE})
+    install ${FILE} ${PACKAGE} ${URL} "tar xzf" "--with-pcre --prefix=$DEPS_PREFIX"
+    FINLIBPATH=${DEPSDIR}/finlib/${PACKAGE}
+    sudo ldconfig
+
+    minisep "Installing manatee"
+    mkdir -p ${DEPSDIR}/manatee-open && cd ${DEPSDIR}/manatee-open
+    # package finlib will be used
+    CONFIGUREENV="CPPFLAGS=\"-I$DEPSINCLUDEDIR\" LDFLAGS=\"-L$DEPSLIBDIR\""
+    INSTALLENV="DESTDIR=\"/\""
+    VER=2.139.3
+    PACKAGE=manatee-open-${VER}
+    FILE=${PACKAGE}.tar.gz
+    URL=$(url_exists_archive http://corpora.fi.muni.cz/noske/src/manatee-open ${FILE})
+    install ${FILE} ${PACKAGE} ${URL} "tar xzf" "--with-pcre  --prefix=$DEPS_PREFIX --with-finlib=$FINLIBPATH"
+    sudo ldconfig
+ 
+fi
+
+minisep "Testing python manatee import - if it fails (and you need it), please update PYTHONPATH"
+python -c "import manatee; dir(manatee); print; print manatee.version()" || true
+python -c "import _manatee; dir(_manatee); print; print _manatee.version()" || true
+sep
+
+
+# =========
+# data
+
+minisep "Creating data dir structure"
+sudo mkdir -p /tmp/kontext-upload
+mkdir -p ${DATADIR}/{subcorp,cache,registry} ${DATADIR}/corpora/{conc,speech,vert}
+mkdir -p ${CACHEDIR}/{freqs-precalc,freqs-cache}
+
+
+# =========
+# kontext configuration
+
+minisep "Using test configs"
+if [[ ! -f ${CONFIGDIR}/config.xml ]]; then
+    ln -sf ${THISDIR}/configs/test_config.xml ${CONFIGDIR}/config.xml
+fi
+if [[ ! -f ${CONFIGDIR}/corplist.xml ]]; then
+    ln -sf ${THISDIR}/configs/corplist.xml ${CONFIGDIR}/corplist.xml
+fi
+
+if [[ ! -f ${CONFIGDIR}/redis.conf ]]; then
+    ln -sf ${THISDIR}/configs/redis.conf ${CONFIGDIR}/redis.conf
+fi
+
+#minisep "Using beat provided sample configs"
+#cp $FS/conf/beatconfig.sample.py $FS/conf/beatconfig.py
+
+
+if [[ ! -d ${KONTEXTDIR} ]]; then
+    ln -s ${FS} ${KONTEXTDIR}
+fi
+
+
+# =========
+# databases
+
+minisep "Installing (and running) mysqldb"
+MYSQL_VER=`mysql -V || true`
+if [[ "x$MYSQL_VER" == "x" ]]; then
+    sep
+    echo "Installing default mysql server with an example configuration..."
+    echo "SECURE IT!!!
+    sep
+    sudo apt install -y mysql-server
+    sudo /etc/init.d/mysql start &
+fi
+sudo apt install -y libmysqlclient-dev
+pip install MySQL-python
+mysql -u${MYSQLUSER} -e 'CREATE DATABASE IF NOT EXISTS kontext;'
+
+minisep "Running redis"
+if [[ "x$REDIS_TEST_INSTANCE" == "xtrue" ]]; then
+    sep
+    echo "Installing default redis server with an example configuration..."
+    echo "SECURE IT!!!
+    sep
+    nohup redis-server ${CONFIGDIR}/redis.conf &
+fi
+
+
+# =========
+# kontext compilation
+
+minisep "Compiling kontext"
+cd ${KONTEXTDIR}
+npm install -g grunt-cli
+npm install
+grunt devel
+
+
+# =========
+# kontext start and pm2 process manager
+mkdir -p /opt/kontext/log/
+
+npm install -g pm2
+minisep "Starting kontext using pm2"
+export PM2_HOME=/opt/pm2
+pm2 start public/app.py --interpreter=python --name "kontext" -- --address 0.0.0.0 --port ${PORT}
+
+sleep 5
+pm2 l
+pm2 logs --lines 20 --nostream
+
+# =========
+
+if [[ "x$1" != "x" ]]; then
+    cd ${THISDIR}
+    echo "Running $1"
+    source $1
+fi
+
+# =========
+
+sudo chown -R ${USER}:${USER} ${DEPS_PREFIX}
+
+sep
+end=`date +%s`
+echo "Script $THISSCRIPT ($REPO_NAME) took $((end-start)) seconds"
+#info "Finished $THISSCRIPT" "$REPO_NAME"
+#sep
+
+sep "Fetching test corpora"
+MANATEE_REGISTRY_PATH=`xmllint --xpath '//manatee_registry/text()' $CONFIGDIR/config.xml`
+CORPARCH_FILE_PATH=`xmllint --xpath '//corparch/file/text()' $CONFIGDIR/config.xml`
+mkdir -p /opt/lindat
+pushd /opt/lindat
+git clone https://github.com/ufal/lindat-test-corpora
+pushd lindat-test-corpora
+# copy corplist
+cp ./corplist.xml $CORPARCH_FILE_PATH
+# copy registry files
+pushd registry
+for config in `ls`; do
+  ln -s $(readlink -e $config) $MANATEE_REGISTRY_PATH/$config
+done
+popd
+popd
+popd

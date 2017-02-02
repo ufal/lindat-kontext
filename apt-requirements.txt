@@ -1,0 +1,13 @@
+wget
+curl
+libxml2-dev
+libxslt-dev
+python-dev
+python-pip
+libpcre3-dev
+libicu-dev
+zlib1g-dev
+libltdl-dev
+build-essential
+tcl
+libxml2-utils

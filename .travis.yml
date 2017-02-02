@@ -1,0 +1,26 @@
+sudo: required
+dist: trusty
+language: python
+services:
+  - redis-server
+  - mysql
+python:
+  - "2.7"
+env:
+  global:
+    - PYTHONPATH="/opt/kontext/lib/python2.7/site-packages:$PYTHONPATH"
+    - PORT=5000
+  matrix:
+    - COMPLETE_BUILD=true INSTANCE_TEST=true
+
+install:
+  - cd ./build-scripts/
+  - if [[ "x$COMPLETE_BUILD" == "xtrue" ]]; then ./setup.sh; fi
+
+script:
+  - ./test.sh
+
+notifications:
+  slack:
+    on_success: always
+    secure: RVKF3ge2FZ92r2HCD3LKgEFdIya/JQmm6fjfH3WTsvaNYOaiyG2qf2dzBZd76uUNoB6u3aV8gL/kWmm6lmJGlgg8wSgmi16bQOmKz9OmYDPcnMCwOVP+5NyiK8qoZhzgXUvUNlpqUAOdj1VUHyo7ROgzi2WyvIDPwl77Yo4hONc=

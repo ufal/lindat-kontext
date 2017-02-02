@@ -10,7 +10,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-
+import os
 from plugins.abstract.appbar import AbstractApplicationBar
 from translation import ugettext as _
 
@@ -47,6 +47,8 @@ class LindatTopBar(AbstractApplicationBar):
 
     def get_contents(self, plugin_api, return_url):
         tpl_path = self.get_template(plugin_api.user_lang)
+        if not os.path.exists(tpl_path):
+            return "template does not exist!"
         with open(tpl_path, mode='rb') as fin:
             html = fin.read().decode('utf-8')
 

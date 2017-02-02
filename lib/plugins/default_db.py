@@ -212,9 +212,10 @@ class DefaultDb(KeyValueStorage):
         return ans
 
 
-def create_instance(conf):
+def create_instance(settings):
     """
     Arguments:
     conf -- a dictionary containing imported XML configuration of the plugin
     """
-    return DefaultDb(conf)
+    plugin_conf = settings.get('plugins', 'db')
+    return DefaultDb(plugin_conf)

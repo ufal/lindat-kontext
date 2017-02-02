@@ -38,7 +38,7 @@ class DbConnection(object):
 
 def open_db(conf):
     conn = MySQLdb.connect(host=conf['lindat:auth_db_host'], user=conf['lindat:auth_db_username'],
-                           passwd=conf['lindat:auth_db_password'], db=conf['lindat:auth_db_name'])
+                           passwd=conf['lindat:auth_db_password'] or "", db=conf['lindat:auth_db_name'])
     conn.set_character_set('utf8')
     return DbConnection(conn)
 
@@ -77,18 +77,20 @@ class LINDATAuth(AbstractSemiInternalAuth):
         if username is not None and username != '':
             cols = ('id', 'user', 'pass', 'firstName', 'surname')
             cursor = self.db_conn.cursor()
-            cursor.execute("SELECT %s FROM user WHERE user = %%s" % ','.join(cols), (username, ))
-            row = cursor.fetchone()
-            if row and crypt.crypt(password, row[2]) == row[2]:
-                row = dict(zip(cols, row))
-            else:
-                row = {}
-            cursor.close()
-            if 'id' in row:
-                return dict(id=row['id'],
-                            user=row['user'],
-                            fullname='%s %s' % (row['firstName'], row['surname']))
-            return self.anonymous_user()
+            try:
+                cursor.execute("SELECT %s FROM user WHERE user = %%s" % ','.join(cols), (username, ))
+                row = cursor.fetchone()
+                if row and crypt.crypt(password, row[2]) == row[2]:
+                    row = dict(zip(cols, row))
+                else:
+                    row = {}
+                cursor.close()
+                if 'id' in row:
+                    return dict(id=row['id'],
+                                user=row['user'],
+                                fullname='%s %s' % (row['firstName'], row['surname']))
+            except:
+                return self.anonymous_user()
         else:
             username = getenv('HTTP_EPPN') or getenv('HTTP_PERSISTENT_ID') or getenv('HTTP_MAIL')
             if username is None or username == '':
