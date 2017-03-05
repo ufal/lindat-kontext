@@ -137,23 +137,27 @@ export class TreeWidgetStore extends util.SimplePageStore {
  *
  * @param selectElm A HTML SELECT element for default (= non JS) corpus selection we want to be replaced by this widget
  * @param pluginApi
+ * @param targetAction An action KonText will follow once user clicks a tree item
  * @param options A configuration for the widget
  */
-export function create(selectElm:HTMLElement, pluginApi:Kontext.QueryPagePluginApi,
+export function create(selectElm:HTMLElement, targetAction:string, pluginApi:Kontext.QueryPagePluginApi,
                        options:CorpusArchive.Options) {
     let widgetWrapper = window.document.createElement('div');
     $(widgetWrapper).addClass('corp-tree-wrapper');
     $(selectElm).replaceWith(widgetWrapper);
 
     let treeStore = new TreeWidgetStore(pluginApi, (corpusIdent:string) => {
-        window.location.href = pluginApi.createActionUrl('first_form?corpname=' + corpusIdent);
+        window.location.href = pluginApi.createActionUrl(targetAction, [['corpname', corpusIdent]]);
     });
     let viewsLib = viewInit(pluginApi.dispatcher(), pluginApi.exportMixins(),
             treeStore);
     pluginApi.renderReactComponent(
         viewsLib.CorptreeWidget,
         widgetWrapper,
-        {currentCorpus: pluginApi.getConf<string>('humanCorpname')}
+        {
+            currentCorpus: pluginApi.getConf<string>('humanCorpname'),
+            corpname: pluginApi.getConf<string>('corpname')
+        }
     );
 }
 
@@ -180,7 +184,6 @@ export class CorplistPage implements Customized.CorplistPage {
     createList(targetElm:HTMLElement, properties:any):void {
         let wrapper = window.document.createElement('div');
         $('section.corplist').append(wrapper);
-
         this.pluginApi.renderReactComponent(
             this.viewsLib.CorptreePageComponent,
             wrapper,
