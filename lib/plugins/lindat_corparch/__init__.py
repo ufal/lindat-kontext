@@ -58,7 +58,106 @@ import plugins
 from plugins.abstract.corpora import AbstractCorporaArchive, BrokenCorpusInfo, CorpusInfo
 from controller import exposed
 from actions import corpora
+import l10n
+import manatee
+from functools import partial
 
+class ManateeCorpusInfo(object):
+    """
+    Represents a subset of corpus information
+    as provided by manatee.Corpus instance
+    """
+    def __init__(self, corpus, canonical_id):
+        self.encoding = corpus.get_conf('ENCODING')
+        import_string = partial(l10n.import_string, from_encoding=self.encoding)
+        self.name = import_string(corpus.get_conf('NAME') if corpus.get_conf('NAME')
+                                  else canonical_id)
+        self.description = import_string(corpus.get_info())
+        self.attrs = filter(lambda x: len(x) > 0, corpus.get_conf('ATTRLIST').split(','))
+        self.size = corpus.size()
+        self.lang = corpus.get_conf('LANGUAGE')
+
+
+class ManateeCorpora(object):
+    """
+    A caching source of ManateeCorpusInfo instances.
+    """
+    def __init__(self):
+        self._cache = {}
+
+    def get_info(self, canonical_corpus_id):
+        try:
+            if canonical_corpus_id not in self._cache:
+                self._cache[canonical_corpus_id] = ManateeCorpusInfo(
+                    manatee.Corpus(canonical_corpus_id), canonical_corpus_id)
+            return self._cache[canonical_corpus_id]
+        except:
+            # probably a misconfigured/missing corpus
+            return ManateeCorpusInfo(EmptyCorpus(corpname=canonical_corpus_id),
+                                     canonical_corpus_id)
+
+class EmptyCorpus(object):
+    """
+    EmptyCorpus serves as kind of a fake corpus to keep KonText operational
+    in some special cases (= cases where we do not need any corpus to be
+    instantiated which is a situation original Bonito code probably never
+    count with).
+    """
+
+    def __init__(self, **kwargs):
+        self.cm = object()
+        self.corpname = ''
+        for k, v in kwargs.items():
+            if hasattr(self, k):
+                setattr(self, k, v)
+
+    def compute_docf(self, *args, **kwargs):
+        pass
+
+    def count_ARF(self, *args, **kwargs):
+        pass
+
+    def count_rest(self, *args, **kwargs):
+        pass
+
+    def eval_query(self, *args, **kwargs):
+        pass
+
+    def filter_fstream(self, *args, **kwargs):
+        pass
+
+    def filter_query(self, *args, **kwargs):
+        pass
+
+    def get_attr(self, *args, **kwargs):
+        pass
+
+    def get_conf(self, param):
+        return {'ENCODING': 'UTF-8'}.get(param, '')
+
+    def get_conffile(self, *args, **kwargs):
+        pass
+
+    def get_confpath(self, *args, **kwargs):
+        pass
+
+    def get_info(self, *args, **kwargs):
+        pass
+
+    def get_sizes(self, *args, **kwargs):
+        pass
+
+    def get_struct(self, *args, **kwargs):
+        pass
+
+    def search_size(self):
+        return 0
+
+    def set_default_attr(self, *args, **kwargs):
+        pass
+
+    def size(self):
+        return 0
 
 class CorptreeParser(object):
     """
@@ -91,6 +190,8 @@ class CorptreeParser(object):
         elif elm.tag == 'corpus':
             data['ident'] = elm.attrib['ident'].lower()
             data['name'] = elm.attrib['name'] if 'name' in elm.attrib else data['ident']
+            data['features'] = elm.attrib['features']
+            data['repo'] = elm.attrib['repo']
             self._metadata[data['ident']] = self.parse_node_metadata(elm)
         for child in filter(lambda x: x.tag in ('corplist', 'corpus'), list(elm)):
             if 'corplist' not in data:
@@ -122,7 +223,22 @@ class TreeCorparch(AbstractCorporaArchive):
 
     def __init__(self, corplist_path):
         parser = CorptreeParser()
+        self._manatee_corpora = ManateeCorpora()
         self._data, self._metadata = parser.parse_xml_tree(corplist_path)
+        for group in self._data['corplist']:
+            for corpus_info in group['corplist']:
+                if 'corplist' not in corpus_info:
+                    print corpus_info['name']
+                    corpus_info['name'] = self._manatee_corpora.get_info(corpus_info['ident']).name
+                    corpus_info['description'] = self._manatee_corpora.get_info(corpus_info['ident']).description
+                    corpus_info['size'] = int(self._manatee_corpora.get_info(corpus_info['ident']).size)
+                    corpus_info['language'] = self._manatee_corpora.get_info(corpus_info['ident']).lang
+                else:
+                    for subcorpus_info in corpus_info['corplist']:
+                        subcorpus_info['name'] = self._manatee_corpora.get_info(subcorpus_info['ident']).name
+                        subcorpus_info['description'] = self._manatee_corpora.get_info(subcorpus_info['ident']).description
+                        subcorpus_info['size'] = int(self._manatee_corpora.get_info(subcorpus_info['ident']).size)
+                        subcorpus_info['language'] = self._manatee_corpora.get_info(subcorpus_info['ident']).lang
 
     def setup(self, controller_obj):
         pass
