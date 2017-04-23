@@ -26,36 +26,15 @@ export function init(dispatcher, mixins, treeStore) {
     let TreeNode = React.createClass({
 
         mixins : mixins,
-
-        _clickHandler : function () {
-            dispatcher.dispatch({
-                actionType: 'TREE_CORPARCH_SET_NODE_STATUS',
-                props: {
-                    nodeId: this.props.ident
-                }
-            });
-        },
-
-        getInitialState : function () {
-            return {active: false};
-        },
-
-        _getStateImagePath : function () {
-            let path = this.props.active ? 'img/collapse.svg' : 'img/expand.svg';
-            return this.createStaticUrl(path);
-        },
-
+        
         render : function () {
             return (
-                <li className="node">
-                    <a onClick={this._clickHandler}>
-                        <img className="state-flag" src={this._getStateImagePath()} />
+                <div className="node">
+                    <div className="corpus-wrapper-inner">
                         {this.props.name}
-                    </a>
-                    { this.props.active ?
                         <ItemList name={this.props.name} corplist={this.props.corplist} />
-                        : null }
-                </li>
+                    </div>
+                </div>
             );
         }
     });
@@ -74,7 +53,7 @@ export function init(dispatcher, mixins, treeStore) {
         },
 
         render : function () {
-            return <li className="leaf"><a onClick={this._clickHandler}>{this.props.name}</a></li>;
+            return <div className="leaf"><a onClick={this._clickHandler}>{this.props.name}<div>{this.props.size}</div></a></div>;
         }
     });
 
@@ -89,16 +68,16 @@ export function init(dispatcher, mixins, treeStore) {
                                         corplist={item['corplist']} active={item['active']} />;
 
                 } else {
-                    return <TreeLeaf key={i} name={item['name']} ident={item['ident']} />;
+                    return <TreeLeaf key={i} name={item['name']} ident={item['ident']} size={item['size']}/>;
                 }
             });
         },
 
         render : function () {
             return (
-                <ul className={this.props.htmlClass}>
+                <div className={this.props.htmlClass}>
                     {this._renderChildren()}
-                </ul>
+                </div>
             );
         }
     });
@@ -107,17 +86,17 @@ export function init(dispatcher, mixins, treeStore) {
 
     let CorptreeWidget = React.createClass({
 
-        _buttonClickHandler : function () {
-            if (!this.state.active && !this.state.data) {
-                dispatcher.dispatch({
-                    actionType: 'TREE_CORPARCH_GET_DATA',
-                    props: {}
-                });
+        //_buttonClickHandler : function () {
+        //    if (!this.state.active && !this.state.data) {
+        //        dispatcher.dispatch({
+        //            actionType: 'TREE_CORPARCH_GET_DATA',
+        //            props: {}
+        //        });
 
-            } else {
-                this.setState({active: !this.state.active, data: this.state.data});
-            }
-        },
+        //    } else {
+        //        this.setState({active: !this.state.active, data: this.state.data});
+        //    }
+        //},
 
         _changeListener : function (store, action) {
             if (action === 'TREE_CORPARCH_DATA_CHANGED') {
@@ -143,8 +122,6 @@ export function init(dispatcher, mixins, treeStore) {
         render : function () {
             return (
                 <div className="corp-tree-widget">
-                    <button className="switch" type="button" onClick={this._buttonClickHandler}>{this.props.currentCorpus}</button>
-                    <input type="hidden" name="corpname" value={this.props.corpname} />
                     {this.state.active ? <ItemList htmlClass="corp-tree"
                         corplist={this.state.data['corplist']} /> : null}
                 </div>

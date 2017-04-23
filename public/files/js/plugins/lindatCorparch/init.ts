@@ -64,11 +64,11 @@ export class TreeWidgetStore extends util.SimplePageStore {
         this.dispatcher.register(
             function (payload:Kontext.DispatcherPayload) {
                 switch (payload.actionType) {
-                    case 'TREE_CORPARCH_SET_NODE_STATUS':
-                        let item = self.idMap.get(payload.props['nodeId']);
-                        item.active = !item.active;
-                        self.notifyChangeListeners('TREE_CORPARCH_DATA_CHANGED');
-                        break;
+                    //case 'TREE_CORPARCH_SET_NODE_STATUS':
+                    //    let item = self.idMap.get(payload.props['nodeId']);
+                    //    item.active = !item.active;
+                    //    self.notifyChangeListeners('TREE_CORPARCH_DATA_CHANGED');
+                    //    break;
                     case 'TREE_CORPARCH_GET_DATA':
                         self.loadData().then(
                             (d) => self.notifyChangeListeners('TREE_CORPARCH_DATA_CHANGED'));

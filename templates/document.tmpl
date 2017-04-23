@@ -46,7 +46,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #for $online_css_item in $theme.online_css
 <link rel="stylesheet" type="text/css" href="$online_css_item" />
 #end for
-
 #if $debug
 <link rel="stylesheet/less" type="text/css" href="$files_path/css/kontext.less" />
 <link rel="stylesheet/less" type="text/css" href="$files_path/css/view.less" />
@@ -190,6 +189,10 @@ define('conf', [], function () {
     return conf;
 });
 </script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </head>
 <body>
 #if $qunit_test
