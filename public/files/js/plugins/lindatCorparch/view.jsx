@@ -39,6 +39,52 @@ export function init(dispatcher, mixins, treeStore) {
         }
     });
 
+    // --------------------------------- <SubTreeNode /> --------------------------
+
+    let SubTreeNode = React.createClass({
+
+        mixins : mixins,
+ 
+        _clickHandler : function () {
+            dispatcher.dispatch({
+                actionType: 'TREE_CORPARCH_SET_NODE_STATUS',
+                props: {
+                    nodeId: this.props.ident
+                }
+            });
+        },
+
+        getInitialState : function () {
+            return {active: false};
+        },
+
+        _getStateGlyph : function () {
+            let glyph = this.props.active ? 'glyphicon glyphicon-minus-sign icon toggle-plus' : 'glyphicon glyphicon-plus-sign icon toggle-plus';
+            return glyph;
+        },
+        _getStateDisplay : function () {
+            let display = this.props.active ? {display:"block"} : {display: "none"};
+            return display;
+        },
+        render : function () {
+            return (
+                <div className="corpora-set-header toggle-below clickable">
+                    <a onClick={this._clickHandler}>
+                        <div className="corpus-details">Multiple corpora
+                        </div>                
+                        <div className="subnode" style={{background: '#79ff4d'}}>
+                            <span className={this._getStateGlyph()}> </span>
+                            {this.props.name}
+                        </div>
+                    </a>
+                    <div className="to-toggle" style={this._getStateDisplay()}>
+                        <ItemList name={this.props.name} corplist={this.props.corplist} />
+                    </div>
+                </div>
+            );
+        }
+    });
+
     // -------------------------------- <TreeLeaf /> -------------------------------
 
     let TreeLeaf = React.createClass({
@@ -63,10 +109,16 @@ export function init(dispatcher, mixins, treeStore) {
 
         _renderChildren : function () {
             return this.props.corplist.map((item, i) => {
-                if (item['corplist'].size > 0) {
-                    return <TreeNode key={i} name={item['name']} ident={item['ident']}
+                //console.log(item['name'], item['corplist'], item['level']);
+                if (item['corplist'].size > 0 ) {
+                    if ( item['level'] === 'outer' ) {
+                        return <TreeNode key={i} name={item['name']} ident={item['ident']}
                                         corplist={item['corplist']} active={item['active']} />;
-
+                    }
+                    else {
+                        return <SubTreeNode key={i} name={item['name']} ident={item['ident']}
+                                        corplist={item['corplist']} active={item['active']} />;
+                    }
                 } else {
                     return <TreeLeaf key={i} name={item['name']} ident={item['ident']} size={item['size']}/>;
                 }

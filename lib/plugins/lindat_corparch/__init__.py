@@ -226,14 +226,16 @@ class TreeCorparch(AbstractCorporaArchive):
         self._manatee_corpora = ManateeCorpora()
         self._data, self._metadata = parser.parse_xml_tree(corplist_path)
         for group in self._data['corplist']:
+            group['level'] = 'outer'
             for corpus_info in group['corplist']:
                 if 'corplist' not in corpus_info:
-                    print corpus_info['name']
                     corpus_info['name'] = self._manatee_corpora.get_info(corpus_info['ident']).name
                     corpus_info['description'] = self._manatee_corpora.get_info(corpus_info['ident']).description
                     corpus_info['size'] = int(self._manatee_corpora.get_info(corpus_info['ident']).size)
                     corpus_info['language'] = self._manatee_corpora.get_info(corpus_info['ident']).lang
+
                 else:
+                    corpus_info['level'] = 'inner'
                     for subcorpus_info in corpus_info['corplist']:
                         subcorpus_info['name'] = self._manatee_corpora.get_info(subcorpus_info['ident']).name
                         subcorpus_info['description'] = self._manatee_corpora.get_info(subcorpus_info['ident']).description
