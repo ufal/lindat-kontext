@@ -182,6 +182,7 @@ export class CorplistPage implements Customized.CorplistPage {
     createForm(targetElm:HTMLElement, properties:any):void {}
 
     createList(targetElm:HTMLElement, properties:any):void {
+        $('#content').css('display', 'block');
         let wrapper = window.document.createElement('div');
         $('section.corplist').append(wrapper);
         this.pluginApi.renderReactComponent(

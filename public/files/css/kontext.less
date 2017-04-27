@@ -114,7 +114,7 @@ a {
 }
 
 #content {
-    display: block;
+    display: inline-block;
     margin: 0;
     overflow: auto;
     padding: 0.5em 2em 2em @ucnk-topbar-left-margin;
@@ -122,12 +122,12 @@ a {
 
 #content > section {
     box-sizing: border-box;
-    //border-radius: @border-radius-default;
-    //display: block;
-    //vertical-align: top;
-    //margin: 1.5em 0 0 0;
-    //background-color: @color-section-bg;
-    //box-shadow: @portal-box-shadow;
+    border-radius: @border-radius-default;
+    display: block;
+    vertical-align: top;
+    margin: 1.5em 0 0 0;
+    background-color: @color-section-bg;
+    box-shadow: @portal-box-shadow;
     min-width: 46%;
 }
 
