@@ -118,10 +118,14 @@ a {
     margin: 0;
     overflow: auto;
     padding: 0.5em 2em 2em @ucnk-topbar-left-margin;
+
+    &.lindatCorparch-content {
+        display: block;
+        padding: 1.3em 2.2em 2.2em 2.2em;
+    }
 }
 
 #content > section {
-    box-sizing: border-box;
     border-radius: @border-radius-default;
     display: block;
     vertical-align: top;
@@ -129,6 +133,16 @@ a {
     background-color: @color-section-bg;
     box-shadow: @portal-box-shadow;
     min-width: 46%;
+
+    &.lindatCorparch-section {
+        box-shadow: none;
+        border-radius: 0;
+        background-color: white;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 2.2em;
+
+    }
 }
 
 section.inner {

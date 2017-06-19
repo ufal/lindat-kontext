@@ -76,6 +76,8 @@ export class TreeWidgetStore extends util.SimplePageStore {
                     case 'TREE_CORPARCH_LEAF_NODE_CLICKED':
                         self.corpusClickHandler(payload.props['ident']);
                         break;
+                    case 'TREE_CORPARCH_SEARCH':
+                        break;
                 }
             }
         );
@@ -182,7 +184,9 @@ export class CorplistPage implements Customized.CorplistPage {
     createForm(targetElm:HTMLElement, properties:any):void {}
 
     createList(targetElm:HTMLElement, properties:any):void {
-        $('#content').css('display', 'block');
+        $('#content').addClass('lindatCorparch-content');
+        $('.corplist').addClass('lindatCorparch-section');
+        
         let wrapper = window.document.createElement('div');
         $('section.corplist').append(wrapper);
         this.pluginApi.renderReactComponent(

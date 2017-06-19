@@ -192,6 +192,7 @@ class CorptreeParser(object):
             data['name'] = elm.attrib['name'] if 'name' in elm.attrib else data['ident']
             data['features'] = elm.attrib['features']
             data['repo'] = elm.attrib['repo']
+            data['parallel'] = elm.attrib['parallel'] if 'parallel' in elm.attrib else 'other'
             self._metadata[data['ident']] = self.parse_node_metadata(elm)
         for child in filter(lambda x: x.tag in ('corplist', 'corpus'), list(elm)):
             if 'corplist' not in data:
@@ -225,6 +226,7 @@ class TreeCorparch(AbstractCorporaArchive):
         parser = CorptreeParser()
         self._manatee_corpora = ManateeCorpora()
         self._data, self._metadata = parser.parse_xml_tree(corplist_path)
+        self._data['sort_corplist'] = []
         for group in self._data['corplist']:
             group['level'] = 'outer'
             for corpus_info in group['corplist']:
@@ -232,15 +234,27 @@ class TreeCorparch(AbstractCorporaArchive):
                     corpus_info['name'] = self._manatee_corpora.get_info(corpus_info['ident']).name
                     corpus_info['description'] = self._manatee_corpora.get_info(corpus_info['ident']).description
                     corpus_info['size'] = int(self._manatee_corpora.get_info(corpus_info['ident']).size)
+                    corpus_info['formatted_size'] = '{:,}'.format(corpus_info['size'])
                     corpus_info['language'] = self._manatee_corpora.get_info(corpus_info['ident']).lang
+                    self._data['sort_corplist'].append(corpus_info)
 
                 else:
-                    corpus_info['level'] = 'inner'
                     for subcorpus_info in corpus_info['corplist']:
                         subcorpus_info['name'] = self._manatee_corpora.get_info(subcorpus_info['ident']).name
                         subcorpus_info['description'] = self._manatee_corpora.get_info(subcorpus_info['ident']).description
                         subcorpus_info['size'] = int(self._manatee_corpora.get_info(subcorpus_info['ident']).size)
+                        subcorpus_info['formatted_size'] = '{:,}'.format(subcorpus_info['size'])
                         subcorpus_info['language'] = self._manatee_corpora.get_info(subcorpus_info['ident']).lang
+                        if subcorpus_info['parallel'] == 'default':
+                            self._data['sort_corplist'].append(subcorpus_info)
+                            corpus_info.update(subcorpus_info)
+                            del corpus_info['corplist']
+                            break
+                        elif subcorpus_info['parallel'] == 'other':
+                            self._data['sort_corplist'].append(subcorpus_info)
+                    else:
+                        corpus_info['level'] = 'inner'
+
 
     def setup(self, controller_obj):
         pass
@@ -252,6 +266,7 @@ class TreeCorparch(AbstractCorporaArchive):
         return sorted(self._metadata.keys())
 
     def get_all(self, user_id):
+        self._data['sort_corplist'].sort(key=lambda x: x['size'], reverse=True)
         return self._data
 
     def export_actions(self):
