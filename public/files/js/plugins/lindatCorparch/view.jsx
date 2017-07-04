@@ -34,7 +34,13 @@ export function init(dispatcher, mixins, treeStore) {
                         {this.props.name}
                         </div>
                         <div className="wrapper-inner">
-                        <ItemList name={this.props.name} corplist={this.props.corplist} />
+                        <ItemList name={this.props.name} corplist={this.props.corplist} 
+                                  onActiveFeatSet={this.props.onActiveFeatSet}
+                                  onActiveFeatDrop={this.props.onActiveFeatDrop}
+                                  activeFeat={this.props.activeFeat}
+                                  activeLanguage={this.props.activeLanguage} 
+                                  onActiveLanguageSet={this.props.onActiveLanguageSet}
+                                  onActiveLanguageDrop={this.props.onActiveLanguageDrop}/>
                         </div>
                 </div>
             );
@@ -61,11 +67,11 @@ export function init(dispatcher, mixins, treeStore) {
         },
 
         _getStateGlyph : function () {
-            let glyph = this.props.active ? 'glyphicon glyphicon-minus-sign icon toggle-plus' : 'glyphicon glyphicon-plus-sign icon toggle-plus';
+            let glyph = this.props.active || this.props.activeFeat !== null || this.props.activeLanguage !== null ? 'glyphicon glyphicon-minus-sign icon toggle-plus' : 'glyphicon glyphicon-plus-sign icon toggle-plus';
             return glyph;
         },
         _getStateDisplay : function () {
-            let display = this.props.active ? {display:"block"} : {display: "none"};
+            let display = this.props.active || this.props.activeFeat !== null || this.props.activeLanguage !== null ? {display:"block"} : {display: "none"};
             return display;
         },
         render : function () {
@@ -80,7 +86,13 @@ export function init(dispatcher, mixins, treeStore) {
                         </div>
                     </a>
                     <div className="to-toggle" style={this._getStateDisplay()}>
-                        <ItemList name={this.props.name} corplist={this.props.corplist} />
+                        <ItemList level="inner" name={this.props.name} corplist={this.props.corplist} 
+                                  onActiveFeatSet={this.props.onActiveFeatSet}
+                                  onActiveFeatDrop={this.props.onActiveFeatDrop}
+                                  activeFeat={this.props.activeFeat}
+                                  activeLanguage={this.props.activeLanguage} 
+                                  onActiveLanguageSet={this.props.onActiveLanguageSet}
+                                  onActiveLanguageDrop={this.props.onActiveLanguageDrop} />
                     </div>
                 </div>
             );
@@ -91,7 +103,7 @@ export function init(dispatcher, mixins, treeStore) {
 
     let TreeLeaf = React.createClass({
         getInitialState: function () {
-            return {hover: false};
+            return {hover: false, opaque: true};
         },
 
         _mouseOver: function () {
@@ -110,6 +122,39 @@ export function init(dispatcher, mixins, treeStore) {
             //return "green";
         },
         
+        _myOpacity: function() {
+            //if (this.props.activeLanguage === null || this.props.language === this.props.activeLanguage) { return 1; }
+            //return 0.1;
+            if ((this.props.activeLanguage !== null && ! this.props.language.includes(this.props.activeLanguage)) || this.props.activeFeat !== null && ! this.props.features.includes(this.props.activeFeat) ) {return 0.1}
+            return 1;
+        },
+        
+        _searchLangClick : function (event) {
+            this.props.onActiveLanguageSet(event.currentTarget.textContent);
+        },
+        
+        _searchLangDrop : function() {
+            this.props.onActiveLanguageDrop();
+        },
+        
+        _searchFeatClick : function (event) {
+            this.props.onActiveFeatSet(event.currentTarget.textContent);
+        },
+        
+        _searchFeatDrop : function() {
+            this.props.onActiveFeatDrop();
+        },
+        
+        _showLangSign : function() {
+            if (this.props.language.includes(this.props.activeLanguage)) { return "inline"; }
+            return "none";
+        },
+        
+        _showFeatSign : function(feat) {
+            if (feat === this.props.activeFeat) { return "inline"; }
+            return "none";
+        },
+        
         _clickHandler : function () {
             dispatcher.dispatch({
                 actionType: 'TREE_CORPARCH_LEAF_NODE_CLICKED',
@@ -121,17 +166,22 @@ export function init(dispatcher, mixins, treeStore) {
 
         render : function () {
             //return <div className="leaf"><a onClick={this._clickHandler}>{this.props.name}<div>{this.props.size}</div></a></div>;
-            return <div className="leaf" style={{background: this._myColor()}} data-features={this.props.features} data-lang={this.props.language}>
+            return <div className="leaf" style={{background: this._myColor(), opacity: this._myOpacity()}} data-features={this.props.features} data-lang={this.props.language} >
                     <div className="row">
                         <div className="corpus-details col-xs-4">
                         Features:&nbsp;
-                            <span className="corpus-details-info corplist-search clickable underline-hover" data-search="features">
-                                {this.props.features}
+                            {this.props.features.split(',').map((item, index) => 
+                            (<div style={{display: "inline-block"}}>
+                                <span key={index} className="corpus-details-info corplist-search clickable underline-hover" data-search="features" onClick={this._searchFeatClick}>
+                                {item}
                             </span>
+                            <span className="glyphicon glyphicon-remove search-selected clickable" onClick={this._searchFeatDrop} style={{display: this._showFeatSign(item), fontSize: "10px"}}>&nbsp;</span>
+                            </div>))}
                         Language(s):&nbsp;
-                            <span className="corpus-details-info corplist-search clickable underline-hover" data-search="language">
+                            <span className="corpus-details-info corplist-search clickable underline-hover" data-search="language" onClick={this._searchLangClick}>
                                 {this.props.language}
                             </span>
+                            <span className="glyphicon glyphicon-remove search-selected clickable" onClick={this._searchLangDrop} style={{display: this._showLangSign(), fontSize: "10px"}}> </span>
                         </div>
                     </div>
                     <div className="row">
@@ -149,7 +199,6 @@ export function init(dispatcher, mixins, treeStore) {
                                     </h3>
                                     <div className="desc">
                                         {this.props.description}
-                                        
                                     </div>
                                 </div>
                             </div>
@@ -167,25 +216,44 @@ export function init(dispatcher, mixins, treeStore) {
     // -------------------------------- <ItemList /> -------------------------------
 
     let ItemList = React.createClass({
-
+        
         _renderChildren : function () {
-            return this.props.corplist.map((item, i) => {
-                //console.log(item['name'], item['corplist'], item['level']);
-                if (item['corplist'].size > 0 ) {
-                    if ( item['level'] === 'outer' ) {
-                        return <TreeNode key={i} name={item['name']} ident={item['ident']}
-                                        corplist={item['corplist']} active={item['active']} />;
+                return this.props.corplist.map((item, i) => {
+                    //console.log(item['name'], item['corplist'], item['level']);
+                    if (item['corplist'].size > 0) {
+                        if (item['level'] === 'outer') {
+                            return <TreeNode key={i} name={item['name']} ident={item['ident']}
+                                             corplist={item['corplist']} active={item['active']}
+                                             activeFeat={this.props.activeFeat}
+                                             activeLanguage={this.props.activeLanguage}
+                                             onActiveLanguageSet={this.props.onActiveLanguageSet}
+                                             onActiveLanguageDrop={this.props.onActiveLanguageDrop}
+                                             onActiveFeatSet={this.props.onActiveFeatSet}
+                                             onActiveFeatDrop={this.props.onActiveFeatDrop}/>;
+                        }
+                        else {
+                            return <SubTreeNode key={i} name={item['name']} ident={item['ident']}
+                                                corplist={item['corplist']} active={item['active']}
+                                                activeFeat={this.props.activeFeat}
+                                                activeLanguage={this.props.activeLanguage}
+                                                onActiveLanguageSet={this.props.onActiveLanguageSet}
+                                                onActiveLanguageDrop={this.props.onActiveLanguageDrop}
+                                                onActiveFeatSet={this.props.onActiveFeatSet}
+                                                onActiveFeatDrop={this.props.onActiveFeatDrop}/>;
+                        }
+                    } else {
+                        return <TreeLeaf key={i} name={item['name']} ident={item['ident']}
+                                         size={item['formatted_size']} features={item['features']}
+                                         language={item['language']} description={item['description']}
+                                         repo={item['repo']}
+                                         activeLanguage={this.props.activeLanguage}
+                                         onActiveLanguageSet={this.props.onActiveLanguageSet}
+                                         onActiveLanguageDrop={this.props.onActiveLanguageDrop}
+                                         activeFeat={this.props.activeFeat}
+                                         onActiveFeatSet={this.props.onActiveFeatSet}
+                                         onActiveFeatDrop={this.props.onActiveFeatDrop}/>;
                     }
-                    else {
-                        return <SubTreeNode key={i} name={item['name']} ident={item['ident']}
-                                        corplist={item['corplist']} active={item['active']} />;
-                    }
-                } else {
-                    return <TreeLeaf key={i} name={item['name']} ident={item['ident']} 
-                                     size={item['formatted_size']} features={item['features']} 
-                                     language={item['language']} description={item['description']} repo={item['repo']}/>;
-                }
-            });
+                });
         },
 
         render : function () {
@@ -204,13 +272,19 @@ export function init(dispatcher, mixins, treeStore) {
         getInitialState: function () {
             return {htmlClass: "corp-tree-sorted"};
         },
-
+        
         _renderChildren : function () {
             return this.props.corplist.map((item, i) => {
                  
                     return <TreeLeaf key={i} name={item['name']} ident={item['ident']} 
                                      size={item['formatted_size']} features={item['features']} 
-                                     language={item['language']} description={item['description']} repo={item['repo']}/>;
+                                     language={item['language']} description={item['description']} repo={item['repo']}
+                                     activeLanguage={this.props.activeLanguage}
+                                     onActiveLanguageSet={this.props.onActiveLanguageSet}
+                                     onActiveLanguageDrop={this.props.onActiveLanguageDrop}
+                                     activeFeat={this.props.activeFeat}
+                                     onActiveFeatSet={this.props.onActiveFeatSet}
+                                     onActiveFeatDrop={this.props.onActiveFeatDrop} />;
             });
         },
 
@@ -287,7 +361,23 @@ export function init(dispatcher, mixins, treeStore) {
         },
 
         getInitialState : function () {
-            return {data: null, sorted: false};
+            return {data: null, sorted: false, activeLanguage: null, activeFeat: null};
+        },
+
+        handleActiveLanguageSet: function(language) {
+            this.setState({activeLanguage: language});
+        },
+
+        handleActiveFeatSet: function(feat) {
+            this.setState({activeFeat: feat});
+        },
+
+        handleActiveLanguageDrop: function() {
+            this.setState({activeLanguage: null});
+        },
+
+        handleActiveFeatDrop: function() {
+            this.setState({activeFeat: null});
         },
         
         _bySize : function () {
@@ -344,12 +434,26 @@ export function init(dispatcher, mixins, treeStore) {
                         </div>
                     </div>
                     <div style={{display: this._bySize()}}>
-                        <ItemList htmlClass="corp-tree" 
-                            corplist={this.state.data ? this.state.data['corplist'] : []} />
+                        <ItemList htmlClass="corp-tree"
+                                  corplist={this.state.data ? this.state.data['corplist'] : []}
+                                  activeLanguage={this.state.activeLanguage}
+                                  onActiveLanguageSet={this.handleActiveLanguageSet}
+                                  onActiveLanguageDrop={this.handleActiveLanguageDrop}
+                                  activeFeat={this.state.activeFeat}
+                                  onActiveFeatSet={this.handleActiveFeatSet}
+                                  onActiveFeatDrop={this.handleActiveFeatDrop}
+                        />
                     </div>
                     <div style={{display: this._byDefault()}}>
                         <ItemListSorted htmlClass="corp-tree-sorted"
-                                  corplist={this.state.data ? this.state.data['sort_corplist'] : []} />
+                                  corplist={this.state.data ? this.state.data['sort_corplist'] : []}
+                                  activeLanguage={this.state.activeLanguage}
+                                  onActiveLanguageSet={this.handleActiveLanguageSet}
+                                  onActiveLanguageDrop={this.handleActiveLanguageDrop}
+                                  activeFeat={this.state.activeFeat}
+                                  onActiveFeatSet={this.handleActiveFeatSet}
+                                  onActiveFeatDrop={this.handleActiveFeatDrop}
+                        />
                     </div>
                 </div>
             );

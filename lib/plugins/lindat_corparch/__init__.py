@@ -239,6 +239,13 @@ class TreeCorparch(AbstractCorporaArchive):
                     self._data['sort_corplist'].append(corpus_info)
 
                 else:
+                    complementLang = []
+                    #if any(subcorpus_info['parallel'] == 'default' for subcorpus_info in corpus_info['corplist']) and \
+                    #        any(subcorpus_info['parallel'] == 'complement' for subcorpus_info in corpus_info['corplist']):
+                    #    for subcorpus_info in corpus_info['corplist']:
+                    #        if subcorpus_info['parallel'] == 'complement':
+                    #            complementLang.append(self._manatee_corpora.get_info(subcorpus_info['ident']).lang)
+
                     for subcorpus_info in corpus_info['corplist']:
                         subcorpus_info['name'] = self._manatee_corpora.get_info(subcorpus_info['ident']).name
                         subcorpus_info['description'] = self._manatee_corpora.get_info(subcorpus_info['ident']).description
@@ -246,6 +253,8 @@ class TreeCorparch(AbstractCorporaArchive):
                         subcorpus_info['formatted_size'] = '{:,}'.format(subcorpus_info['size'])
                         subcorpus_info['language'] = self._manatee_corpora.get_info(subcorpus_info['ident']).lang
                         if subcorpus_info['parallel'] == 'default':
+                            #if len(complementLang) != 0:
+                                #subcorpus_info['language'] = subcorpus_info['language'] + ', ' + ', '.join(complementLang)
                             self._data['sort_corplist'].append(subcorpus_info)
                             corpus_info.update(subcorpus_info)
                             del corpus_info['corplist']
