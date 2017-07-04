@@ -193,6 +193,7 @@ class CorptreeParser(object):
             data['features'] = elm.attrib['features']
             data['repo'] = elm.attrib['repo']
             data['parallel'] = elm.attrib['parallel'] if 'parallel' in elm.attrib else 'other'
+            data['pmltq'] = elm.attrib['pmltq'] if 'pmltq' in elm.attrib else 'no'
             self._metadata[data['ident']] = self.parse_node_metadata(elm)
         for child in filter(lambda x: x.tag in ('corplist', 'corpus'), list(elm)):
             if 'corplist' not in data:
@@ -237,15 +238,7 @@ class TreeCorparch(AbstractCorporaArchive):
                     corpus_info['formatted_size'] = '{:,}'.format(corpus_info['size'])
                     corpus_info['language'] = self._manatee_corpora.get_info(corpus_info['ident']).lang
                     self._data['sort_corplist'].append(corpus_info)
-
                 else:
-                    complementLang = []
-                    #if any(subcorpus_info['parallel'] == 'default' for subcorpus_info in corpus_info['corplist']) and \
-                    #        any(subcorpus_info['parallel'] == 'complement' for subcorpus_info in corpus_info['corplist']):
-                    #    for subcorpus_info in corpus_info['corplist']:
-                    #        if subcorpus_info['parallel'] == 'complement':
-                    #            complementLang.append(self._manatee_corpora.get_info(subcorpus_info['ident']).lang)
-
                     for subcorpus_info in corpus_info['corplist']:
                         subcorpus_info['name'] = self._manatee_corpora.get_info(subcorpus_info['ident']).name
                         subcorpus_info['description'] = self._manatee_corpora.get_info(subcorpus_info['ident']).description
@@ -253,8 +246,6 @@ class TreeCorparch(AbstractCorporaArchive):
                         subcorpus_info['formatted_size'] = '{:,}'.format(subcorpus_info['size'])
                         subcorpus_info['language'] = self._manatee_corpora.get_info(subcorpus_info['ident']).lang
                         if subcorpus_info['parallel'] == 'default':
-                            #if len(complementLang) != 0:
-                                #subcorpus_info['language'] = subcorpus_info['language'] + ', ' + ', '.join(complementLang)
                             self._data['sort_corplist'].append(subcorpus_info)
                             corpus_info.update(subcorpus_info)
                             del corpus_info['corplist']
@@ -263,7 +254,6 @@ class TreeCorparch(AbstractCorporaArchive):
                             self._data['sort_corplist'].append(subcorpus_info)
                     else:
                         corpus_info['level'] = 'inner'
-
 
     def setup(self, controller_obj):
         pass
@@ -283,7 +273,6 @@ class TreeCorparch(AbstractCorporaArchive):
 
     def initial_search_params(self, query, filter_dict=None):
         return {}
-
 
 def create_instance(conf):
     plugin_conf = conf.get('plugins', 'corparch')

@@ -122,7 +122,7 @@ export function init(dispatcher, mixins, treeStore) {
             //return "green";
         },
         
-        _myOpacity: function() {
+        _myOpacity: function () {
             //if (this.props.activeLanguage === null || this.props.language === this.props.activeLanguage) { return 1; }
             //return 0.1;
             if ((this.props.activeLanguage !== null && ! this.props.language.includes(this.props.activeLanguage)) || this.props.activeFeat !== null && ! this.props.features.includes(this.props.activeFeat) ) {return 0.1}
@@ -133,7 +133,7 @@ export function init(dispatcher, mixins, treeStore) {
             this.props.onActiveLanguageSet(event.currentTarget.textContent);
         },
         
-        _searchLangDrop : function() {
+        _searchLangDrop : function () {
             this.props.onActiveLanguageDrop();
         },
         
@@ -141,16 +141,16 @@ export function init(dispatcher, mixins, treeStore) {
             this.props.onActiveFeatSet(event.currentTarget.textContent);
         },
         
-        _searchFeatDrop : function() {
+        _searchFeatDrop : function () {
             this.props.onActiveFeatDrop();
         },
         
-        _showLangSign : function() {
+        _showLangSign : function () {
             if (this.props.language.includes(this.props.activeLanguage)) { return "inline"; }
             return "none";
         },
         
-        _showFeatSign : function(feat) {
+        _showFeatSign : function (feat) {
             if (feat === this.props.activeFeat) { return "inline"; }
             return "none";
         },
@@ -163,9 +163,15 @@ export function init(dispatcher, mixins, treeStore) {
                 }
             });
         },
+        
+        _pmltq : function (pmltq) {
+            if (pmltq !== 'no') {
+            return <a href={this.props.pmltq} className="md-transparent" title={"Inspect " + this.props.name}>
+                    <span className="glyphicon lindat-pmltq-logo">&nbsp;</span></a>
+            }
+        },
 
         render : function () {
-            //return <div className="leaf"><a onClick={this._clickHandler}>{this.props.name}<div>{this.props.size}</div></a></div>;
             return <div className="leaf" style={{background: this._myColor(), opacity: this._myOpacity()}} data-features={this.props.features} data-lang={this.props.language} >
                     <div className="row">
                         <div className="corpus-details col-xs-4">
@@ -204,6 +210,7 @@ export function init(dispatcher, mixins, treeStore) {
                             </div>
                         </a>
                         <div className="col-xs-3 col-md-2 actions text-right">
+                            {this._pmltq(this.props.pmltq)}
                             <a href={this.props.repo} className="md-transparent" title={"Download " + this.props.name}>
                                 <span className="glyphicon glyphicon-save"></span>
                             </a>
@@ -245,7 +252,7 @@ export function init(dispatcher, mixins, treeStore) {
                         return <TreeLeaf key={i} name={item['name']} ident={item['ident']}
                                          size={item['formatted_size']} features={item['features']}
                                          language={item['language']} description={item['description']}
-                                         repo={item['repo']}
+                                         repo={item['repo']} pmltq={item['pmltq']}
                                          activeLanguage={this.props.activeLanguage}
                                          onActiveLanguageSet={this.props.onActiveLanguageSet}
                                          onActiveLanguageDrop={this.props.onActiveLanguageDrop}
@@ -278,7 +285,8 @@ export function init(dispatcher, mixins, treeStore) {
                  
                     return <TreeLeaf key={i} name={item['name']} ident={item['ident']} 
                                      size={item['formatted_size']} features={item['features']} 
-                                     language={item['language']} description={item['description']} repo={item['repo']}
+                                     language={item['language']} description={item['description']}
+                                     repo={item['repo']} pmltq={item['pmltq']}
                                      activeLanguage={this.props.activeLanguage}
                                      onActiveLanguageSet={this.props.onActiveLanguageSet}
                                      onActiveLanguageDrop={this.props.onActiveLanguageDrop}
