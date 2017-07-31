@@ -1,0 +1,12 @@
+-   repo: git://github.com/pre-commit/mirrors-autopep8
+    sha: v1.3.2
+    hooks:
+    -   id: autopep8
+        args:
+        - -i
+        - --max-line-length=100
+
+-   repo: git://github.com/pre-commit/mirrors-pylint
+    sha: 'v1.7.2'
+    hooks:
+    -   id: pylint
