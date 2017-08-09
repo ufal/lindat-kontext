@@ -1028,7 +1028,8 @@ class Kontext(Controller):
             result['app_bar_js'] = None
 
         if plugins.has_plugin('footer_bar'):
-            result['footer_bar'] = plugins.get('footer_bar').get_contents(self._plugin_api, self.return_url)
+            result['footer_bar'] = plugins.get('footer_bar').get_contents(self._plugin_api,
+                                                                          self.return_url)
             result['footer_bar_css'] = plugins.get('footer_bar').get_css_url()
         else:
             result['footer_bar'] = None

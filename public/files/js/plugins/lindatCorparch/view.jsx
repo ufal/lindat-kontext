@@ -119,12 +119,9 @@ export function init(dispatcher, mixins, treeStore) {
             if (this.state.hover) {
                 return "#d8eff7";
             }
-            //return "green";
         },
         
         _myOpacity: function () {
-            //if (this.props.activeLanguage === null || this.props.language === this.props.activeLanguage) { return 1; }
-            //return 0.1;
             if ((this.props.activeLanguage !== null && ! this.props.language.includes(this.props.activeLanguage)) || this.props.activeFeat !== null && ! this.props.features.includes(this.props.activeFeat) ) {return 0.1}
             return 1;
         },
@@ -177,8 +174,8 @@ export function init(dispatcher, mixins, treeStore) {
                         <div className="corpus-details col-xs-4">
                         Features:&nbsp;
                             {this.props.features.split(',').map((item, index) => 
-                            (<div style={{display: "inline-block"}}>
-                                <span key={index} className="corpus-details-info corplist-search clickable underline-hover" data-search="features" onClick={this._searchFeatClick}>
+                            (<div key={index} style={{display: "inline-block"}}>
+                                <span className="corpus-details-info corplist-search clickable underline-hover" data-search="features" onClick={this._searchFeatClick}>
                                 {item}
                             </span>
                             <span className="glyphicon glyphicon-remove search-selected clickable" onClick={this._searchFeatDrop} style={{display: this._showFeatSign(item), fontSize: "10px"}}>&nbsp;</span>
@@ -264,7 +261,6 @@ export function init(dispatcher, mixins, treeStore) {
         },
 
         render : function () {
-            //console.log('Here\'s the name: ', this.props);
             return (
                 <div className={this.props.htmlClass}>
                     {this._renderChildren()}
