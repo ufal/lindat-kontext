@@ -200,11 +200,12 @@ MYSQL_VER=`mysql -V || true`
 if [[ "x$MYSQL_VER" == "x" ]]; then
     sep
     echo "Installing default mysql server with an example configuration..."
-    echo "SECURE IT!!!
+    echo "SECURE IT!!!"
     sep
     sudo apt install -y mysql-server
     sudo /etc/init.d/mysql start &
 fi
+
 sudo apt install -y libmysqlclient-dev
 pip install MySQL-python
 mysql -u${MYSQLUSER} -e 'CREATE DATABASE IF NOT EXISTS kontext;'
@@ -213,7 +214,7 @@ minisep "Running redis"
 if [[ "x$REDIS_TEST_INSTANCE" == "xtrue" ]]; then
     sep
     echo "Installing default redis server with an example configuration..."
-    echo "SECURE IT!!!
+    echo "SECURE IT!!!"
     sep
     nohup redis-server ${CONFIGDIR}/redis.conf &
 fi
@@ -241,6 +242,7 @@ pm2 start public/app.py --interpreter=python --name "kontext" -- --address 0.0.0
 sleep 5
 pm2 l
 pm2 logs --lines 20 --nostream
+tail -100 ${LOG_PATH}
 
 # =========
 

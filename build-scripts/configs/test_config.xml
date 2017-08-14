@@ -34,7 +34,7 @@
         <conc_line_max_group_num>99</conc_line_max_group_num>
         <calc_backend conf="/opt/kontext/installation/conf/celeryconfig.py">celery</calc_backend>
         <action_path_prefix>/kontext</action_path_prefix>
-        <static_files_prefix>/kon-files/files</static_files_prefix>
+        <static_files_prefix>/files</static_files_prefix>
         <use_conc_toolbar>1</use_conc_toolbar>
     </global>
     <mailing>
@@ -176,15 +176,15 @@
         <application_bar>
             <module>lindat_appbar</module>
             <js_module>lindatAppBar</js_module>
-            <template_cs extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/topbar-cs.html</template_cs>
-            <template_en extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/topbar-en.html</template_en>
+            <template_cs extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/cs/header.htm</template_cs>
+            <template_en extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/en/header.htm</template_en>
             <css_url extension-by="lindat">//lindat.mff.cuni.cz/services/kontext/files/themes/lindat/public/css/lindat.css</css_url>
         </application_bar>
         <footer_bar>
             <module>lindat_footer_bar</module>
             <js_module>lindatFooterBar</js_module>
-            <template_cs extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/footer-cs.html</template_cs>
-            <template_en extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/footer-en.html</template_en>
+            <template_cs extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/cs/footer.htm</template_cs>
+            <template_en extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/en/footer.htm</template_en>
         </footer_bar>
     </plugins>
 </kontext>

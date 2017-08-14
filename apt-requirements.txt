@@ -1,3 +1,4 @@
+git
 wget
 curl
 libxml2-dev
