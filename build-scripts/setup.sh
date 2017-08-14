@@ -35,6 +35,7 @@ if [[ "x$KONTEXTDIR" == "x" ]]; then
     export KONTEXTDIR=${KONTEXT_PREFIX}/installation
 fi
 
+export THEMEDIR=${KONTEXTDIR}/public/files/themes
 export CONFIGDIR=${KONTEXTDIR}/conf
 
 export DEPS_PREFIX=${KONTEXT_PREFIX}
@@ -175,9 +176,6 @@ minisep "Using test configs"
 if [[ ! -f ${CONFIGDIR}/config.xml ]]; then
     ln -sf ${THISDIR}/configs/test_config.xml ${CONFIGDIR}/config.xml
 fi
-if [[ ! -f ${CONFIGDIR}/corplist.xml ]]; then
-    ln -sf ${THISDIR}/configs/corplist.xml ${CONFIGDIR}/corplist.xml
-fi
 
 if [[ ! -f ${CONFIGDIR}/redis.conf ]]; then
     ln -sf ${THISDIR}/configs/redis.conf ${CONFIGDIR}/redis.conf
@@ -189,6 +187,30 @@ fi
 
 if [[ ! -d ${KONTEXTDIR} ]]; then
     ln -s ${FS} ${KONTEXTDIR}
+fi
+
+
+# =========
+# configuration from config.xml
+
+MANATEE_REGISTRY_PATH=`xmllint --xpath '//manatee_registry/text()' ${CONFIGDIR}/config.xml`
+CORPARCH_FILE_PATH=`xmllint --xpath '//corparch/file/text()' ${CONFIGDIR}/config.xml`
+LOG_PATH=`xmllint --xpath '//logging/path/text()' ${CONFIGDIR}/config.xml`
+
+sep
+echo "Using MANATEE_REGISTRY_PATH: ${MANATEE_REGISTRY_PATH}"
+echo "Using CORPARCH_FILE_PATH:    ${CORPARCH_FILE_PATH}"
+echo "Using LOG_PATH:              ${LOG_PATH}"
+sep
+
+
+# =========
+# themes
+
+minisep "Installing lindat-common theme"
+if [[ ! -d ${THEMEDIR}/lindat ]]; then
+    cd ${THEMEDIR}
+    git clone --depth 1 https://github.com/ufal/lindat-common.git -b releases lindat
 fi
 
 
@@ -221,6 +243,24 @@ fi
 
 
 # =========
+# example data
+
+minisep "Fetching test corpora"
+mkdir -p /opt/lindat
+pushd /opt/lindat
+git clone https://github.com/ufal/lindat-test-corpora
+cd lindat-test-corpora
+# copy corplist
+cp ./corplist.xml ${CORPARCH_FILE_PATH}
+# copy registry files
+cd registry
+for config in `ls`; do
+    ln -s $(readlink -e ${config}) ${MANATEE_REGISTRY_PATH}/$config
+done
+popd
+
+
+# =========
 # kontext compilation
 
 minisep "Compiling kontext"
@@ -232,6 +272,7 @@ grunt devel
 
 # =========
 # kontext start and pm2 process manager
+
 mkdir -p /opt/kontext/log/
 
 npm install -g pm2
@@ -244,38 +285,13 @@ pm2 l
 pm2 logs --lines 20 --nostream
 tail -100 ${LOG_PATH}
 
-# =========
-
-if [[ "x$1" != "x" ]]; then
-    cd ${THISDIR}
-    echo "Running $1"
-    source $1
-fi
 
 # =========
 
 sudo chown -R ${USER}:${USER} ${DEPS_PREFIX}
 
+
 sep
 end=`date +%s`
 echo "Script $THISSCRIPT ($REPO_NAME) took $((end-start)) seconds"
-#info "Finished $THISSCRIPT" "$REPO_NAME"
-#sep
-
-sep "Fetching test corpora"
-MANATEE_REGISTRY_PATH=`xmllint --xpath '//manatee_registry/text()' $CONFIGDIR/config.xml`
-CORPARCH_FILE_PATH=`xmllint --xpath '//corparch/file/text()' $CONFIGDIR/config.xml`
-mkdir -p /opt/lindat
-pushd /opt/lindat
-git clone https://github.com/ufal/lindat-test-corpora
-pushd lindat-test-corpora
-# copy corplist
-cp ./corplist.xml $CORPARCH_FILE_PATH
-# copy registry files
-pushd registry
-for config in `ls`; do
-  ln -s $(readlink -e $config) $MANATEE_REGISTRY_PATH/$config
-done
-popd
-popd
-popd
+sep
