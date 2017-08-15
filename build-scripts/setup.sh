@@ -54,7 +54,7 @@ if [[ "x$MYSQLPASS" == "x" ]]; then
 fi
 
 mkdir -p ${DEPSDIR}
-sudo chown -R ${USER}:${USER} /opt/kontext
+sudo chown -R ${USER}:${USER} ${KONTEXT_PREFIX}
 if [[ ! -d ${KONTEXTDIR} ]]; then
     ln -sf ${FS} ${KONTEXTDIR}
 fi
@@ -273,7 +273,7 @@ grunt devel
 # =========
 # kontext start and pm2 process manager
 
-mkdir -p /opt/kontext/log/
+mkdir -p ${KONTEXT_PREFIX}/log/
 
 npm install -g pm2
 minisep "Starting kontext using pm2"
