@@ -17,7 +17,7 @@ install:
   - if [[ "x$COMPLETE_BUILD" == "xtrue" ]]; then ./build-scripts/setup.sh; else sudo apt-get install libxml2-dev libxslt-dev python-dev python-pyicu; pip install -r dev-requirements.txt; fi
 
 script:
-  - if [[ "x$INSTANCE_TEST" == "xtrue" ]]; then ./build-scripts/test.sh; python tests/runtests.py; fi
+  - if [[ "x$INSTANCE_TEST" == "xtrue" ]]; then ./build-scripts/test.sh; else python tests/runtests.py; fi
 
 notifications:
   slack:
