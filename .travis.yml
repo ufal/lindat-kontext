@@ -8,17 +8,16 @@ python:
   - "2.7"
 env:
   global:
-    - PYTHONPATH="/opt/kontext/lib/python2.7/site-packages:$PYTHONPATH"
     - PORT=5000
   matrix:
-    - COMPLETE_BUILD=true INSTANCE_TEST=true
+    - PYTHONPATH="/opt/kontext/lib/python2.7/site-packages:$PYTHONPATH" COMPLETE_BUILD=true INSTANCE_TEST=true
+    - PYTHONPATH=./tests/mocks COMPLETE_BUILD=false INSTANCE_TEST=false
 
 install:
-  - cd ./build-scripts/
-  - if [[ "x$COMPLETE_BUILD" == "xtrue" ]]; then ./setup.sh; fi
+  - if [[ "x$COMPLETE_BUILD" == "xtrue" ]]; then ./build-scripts/setup.sh; else sudo apt-get install libxml2-dev libxslt-dev python-dev python-pyicu; pip install -r dev-requirements.txt; fi
 
 script:
-  - ./test.sh
+  - if [[ "x$INSTANCE_TEST" == "xtrue" ]]; then ./build-scripts/test.sh; python tests/runtests.py; fi
 
 notifications:
   slack:
