@@ -35,4 +35,4 @@ interface JQueryStatic {
 declare module "vendor/jquery-cookie" {
     export = JQueryCookie;
 }
-declare var JQueryCookie: JQueryCookieStatic;
+declare var JQueryCookie: JQueryStatic;
