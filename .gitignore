@@ -24,6 +24,7 @@ public/files/js/min
 public/files/js/compiled
 public/files/js/optimized
 public/files/css/kontext.min.css
+public/files/css/custom.min.css
 cmpltmpl/*
 !cmpltmpl/__init__.py
 public/files/themes/*
@@ -34,3 +35,4 @@ public/files/themes/*
 .tscache
 **/.baseDir.ts
 tscommand*.txt
+*.rdb

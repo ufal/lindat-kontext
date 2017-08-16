@@ -1,13 +1,25 @@
 sudo: required
+dist: trusty
 language: python
+services:
+  - redis-server
+  - mysql
 python:
   - "2.7"
 env:
-  - PYTHONPATH=./tests/mocks
-before_install:
-  - sudo apt-get install libxml2-dev libxslt-dev python-dev python-pyicu
-install:
-  - pip install -r dev-requirements.txt
-script:
-  - python tests/runtests.py
+  global:
+    - PORT=5000
+  matrix:
+    - PYTHONPATH="/opt/kontext/lib/python2.7/site-packages:$PYTHONPATH" COMPLETE_BUILD=true INSTANCE_TEST=true
+    - PYTHONPATH=./tests/mocks COMPLETE_BUILD=false INSTANCE_TEST=false
 
+install:
+  - if [[ "x$COMPLETE_BUILD" == "xtrue" ]]; then ./build-scripts/setup.sh; else sudo apt-get install libxml2-dev libxslt-dev python-dev python-pyicu; pip install -r dev-requirements.txt; fi
+
+script:
+  - if [[ "x$INSTANCE_TEST" == "xtrue" ]]; then ./build-scripts/test.sh; else python tests/runtests.py; fi
+
+notifications:
+  slack:
+    on_success: always
+    secure: RVKF3ge2FZ92r2HCD3LKgEFdIya/JQmm6fjfH3WTsvaNYOaiyG2qf2dzBZd76uUNoB6u3aV8gL/kWmm6lmJGlgg8wSgmi16bQOmKz9OmYDPcnMCwOVP+5NyiK8qoZhzgXUvUNlpqUAOdj1VUHyo7ROgzi2WyvIDPwl77Yo4hONc=
