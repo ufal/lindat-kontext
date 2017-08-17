@@ -199,7 +199,8 @@
             'vendor/bloodhound',
             'vendor/intl-messageformat',
             'vendor/virtual-keyboard',
-            'vendor/d3'
+            'vendor/jquery-cookie',
+            'vendor/d3',
         ];
         if (isProduction) {
             modules.push('translations');

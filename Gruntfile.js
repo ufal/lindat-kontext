@@ -73,6 +73,7 @@
                         'public/files/js/min/vendor/soundmanager2.min.js',
                         'public/files/js/min/vendor/Dispatcher.js',
                         'public/files/js/min/vendor/jquery.min.js',
+                        'public/files/js/min/vendor/jquery-cookie.js',
                         'public/files/js/min/vendor/react.min.js',
                         'public/files/js/min/vendor/typeahead.js',
                         '!public/files/js/min/tpl',
