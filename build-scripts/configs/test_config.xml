@@ -105,9 +105,9 @@
             <auth_db_name extension-by="lindat">kontext</auth_db_name>
         </auth>
         <getlang>
-            <module>default_getlang</module>
-            <cookie extension-by="default">kontext_toolbar_lang</cookie>
-            <fallback_lang extension-by="default">cs_CZ</fallback_lang>
+            <module>ucnk_getlang</module>
+            <cookie extension-by="ucnk">language</cookie>
+            <fallback_lang extension-by="default">en_US</fallback_lang>
         </getlang>
         <query_storage>
             <module>default_query_storage</module>
