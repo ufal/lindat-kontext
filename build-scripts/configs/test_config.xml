@@ -7,7 +7,7 @@
         <logo_inline_css>width: auto;height: 3em</logo_inline_css>
         <css>
             <item>//lindat.mff.cuni.cz/aai/discojuice/discojuice.css</item>
-            <item>public/css/lindat.css</item>
+            <item>lindat-common/public/css/lindat.css</item>
         </css>
         <fonts>
             <item>https://fonts.googleapis.com/css?family=Cousine:400|Roboto:300,400,400italic,700,700italic|Roboto+Condensed:400,700&amp;subset=latin,latin-ext</item>
@@ -176,15 +176,14 @@
         <application_bar>
             <module>lindat_appbar</module>
             <js_module>lindatAppBar</js_module>
-            <template_cs extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/cs/header.htm</template_cs>
-            <template_en extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/en/header.htm</template_en>
-            <css_url extension-by="lindat">//lindat.mff.cuni.cz/services/kontext/files/themes/lindat/public/css/lindat.css</css_url>
+            <template_cs extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/lindat-common/cs/header.htm</template_cs>
+            <template_en extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/lindat-common/en/header.htm</template_en>
         </application_bar>
         <footer_bar>
             <module>lindat_footer_bar</module>
             <js_module>lindatFooterBar</js_module>
-            <template_cs extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/cs/footer.htm</template_cs>
-            <template_en extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/en/footer.htm</template_en>
+            <template_cs extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/lindat-common/cs/footer.htm</template_cs>
+            <template_en extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/lindat-common/en/footer.htm</template_en>
         </footer_bar>
     </plugins>
 </kontext>

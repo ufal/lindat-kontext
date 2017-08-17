@@ -35,7 +35,7 @@ if [[ "x$KONTEXTDIR" == "x" ]]; then
     export KONTEXTDIR=${KONTEXT_PREFIX}/installation
 fi
 
-export THEMEDIR=${KONTEXTDIR}/public/files/themes
+export THEMEDIR=${KONTEXTDIR}/public/files/themes/lindat
 export CONFIGDIR=${KONTEXTDIR}/conf
 
 export DEPS_PREFIX=${KONTEXT_PREFIX}
@@ -208,9 +208,9 @@ sep
 # themes
 
 minisep "Installing lindat-common theme"
-if [[ ! -d ${THEMEDIR}/lindat ]]; then
+if [[ ! -d ${THEMEDIR}/lindat-common ]]; then
     cd ${THEMEDIR}
-    git clone --depth 1 https://github.com/ufal/lindat-common.git -b releases lindat
+    git clone --depth 1 https://github.com/ufal/lindat-common.git -b releases lindat-common
 fi
 
 
