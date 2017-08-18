@@ -303,6 +303,88 @@ export function init(dispatcher, mixins, treeStore) {
         }
     });
 
+        // --------------------------------- <WidgetTreeNode /> --------------------------
+
+    let WidgetTreeNode = React.createClass({
+
+        mixins : mixins,
+
+        _clickHandler : function () {
+            dispatcher.dispatch({
+                actionType: 'TREE_CORPARCH_SET_NODE_STATUS',
+                props: {
+                    nodeId: this.props.ident
+                }
+            });
+        },
+
+        getInitialState : function () {
+            return {active: false};
+        },
+
+        _getStateImagePath : function () {
+            let path = this.props.active ? 'img/collapse.svg' : 'img/expand.svg';
+            return this.createStaticUrl(path);
+        },
+
+        render : function () {
+            return (
+                <li className="node">
+                    <a onClick={this._clickHandler}>
+                        <img className="state-flag" src={this._getStateImagePath()} />
+                        {this.props.name}
+                    </a>
+                    { this.props.active ?
+                        <WidgetItemList name={this.props.name} corplist={this.props.corplist} />
+                        : null }
+                </li>
+            );
+        }
+    });
+
+    // -------------------------------- <WidgetTreeLeaf /> -------------------------------
+
+    let WidgetTreeLeaf = React.createClass({
+
+        _clickHandler : function () {
+            dispatcher.dispatch({
+                actionType: 'TREE_CORPARCH_LEAF_NODE_CLICKED',
+                props: {
+                    ident: this.props.ident
+                }
+            });
+        },
+
+        render : function () {
+            return <li className="leaf"><a onClick={this._clickHandler}>{this.props.name}</a></li>;
+        }
+    });
+
+    // -------------------------------- <WidgetItemList /> -------------------------------
+
+    let WidgetItemList = React.createClass({
+
+        _renderChildren : function () {
+            return this.props.corplist.map((item, i) => {
+                if (item['corplist'].size > 0) {
+                    return <WidgetTreeNode key={i} name={item['name']} ident={item['ident']}
+                                        corplist={item['corplist']} active={item['active']} />;
+
+                } else {
+                    return <WidgetTreeLeaf key={i} name={item['name']} ident={item['ident']} />;
+                }
+            });
+        },
+
+        render : function () {
+            return (
+                <ul className={this.props.htmlClass}>
+                    {this._renderChildren()}
+                </ul>
+            );
+        }
+    });
+
     // -------------------------------- <CorptreeWidget /> -------------------------------
 
     let CorptreeWidget = React.createClass({
@@ -345,7 +427,7 @@ export function init(dispatcher, mixins, treeStore) {
                 <div className="corp-tree-widget">
                     <button className="switch" type="button" onClick={this._buttonClickHandler}>{this.props.currentCorpus}</button>
                     <input type="hidden" name="corpname" value={this.props.corpname} />
-                    {this.state.active ? <ItemList htmlClass="corp-tree"
+                    {this.state.active ? <WidgetItemList htmlClass="corp-tree"
                         corplist={this.state.data['corplist']} /> : null}
                 </div>
             );
