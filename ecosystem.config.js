@@ -23,7 +23,7 @@ module.exports = {
               "repo" : "https://github.com/ufal/lindat-kontext.git",
               "ref"  : "origin/kontext-dev",
               "path" : "/opt/kontext-staging/deploy",
-              "pre-deploy-local": "echo 'execute ssh -L8877:kontext-dev:22 USER@quest.ms.mff.cuni.cz before this if ssh connection fails, config.xml must be also present!'",
+              "pre-deploy-local": "ssh -fN -L8877:kontext-dev:22 " + process.env.DPUSER + "@quest.ms.mff.cuni.cz",
               "post-deploy" : "npm install && grunt devel && DPNAME=-staging PORT=10001 pm2 startOrRestart ecosystem.config.js",
               "env" : {
                 "NODE_ENV": "staging",
