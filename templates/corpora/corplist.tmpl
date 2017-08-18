@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #extends document
 
 #def title
+$_("Available corpora")#slurp
 #end def
 
 #def bodyonload
@@ -36,11 +37,8 @@ require(['${client_model_dir}/${page_model}', 'conf'], function (pageSelf, conf)
 
 #block main
 <section class="corplist">
-    <h2>$_('Available corpora')</h2>
-
     <form class="filter" action="corplist">
     </form>
-
     <div id="corplist"></div>
 
 </section>

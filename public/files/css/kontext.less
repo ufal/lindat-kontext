@@ -114,20 +114,35 @@ a {
 }
 
 #content {
-    display: block;
+    display: inline-block;
     margin: 0;
     overflow: auto;
     padding: 0.5em 2em 2em @ucnk-topbar-left-margin;
+
+    &.lindatCorparch-content {
+        display: block;
+        padding: 1.3em 1.2em 1.2em 1.2em;
+    }
 }
 
 #content > section {
     border-radius: @border-radius-default;
-    display: inline-block;
+    display: block;
     vertical-align: top;
     margin: 1.5em 0 0 0;
     background-color: @color-section-bg;
     box-shadow: @portal-box-shadow;
     min-width: 46%;
+
+    &.lindatCorparch-section {
+        box-shadow: none;
+        border-radius: 0;
+        background-color: white;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 1.2em;
+
+    }
 }
 
 section.inner {
