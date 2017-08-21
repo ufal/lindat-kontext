@@ -90,3 +90,4 @@ def setup_plugins():
     init_plugin('syntax_viewer', optional=True)
     init_plugin('subcmixer', optional=True)
 
+    init_plugin('status', optional=True)
