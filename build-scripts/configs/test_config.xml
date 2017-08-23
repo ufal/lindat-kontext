@@ -97,9 +97,13 @@
             <!-- The default list of corpora is loaded from corparch/file plugin -->
             <auth_cookie_name>kontext_session</auth_cookie_name>
             <anonymous_user_id>0</anonymous_user_id>
-            <login_url></login_url>
+            <login_url>/user/loginx?redirectTo=</login_url>
             <logout_url></logout_url>
             <auth_db_shard extension-by="lindat">5</auth_db_shard>
+            <metadataFeed extension-by="lindat">https://lindat.mff.cuni.cz/repository/xmlui/discojuice/feeds</metadataFeed>
+            <service_name extension-by="lindat">LINDAT-KONTEXT Login</service_name>
+            <response_url extension-by="lindat"></response_url>
+            <local_action extension-by="lindat">/user/loginx</local_action>
         </auth>
         <getlang>
             <module>ucnk_getlang</module>

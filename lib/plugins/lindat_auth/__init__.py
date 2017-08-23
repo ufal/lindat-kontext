@@ -47,6 +47,7 @@ class ShibbolethAuth(AbstractSemiInternalAuth):
         self._db = db
         self._sessions = sessions
         self._public_corplist = public_corplist
+        self._conf = conf
 
     def validate_user(self, plugin_api, username, password):
         """
@@ -91,6 +92,16 @@ class ShibbolethAuth(AbstractSemiInternalAuth):
 
     def logout_hook(self, plugin_api):
         plugin_api.redirect('%sfirst_form' % (plugin_api.root_url,))
+
+    def export(self, plugin_api):
+        return {
+            'metadataFeed': self._conf['lindat:metadataFeed'],
+            'login_url': self._conf['login_url'],
+            'service_name': self._conf['lindat:service_name'],
+            'response_url': self._conf['lindat:response_url'] if self._conf[
+                'lindat:response_url'] else '',
+            'local_action': self._conf['lindat:local_action'],
+        }
 
 
 def _load_corplist(corptree_path):
