@@ -94,15 +94,12 @@
         </db>
         <auth>
             <module>lindat_auth</module>
+            <!-- The default list of corpora is loaded from corparch/file plugin -->
             <auth_cookie_name>kontext_session</auth_cookie_name>
             <anonymous_user_id>0</anonymous_user_id>
-            <login_url>/kontext/user/login</login_url>
-            <logout_url>/kontext/user/logoutx</logout_url>
-            <corptree_path extension-by="lindat">/opt/kontext/installation/conf/corplist.xml</corptree_path>
-            <auth_db_host extension-by="lindat">localhost</auth_db_host>
-            <auth_db_username extension-by="lindat">root</auth_db_username>
-            <auth_db_password extension-by="lindat"/>
-            <auth_db_name extension-by="lindat">kontext</auth_db_name>
+            <login_url></login_url>
+            <logout_url></logout_url>
+            <auth_db_shard extension-by="lindat">5</auth_db_shard>
         </auth>
         <getlang>
             <module>ucnk_getlang</module>

@@ -32,14 +32,14 @@ export function init():void {
     let opts:AAI.AaiOptions = {};
 
     //if ever port is needed (eg. testing other tomcat) it should be in responseUrl and target
-    opts.port = Number(window.location.port === '' ? '' : ':' + window.location.port);
+    opts.port = (window.location.port === '' ? '' : ':' + window.location.port);
     opts.host = window.location.protocol + '//' +
         window.location.hostname;
     opts.repoPath = '/repository/xmlui';
     if (opts.repoPath.charAt(opts.repoPath.length - 1) !== '/') {
         opts.repoPath = opts.repoPath + '/';
     }
-    opts.target = opts.host + opts.port + '/services/kontext-dev/run.cgi/loginx?redirectTo=' + encodeURIComponent(window.location.href);
+    opts.target = opts.host + opts.port + '/user/loginx?redirectTo=' + encodeURIComponent(window.location.href);
     //In order to use the discojuice store (improve score of used IDPs)
     //Works only with "verified" SPs - ie. ufal-point, displays error on ufal-point-dev
     opts.responseUrl =

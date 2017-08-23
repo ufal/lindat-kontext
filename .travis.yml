@@ -3,7 +3,6 @@ dist: trusty
 language: python
 services:
   - redis-server
-  - mysql
 python:
   - "2.7"
 env:

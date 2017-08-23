@@ -15,7 +15,7 @@
         args:
         - --fix
 -   repo: git://github.com/kosarko/pre-commit-lesshint/
-    sha: v0.0.2
+    sha: 2056fd7056d194aa7d21d0b189a6760c8053be9d
     hooks:
     -   id: lesshint
         additional_dependencies:

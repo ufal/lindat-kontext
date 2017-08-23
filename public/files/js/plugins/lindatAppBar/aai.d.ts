@@ -21,7 +21,7 @@
 declare module AAI {
 
     export interface AaiOptions {
-        port?:number;
+        port?:string;
         host?:string;
         repoPath?:string;
         target?:string;
