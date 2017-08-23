@@ -28,6 +28,23 @@ module.exports = {
               "env" : {
                 "NODE_ENV": "staging",
               }
+          },
+          "staging-jm" : {
+              "user" : process.env.DPUSER || "kontext",
+              "host" : [
+                  {
+                      "host": "127.0.0.1",
+                      "port": "8877"
+                  }
+                ],
+              "repo" : "https://github.com/ufal/lindat-kontext.git",
+              "ref"  : "origin/issue_57",
+              "path" : "/opt/kontext-jm/deploy",
+              "pre-deploy-local": "ssh -fN -L8877:kontext-dev:22 " + process.env.DPUSER + "@quest.ms.mff.cuni.cz",
+              "post-deploy" : "npm install && grunt devel && DPNAME=-jm PORT=10002 pm2 startOrRestart ecosystem.config.js",
+              "env" : {
+                "NODE_ENV": "staging",
+              }
           }
       }
 };

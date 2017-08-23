@@ -50,8 +50,7 @@ class ShibbolethAuth(AbstractSemiInternalAuth):
 
     def validate_user(self, plugin_api, username, password):
         """
-        returns:
-        a dict with user properties or empty dict
+            A dictionary with user properties or empty dict
         """
         if username is not None and username != '':
             raise NotImplementedError()
