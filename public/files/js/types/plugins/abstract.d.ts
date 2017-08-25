@@ -92,7 +92,7 @@ declare module 'plugins/subcmixer/init' {
         dispatcher: Dispatcher.Dispatcher<any>,
         mixins: any,
         layoutViews: any,
-        subcmixerStore: Subcmixer.ISubcMixerStore,
+        subcmixerStore: Subcmixer.ISubcMixerStore
     ): Subcmixer.SubcMixerViews;
 
     export function create(pluginApi: Kontext.PluginApi,

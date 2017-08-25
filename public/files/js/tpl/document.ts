@@ -441,7 +441,7 @@ export class PageModel implements Kontext.IURLHandler, Kontext.IConcArgsHandler 
                     default:
                         return data;
                 }
-            },
+            }
         );
     }
 
@@ -481,7 +481,7 @@ export class PageModel implements Kontext.IURLHandler, Kontext.IConcArgsHandler 
             message = message['message'];
         }
         this.messageStore.addMessage(msgType, message, onClose);
-    }
+    };
 
     /**
      * Modifies form (actually, it is always the #mainform)
@@ -564,7 +564,7 @@ export class PageModel implements Kontext.IURLHandler, Kontext.IConcArgsHandler 
         popupbox.extended(this.pluginApi()).bind(
             $('#positions-help-link'),
             self.translate('global__what_are_positions'),
-            {width: '30%'},
+            {width: '30%'}
         );
 
         // 'Select all' buttons for structural attribute lists
@@ -743,7 +743,7 @@ export class PageModel implements Kontext.IURLHandler, Kontext.IConcArgsHandler 
             .attr('alt', this.translate('global__loading'))
             .attr('title', this.translate('global__loading'))
             .css({width: '16px', height: '11px'});
-    }
+    };
 
     /**
      *
@@ -893,7 +893,7 @@ export class PageModel implements Kontext.IURLHandler, Kontext.IConcArgsHandler 
         this.renderReactComponent(
             menuViews.MainMenu,
             window.document.getElementById('main-menu-mount'),
-            {submenuItems: Immutable.List(menuData['submenuItems'])},
+            {submenuItems: Immutable.List(menuData['submenuItems'])}
         );
     }
 
@@ -903,7 +903,7 @@ export class PageModel implements Kontext.IURLHandler, Kontext.IConcArgsHandler 
         this.renderReactComponent(
             overviewViews.OverviewArea,
             window.document.getElementById('overview-area-mount'),
-            {},
+            {}
         );
 
         $(window.document.getElementById('corpus-desc-link')).on('click', () => {
@@ -936,7 +936,7 @@ export class PageModel implements Kontext.IURLHandler, Kontext.IConcArgsHandler 
                 this.layoutViews = documentViewsInit(
                     this.dispatcher,
                     this.exportMixins(),
-                    this.getStores(),
+                    this.getStores()
                 );
 
                 this.userSettings.init();
@@ -963,11 +963,11 @@ export class PageModel implements Kontext.IURLHandler, Kontext.IConcArgsHandler 
             () => {
                 applicationBar.create(this.pluginApi());
                 auth.create(this.pluginApi());
-            },
+            }
         ).then(
             () => {
                 footerBar.create(this.pluginApi());
-            },
+            }
         );
     }
 }
