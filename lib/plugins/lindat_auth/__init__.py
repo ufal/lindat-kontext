@@ -47,6 +47,7 @@ class FederatedAuthWithFailover(AbstractSemiInternalAuth):
         self._public_corplist = public_corplist
         self._failover_auth = failover
         self._logout_url = conf['logout_url']
+        self._conf = conf
 
     def validate_user(self, plugin_api, username, password):
         """
@@ -135,6 +136,16 @@ class FederatedAuthWithFailover(AbstractSemiInternalAuth):
             user_d = db_user_d
 
         return user_d
+
+    def export(self, plugin_api):
+        return {
+            'metadataFeed': self._conf['lindat:metadataFeed'],
+            'login_url': self._conf['login_url'],
+            'service_name': self._conf['lindat:service_name'],
+            'response_url': self._conf['lindat:response_url'] if self._conf[
+                'lindat:response_url'] else '',
+            'local_action': self._conf['lindat:local_action'],
+        }
 
 
 # =============================================================================
