@@ -16,6 +16,22 @@ from plugins.abstract import PluginException
 _logger = logging.getLogger(__name__)
 
 
+def uni(str_str, encoding="utf-8"):
+    """ Try to get unicode without errors """
+    try:
+        if isinstance(str_str, unicode):
+            return str_str
+        elif isinstance(str_str, basestring):
+            return unicode(str_str, encoding)
+    except UnicodeError:
+        pass
+    try:
+        return unicode(str(str_str), encoding=encoding, errors='ignore')
+    except UnicodeError:
+        pass
+    return str_str.decode(encoding=encoding, errors="ignore")
+
+
 class FederatedAuthWithFailover(AbstractSemiInternalAuth):
     """
         A Shibboleth authentication module with a failover
@@ -100,24 +116,23 @@ class FederatedAuthWithFailover(AbstractSemiInternalAuth):
         if username is None or username == FederatedAuthWithFailover.RESERVED_USER:
             return None
 
-        firstname = _get_non_empty_header(
-            plugin_api.get_environ, 'HTTP_GIVENNAME')
-        surname = _get_non_empty_header(
-            plugin_api.get_environ, 'HTTP_SN')
-        displayname = _get_non_empty_header(
-            plugin_api.get_environ, 'HTTP_DISPLAYNAME', 'HTTP_CN')
+        firstname = uni(_get_non_empty_header(
+            plugin_api.get_environ, 'HTTP_GIVENNAME') or "")
+        surname = uni(_get_non_empty_header(
+            plugin_api.get_environ, 'HTTP_SN') or "")
+        displayname = uni(_get_non_empty_header(
+            plugin_api.get_environ, 'HTTP_DISPLAYNAME', 'HTTP_CN') or "")
 
         # this will work most of the times but very likely not
         # always (no unification in what IdPs are sending)
-        if not firstname and not surname:
+        if 0 == len(firstname) and 0 == len(surname):
             names = displayname.split()
-            firstname = u" ".join(names[:-1])
-            surname = names[-1]
-        firstname = firstname or ""
-        surname = surname or ""
+            if 1 < len(names):
+                firstname = u" ".join(names[:-1])
+                surname = names[-1]
 
-        idp = _get_non_empty_header(
-            plugin_api.get_environ, "HTTP_SHIB_IDENTITY_PROVIDER")
+        idp = uni(_get_non_empty_header(
+            plugin_api.get_environ, "HTTP_SHIB_IDENTITY_PROVIDER") or "")
 
         db_user_d = self._db.hash_get_all(username)
         if 0 == len(db_user_d):
