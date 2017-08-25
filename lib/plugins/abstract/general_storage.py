@@ -181,3 +181,10 @@ class KeyValueStorage(object):
         i.e. elements may disappear, re-enter etc.
         """
         pass
+
+    def incr(self, name, amount=1):
+        """
+        Increments the value of ``key`` by ``amount``.  If no key exists,
+        the value will be initialized as ``amount``
+        """
+        raise NotImplementedError()

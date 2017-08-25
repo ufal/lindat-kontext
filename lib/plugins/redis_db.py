@@ -230,6 +230,13 @@ class RedisDb(KeyValueStorage):
         """
         return self.redis.hmset(key, mapping)
 
+    def incr(self, name, amount=1):
+        """
+        Increments the value of ``key`` by ``amount``.  If no key exists,
+        the value will be initialized as ``amount``
+        """
+        raise self.redis.incr(name, amount)
+
 
 class RedisDbManager(RedisDb):
     """
