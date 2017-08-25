@@ -96,6 +96,7 @@
         </db>
         <auth>
             <module>lindat_auth</module>
+            <js_module>lindatAuth</js_module>
             <!-- The default list of corpora is loaded from corparch/file plugin -->
             <auth_cookie_name>kontext_session</auth_cookie_name>
             <anonymous_user_id>0</anonymous_user_id>

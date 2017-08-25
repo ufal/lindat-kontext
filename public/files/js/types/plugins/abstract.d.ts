@@ -41,57 +41,60 @@ remaps these names to custom ones.
 declare module 'plugins/applicationBar/init' {
 
     export interface Toolbar extends Kontext.Plugin {
-        openLoginDialog():void;
+        openLoginDialog(): void;
     }
 
-    export function create(pluginApi:Kontext.PluginApi):RSVP.Promise<Toolbar>;
+    export function create(pluginApi: Kontext.PluginApi): RSVP.Promise<Toolbar>;
 
-    export function openLoginDialog():void;
+    export function openLoginDialog(): void;
 }
 
-declare module "plugins/applicationBar/toolbar" {
-    export function openLoginDialog():void;
-     export function init():void;
+declare module 'plugins/applicationBar/toolbar' {
+    export function openLoginDialog(): void;
+    export function init(): void;
 }
 
 declare module 'plugins/footerBar/init' {
-    export function create(pluginApi:Kontext.PluginApi):RSVP.Promise<Kontext.Plugin>;
+    export function create(pluginApi: Kontext.PluginApi): RSVP.Promise<Kontext.Plugin>;
 }
 
-declare module "plugins/corparch/init" {
-    export function create(target:HTMLElement, targetAction:string, pluginApi:Kontext.QueryPagePluginApi,
-        conf:CorpusArchive.Options);
-
-    export function initCorplistPageComponents(pluginApi:Kontext.PluginApi):Customized.CorplistPage;
+declare module 'plugins/auth/init' {
+    export function create(pluginApi: Kontext.PluginApi): RSVP.Promise<Kontext.Plugin>;
 }
 
-declare module "plugins/liveAttributes/init" {
+declare module 'plugins/corparch/init' {
+    export function create(target: HTMLElement, targetAction: string, pluginApi: Kontext.QueryPagePluginApi,
+                           conf: CorpusArchive.Options);
+
+    export function initCorplistPageComponents(pluginApi: Kontext.PluginApi): Customized.CorplistPage;
+}
+
+declare module 'plugins/liveAttributes/init' {
     export = LiveAttributesInit;
 }
 
-declare module "plugins/queryStorage/init" {
-    export function create(pluginApi:Kontext.PluginApi):Plugins.IQueryStorage;
+declare module 'plugins/queryStorage/init' {
+    export function create(pluginApi: Kontext.PluginApi): Plugins.IQueryStorage;
 }
 
-declare module "plugins/taghelper/init" {
-    export function create(pluginApi:Kontext.PluginApi,
-            insertCallback:(value:string)=>void, widgetId:number):(box:Legacy.IPopupBox, finalize:()=>void)=>void;
+declare module 'plugins/taghelper/init' {
+    export function create(pluginApi: Kontext.PluginApi,
+                           insertCallback: (value: string) => void, widgetId: number): (box: Legacy.IPopupBox, finalize: () => void) => void;
 }
 
-declare module "plugins/syntaxViewer/init" {
-    export function create(pluginApi:Kontext.PluginApi):void;
+declare module 'plugins/syntaxViewer/init' {
+    export function create(pluginApi: Kontext.PluginApi): void;
 }
 
-
-declare module "plugins/subcmixer/init" {
+declare module 'plugins/subcmixer/init' {
 
     export function getViews(
-        dispatcher:Dispatcher.Dispatcher<any>,
-        mixins:any,
-        layoutViews:any,
-        subcmixerStore:Subcmixer.ISubcMixerStore
-    ):Subcmixer.SubcMixerViews
+        dispatcher: Dispatcher.Dispatcher<any>,
+        mixins: any,
+        layoutViews: any,
+        subcmixerStore: Subcmixer.ISubcMixerStore,
+    ): Subcmixer.SubcMixerViews;
 
-    export function create(pluginApi:Kontext.PluginApi,
-            textTypesStore:TextTypes.ITextTypesStore):Subcmixer.ISubcMixerStore;
+    export function create(pluginApi: Kontext.PluginApi,
+                           textTypesStore: TextTypes.ITextTypesStore): Subcmixer.ISubcMixerStore;
 }
