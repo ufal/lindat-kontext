@@ -44,8 +44,9 @@ class User(Kontext):
     def loginx(self, request):
         ans = {}
         self._session['user'] = plugins.get('auth').validate_user(self._plugin_api,
-                                                                  request.form['username'],
-                                                                  request.form['password'])
+                                                                  request.form.get(
+                                                                      'username', None),
+                                                                  request.form.get('password', None))
 
         if self._session['user'].get('id', None):
             self._redirect('%sfirst_form' % (self.get_root_url(), ))
@@ -84,7 +85,8 @@ class User(Kontext):
 
             if not self._uses_internal_user_pages():
                 raise UserActionException(_('This function is disabled.'))
-            logged_in = auth.validate_user(self._plugin_api, self._session_get('user', 'user'), curr_passwd)
+            logged_in = auth.validate_user(
+                self._plugin_api, self._session_get('user', 'user'), curr_passwd)
 
             if self._is_anonymous_id(logged_in['id']):
                 raise UserActionException(_('Invalid user or password'))

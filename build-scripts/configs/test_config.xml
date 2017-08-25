@@ -91,6 +91,7 @@
             <host extension-by="default">127.0.0.1</host>
             <port extension-by="default">6379</port>
             <id extension-by="default">1</id>
+            <shards>auth:8</shards>
         </db>
         <auth>
             <module>lindat_auth</module>
@@ -98,8 +99,7 @@
             <auth_cookie_name>kontext_session</auth_cookie_name>
             <anonymous_user_id>0</anonymous_user_id>
             <login_url></login_url>
-            <logout_url></logout_url>
-            <auth_db_shard extension-by="lindat">5</auth_db_shard>
+            <logout_url>/user/logoutx</logout_url>
         </auth>
         <getlang>
             <module>ucnk_getlang</module>

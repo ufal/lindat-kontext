@@ -13,13 +13,15 @@
 import os
 from plugins.abstract.appbar import AbstractApplicationBar
 from translation import ugettext as _
+from plugins import inject
 
 
 class LindatTopBar(AbstractApplicationBar):
 
-    def __init__(self, css_url, templates=None):
+    def __init__(self, css_url, templates=None, logout_url=None):
         self._templates = templates if type(templates) is dict else {}
         self.css_url = css_url
+        self._logout_url = logout_url
 
     def get_template(self, lang):
         if lang in self._templates:
@@ -53,8 +55,9 @@ class LindatTopBar(AbstractApplicationBar):
             html = fin.read().decode('utf-8')
 
             if not plugin_api.user_is_anonymous:
-                msgs = dict(fullname=plugin_api.session.get('user', 'fullname'),
-                            logout_url='',
+                user_d = plugin_api.session["user"]
+                msgs = dict(fullname=user_d.get("fullname", "?"),
+                            logout_url=self._logout_url or "",
                             logout_msg=_('logout'))
                 login_html = '%(fullname)s (<a href="%(logout_url)s">%(logout_msg)s</a>)' % msgs
             else:
@@ -78,10 +81,18 @@ class LindatTopBar(AbstractApplicationBar):
         return ''
 
 
-def create_instance(settings):
+@inject('auth')
+def create_instance(settings, auth):
+    """
+        Auth must provide `get_logout_url`
+    """
     plugin_conf = settings.get('plugins', 'application_bar')
     templates = {
         'cs_CZ': plugin_conf['lindat:template_cs'],
         'en_US': plugin_conf['lindat:template_en']
     }
-    return LindatTopBar(templates=templates, css_url=plugin_conf.get('lindat:css_url'))
+    return LindatTopBar(
+        templates=templates,
+        css_url=plugin_conf.get('lindat:css_url'),
+        logout_url=auth.get_logout_url()
+    )

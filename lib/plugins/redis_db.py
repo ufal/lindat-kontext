@@ -48,13 +48,15 @@ from abstract.general_storage import KeyValueStorage
 
 class RedisDb(KeyValueStorage):
 
-    def __init__(self, conf):
+    def __init__(self, host, port, shard_id):
         """
         arguments:
         conf -- a dictionary containing 'settings' module compatible configuration of the plug-in
         """
-        self.redis = redis.StrictRedis(
-            host=conf['default:host'], port=int(conf['default:port']), db=int(conf['default:id']))
+        self._host = host
+        self._port = port
+        self._shard_id = shard_id
+        self.redis = redis.StrictRedis(host=self._host, port=self._port, db=self._shard_id)
         self._scan_chunk_size = 50
 
     def list_get(self, key, from_idx=0, to_idx=-1):
@@ -221,10 +223,52 @@ class RedisDb(KeyValueStorage):
         """
         return self.redis.getset(key, value)
 
+    def hash_set_map(self, key, mapping):
+        """
+        Set key to value within hash ``name`` for each corresponding
+        key and value from the ``mapping`` dict.
+        """
+        return self.redis.hmset(key, mapping)
+
+
+class RedisDbManager(RedisDb):
+    """
+        Allow to specify different shards for different plugins.
+
+        Note:
+            Plugins have to support this by calling `db.get_instance("plugin_name")`.
+    """
+
+    def __init__(self, conf, host, port, default_shard_id):
+        RedisDb.__init__(self, host, port, default_shard_id)
+        # name, shard id, instance
+        self._shards = []
+        if "shards" in conf:
+            for shard in conf["shards"].split(","):
+                plugin_name, shard = shard.split(":")
+                self._shards.append([plugin_name, int(shard), None])
+
+    def get_instance(self, plugin_name):
+        """
+            Return plugin specific shard.
+        """
+        for shard in self._shards:
+            plg_name, shard_id, inst = shard
+            if plg_name == plugin_name:
+                if inst is None:
+                    inst = RedisDb(host=self._host, port=self._port, shard_id=shard_id)
+                    shard[2] = inst
+                return inst
+        return self
+
 
 def create_instance(conf):
     """
     Arguments:
     conf -- a dictionary containing imported XML configuration of the plugin
     """
-    return RedisDb(conf.get('plugins', 'db'))
+    db_conf = conf.get('plugins', 'db')
+    return RedisDbManager(db_conf,
+                          host=db_conf['default:host'],
+                          port=int(db_conf['default:port']),
+                          default_shard_id=int(db_conf['default:id']))
