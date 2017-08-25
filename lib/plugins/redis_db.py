@@ -235,7 +235,7 @@ class RedisDb(KeyValueStorage):
         Increments the value of ``key`` by ``amount``.  If no key exists,
         the value will be initialized as ``amount``
         """
-        raise self.redis.incr(name, amount)
+        return self.redis.incr(name, amount)
 
 
 class RedisDbManager(RedisDb):
