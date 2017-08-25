@@ -143,6 +143,7 @@ class KonTextCookie(Cookie.BaseCookie):
     Cookie handler which encodes and decodes strings
     as URI components.
     """
+
     def value_decode(self, val):
         return unquote(val), val
 
@@ -155,6 +156,7 @@ class CheetahResponseFile(object):
     """
     Provides utf-8 compatible output for Cheetah renderer
     """
+
     def __init__(self, outfile):
         self.outfile = codecs.getwriter('utf-8')(outfile)
 
@@ -174,6 +176,7 @@ class UserActionException(Exception):
     """
     This exception should cover general errors occurring in Controller's action methods'
     """
+
     def __init__(self, message, code=200, error_code=None, error_args=None):
         super(UserActionException, self).__init__(message)
         self.code = code
@@ -191,6 +194,7 @@ class NotFoundException(UserActionException):
     """
     Raised in case user requests non-exposed/non-existing action
     """
+
     def __init__(self, message):
         super(NotFoundException, self).__init__(message, 404)
 
@@ -225,7 +229,8 @@ class Controller(object):
         self._status = 200
         self._system_messages = []
         self._proc_time = None
-        self._validators = []  # a list of functions which must pass (= return None) before any action is performed
+        # a list of functions which must pass (= return None) before any action is performed
+        self._validators = []
         self._exceptmethod = None
         self._template_dir = u'../cmpltmpl/'
         self.args = Args()
@@ -348,7 +353,8 @@ class Controller(object):
         """
         result['methodname'] = methodname
         deployment_id = settings.get('global', 'deployment_id', None)
-        result['deployment_id'] = hashlib.md5(deployment_id).hexdigest()[:6] if deployment_id else None
+        result['deployment_id'] = hashlib.md5(deployment_id).hexdigest()[
+            :6] if deployment_id else None
         result['current_action'] = '/'.join([x for x in self.get_current_action() if x])
 
     def _get_template_class(self, name):
@@ -453,6 +459,8 @@ class Controller(object):
             action_module_path = action_module_path[1:]
         if 'HTTP_X_FORWARDED_PROTO' in self.environ:
             protocol = self.environ['HTTP_X_FORWARDED_PROTO']
+        elif 'HTTP_X_FORWARDED_PROTOCOL' in self.environ:
+            protocol = self.environ['HTTP_X_FORWARDED_PROTOCOL']
         else:
             protocol = self.environ['wsgi.url_scheme']
         url_items = ('%s://%s' % (protocol, self.environ.get('HTTP_HOST')),
@@ -584,7 +592,8 @@ class Controller(object):
         /stats/
         /tools/admin/
         """
-        raise NotImplementedError('Each action controller must implement method get_mapping_url_prefix()')
+        raise NotImplementedError(
+            'Each action controller must implement method get_mapping_url_prefix()')
 
     def import_req_path(self):
         """
@@ -597,7 +606,8 @@ class Controller(object):
         path = self.environ.get('PATH_INFO', '').strip()
 
         if not path.startswith(ac_prefix):  # this should not happen unless you hack the code here and there
-            raise Exception('URL-action mapping error: cannot match prefix [%s] with path [%s]' % (path, ac_prefix))
+            raise Exception(
+                'URL-action mapping error: cannot match prefix [%s] with path [%s]' % (path, ac_prefix))
         else:
             path = path[len(ac_prefix):]
 
@@ -696,7 +706,8 @@ class Controller(object):
         """
         if type(result) is dict:
             result['messages'] = self._system_messages
-            result['contains_errors'] = result.get('contains_errors', False) or self.contains_errors()
+            result['contains_errors'] = result.get(
+                'contains_errors', False) or self.contains_errors()
         if self._request.args.get('format') == 'json':
             action_metadata['return_type'] = 'json'
 
@@ -738,7 +749,7 @@ class Controller(object):
             else:
                 text = _('Query failed: Syntax error.')
             new_err = UserActionException(
-                    _('%s Please make sure the query and selected query type are correct.') % text)
+                _('%s Please make sure the query and selected query type are correct.') % text)
         elif 'AttrNotFound' in text:
             srch = re.match(r'AttrNotFound\s+\(([^)]+)\)', text)
             if srch:
@@ -748,7 +759,7 @@ class Controller(object):
             new_err = UserActionException(text)
         elif 'EvalQueryException' in text:
             new_err = UserActionException(
-                        _('Failed to evaluate the query. Please check the syntax and used attributes.'))
+                _('Failed to evaluate the query. Please check the syntax and used attributes.'))
         else:
             new_err = err
         return new_err

@@ -34,6 +34,7 @@
         <conc_line_max_group_num>99</conc_line_max_group_num>
         <calc_backend conf="/opt/kontext/installation/conf/celeryconfig.py">celery</calc_backend>
         <action_path_prefix>/kontext</action_path_prefix>
+        <cookie_path_prefix>/</cookie_path_prefix>
         <static_files_prefix>/files</static_files_prefix>
         <use_conc_toolbar>1</use_conc_toolbar>
     </global>
