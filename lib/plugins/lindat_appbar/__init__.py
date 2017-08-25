@@ -18,10 +18,11 @@ from plugins import inject
 
 class LindatTopBar(AbstractApplicationBar):
 
-    def __init__(self, css_url, templates=None, logout_url=None):
+    def __init__(self, css_url, external_scripts, templates=None, logout_url=None):
         self._templates = templates if type(templates) is dict else {}
         self.css_url = css_url
         self._logout_url = logout_url
+        self._external_scripts = external_scripts
 
     def get_template(self, lang):
         if lang in self._templates:
@@ -33,19 +34,7 @@ class LindatTopBar(AbstractApplicationBar):
         return [dict(url=self.css_url)]
 
     def get_scripts(self, plugin_api):
-        deps = [
-            dict(
-                module='discojuice',
-                url='//lindat.mff.cuni.cz/aai/discojuice/discojuice-2.1.en.min',
-                shim=dict(deps=['jquery'])
-            ),
-            dict(
-                module='aai',
-                url='//lindat.mff.cuni.cz/aai/aai',
-                shim=dict(deps=['jquery', 'discojuice'])
-            )
-        ]
-        return dict(main=None, deps=deps)
+        return dict(main=None, deps=self._external_scripts)
 
     def get_contents(self, plugin_api, return_url):
         tpl_path = self.get_template(plugin_api.user_lang)
@@ -87,6 +76,16 @@ def create_instance(settings, auth):
         Auth must provide `get_logout_url`
     """
     plugin_conf = settings.get('plugins', 'application_bar')
+    urls = settings.get('plugins', 'auth').get('lindat:external_deps')
+    metas = settings.get_meta('plugins', 'auth').get('lindat:external_deps')
+    deps = [dict(
+        module=meta['name'],
+        url=url,
+        shim=dict(
+            deps=[dep.strip() for dep in meta['shim'].split(',')]
+        )
+    ) for url, meta in zip(urls, metas)
+    ]
     templates = {
         'cs_CZ': plugin_conf['lindat:template_cs'],
         'en_US': plugin_conf['lindat:template_en']
@@ -94,5 +93,6 @@ def create_instance(settings, auth):
     return LindatTopBar(
         templates=templates,
         css_url=plugin_conf.get('lindat:css_url'),
-        logout_url=auth.get_logout_url()
+        logout_url=auth.get_logout_url(),
+        external_scripts=deps
     )
