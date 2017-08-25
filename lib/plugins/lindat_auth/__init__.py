@@ -120,7 +120,7 @@ class FederatedAuthWithFailover(AbstractSemiInternalAuth):
             plugin_api.get_environ, "HTTP_SHIB_IDENTITY_PROVIDER")
 
         db_user_d = self._db.hash_get_all(username)
-        if db_user_d is None:
+        if 0 == len(db_user_d):
             user_d = {
                 "id": self._new_user_id(),
                 "username": username,
@@ -142,8 +142,8 @@ class FederatedAuthWithFailover(AbstractSemiInternalAuth):
             'metadataFeed': self._conf['lindat:metadataFeed'],
             'login_url': self._conf['login_url'],
             'service_name': self._conf['lindat:service_name'],
-            'response_url': self._conf['lindat:response_url'] if self._conf[
-                'lindat:response_url'] else '',
+            'response_url': self._conf['lindat:response_url']
+            if self._conf['lindat:response_url'] else '',
             'local_action': self._conf['lindat:local_action'],
         }
 
