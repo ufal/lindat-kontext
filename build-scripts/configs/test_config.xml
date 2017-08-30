@@ -11,6 +11,7 @@
         </css>
         <fonts>
             <item>https://fonts.googleapis.com/css?family=Cousine:400|Roboto:300,400,400italic,700,700italic|Roboto+Condensed:400,700&amp;subset=latin,latin-ext</item>
+            <item>/files/themes/lindat/css/font-awesome.min.css</item>
         </fonts>
     </theme>
     <global>

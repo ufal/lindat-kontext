@@ -42,28 +42,33 @@ class LindatTopBar(AbstractApplicationBar):
             return "template [%s] does not exist!" % tpl_path
         with open(tpl_path, mode='rb') as fin:
             html = fin.read().decode('utf-8')
+            user_classes = "user"
 
             if not plugin_api.user_is_anonymous:
                 user_d = plugin_api.session["user"]
                 msgs = dict(fullname=user_d.get("fullname", "?"),
                             logout_url=self._logout_url or "",
                             logout_msg=_('logout'))
-                login_html = '%(fullname)s (<a href="%(logout_url)s">%(logout_msg)s</a>)' % msgs
+                login_html = ('<i class="fa fa-user fa-lg">&nbsp;</i>%(fullname)s' +
+                              '<span style="margin-left: 5px; margin-right: 5px;"> | </span>' +
+                              ' <a href="%(logout_url)s"><i class="fa fa-sign-out fa-lg">&nbsp;</i>%(logout_msg)s</a>'
+                              ) % msgs
             else:
-                msgs = dict(fullname=_('anonymous'),
-                            login_url='',
-                            login_msg=_('login'))
-                login_html = ('%(fullname)s (<a href="%(login_url)s" class ="signon" onclick="return false;">'
-                              '%(login_msg)s</a>)') % msgs
+                msgs = dict(login_url='',
+                            login_msg=_('Login'))
+                login_html = ('<a href="%(login_url)s" class ="signon" onclick="return false;">' +
+                              '<i class="fa fa-sign-in fa-lg">&nbsp;</i>'
+                              '%(login_msg)s</a>') % msgs
+                user_classes += " loggedout"
         contents = html + (
             '<ul id="localization-bar" class="navbar-left pull-left list-unstyled" ' +
             'style="position: absolute; top: 0px;">' +
             '</ul>' +
             '<!-- AUTH BAR -->' +
             '<div class="lindat-auth-bar">' +
-            '<span class="user">%(user_label)s: %(login_html)s</span>' +
+            '<div class="%(user_classes)s">%(login_html)s</div>' +
             '</div>' +
-            '<!-- AUTH BAR END -->') % dict(user_label=_('User'), login_html=login_html)
+            '<!-- AUTH BAR END -->') % dict(login_html=login_html, user_classes=user_classes)
         return contents
 
     def get_fallback_content(self):
