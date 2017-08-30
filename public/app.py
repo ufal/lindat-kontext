@@ -140,6 +140,8 @@ class WsgiApp(object):
             from actions.admin import Admin as ControllerClass
         elif path_info.startswith('/corpora'):
             from actions.corpora import Corpora as ControllerClass
+        elif path_info.startswith('/custom'):
+            from actions.custom import Custom as ControllerClass
         else:
             from actions.concordance import Actions as ControllerClass
         return ControllerClass

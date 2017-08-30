@@ -185,6 +185,9 @@
             <template_cs extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/lindat-common/cs/footer.htm</template_cs>
             <template_en extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/lindat-common/en/footer.htm</template_en>
         </footer_bar>
+        <status>
+            <module>lindat_status</module>
+        </status>
     </plugins>
 </kontext>
 
