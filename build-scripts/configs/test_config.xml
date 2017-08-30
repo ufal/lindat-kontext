@@ -150,6 +150,8 @@
             <module>default_sessions</module>
             <ttl>14400</ttl>
         </sessions>
+	<subcmixer/>
+	<syntax_viewer/>
         <corparch>
             <module>lindat_corparch</module>
             <js_module>lindatCorparch</js_module>
