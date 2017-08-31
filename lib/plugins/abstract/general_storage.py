@@ -112,6 +112,13 @@ class KeyValueStorage(object):
         """
         raise NotImplementedError()
 
+    def hash_set_map(self, key, mapping):
+        """
+        Set key to value within hash ``name`` for each corresponding
+        key and value from the ``mapping`` dict.
+        """
+        raise NotImplementedError()
+
     def get(self, key, default=None):
         """
         Gets a value stored with passed key and returns its JSON decoded form.
@@ -174,3 +181,10 @@ class KeyValueStorage(object):
         i.e. elements may disappear, re-enter etc.
         """
         pass
+
+    def incr(self, name, amount=1):
+        """
+        Increments the value of ``key`` by ``amount``.  If no key exists,
+        the value will be initialized as ``amount``
+        """
+        raise NotImplementedError()

@@ -46,15 +46,8 @@ if [[ "x$PORT" == "x" ]]; then
     export PORT=5000
 fi
 
-if [[ "x$MYSQLUSER" == "x" ]]; then
-    export MYSQLUSER=root
-fi
-if [[ "x$MYSQLPASS" == "x" ]]; then
-    export MYSQLPASS=
-fi
-
 mkdir -p ${DEPSDIR}
-sudo chown -R ${USER}:${USER} ${KONTEXT_PREFIX}
+sudo chown -R ${USER}:${USER} ${KONTEXT_PREFIX} || echo "Invalid user/group - check ${KONTEXT_PREFIX} permissions"
 if [[ ! -d ${KONTEXTDIR} ]]; then
     ln -sf ${FS} ${KONTEXTDIR}
 fi
@@ -121,37 +114,43 @@ if [[ "x$MANATEE_FROM_PACKAGES" == "xtrue" ]]; then
     fi
 
 else
-    minisep "Installing antlr"
-    mkdir -p ${DEPSDIR}/antlr && cd ${DEPSDIR}/antlr
     VER=3.4
     PACKAGE=libantlr3c-${VER}
-    FILE=${PACKAGE}.tar.gz
-    URL=http://www.antlr3.org/download/C/${FILE}
-    install ${FILE} ${PACKAGE} ${URL} "tar xzf" "--enable-64bit --disable-abiflags --prefix=$DEPS_PREFIX"
-    sudo ldconfig
+    if [[ ! -d ${DEPSDIR}/antlr/${PACKAGE} ]]; then
+        minisep "Installing antlr"
+        mkdir -p ${DEPSDIR}/antlr && cd ${DEPSDIR}/antlr
+        FILE=${PACKAGE}.tar.gz
+        URL=http://www.antlr3.org/download/C/${FILE}
+        install ${FILE} ${PACKAGE} ${URL} "tar xzf" "--enable-64bit --disable-abiflags --prefix=$DEPS_PREFIX"
+        sudo ldconfig
+    fi
 
-    minisep "Installing finlib"
-    mkdir -p ${DEPSDIR}/finlib && cd ${DEPSDIR}/finlib
     VER=2.35.2
     PACKAGE=finlib-${VER}
-    FILE=${PACKAGE}.tar.gz
-    URL=$(url_exists_archive http://corpora.fi.muni.cz/noske/src/finlib ${FILE})
-    install ${FILE} ${PACKAGE} ${URL} "tar xzf" "--with-pcre --prefix=$DEPS_PREFIX"
-    FINLIBPATH=${DEPSDIR}/finlib/${PACKAGE}
-    sudo ldconfig
+    if [[ ! -d ${DEPSDIR}/finlib/${PACKAGE} ]]; then
+        minisep "Installing finlib"
+        mkdir -p ${DEPSDIR}/finlib && cd ${DEPSDIR}/finlib
+        FILE=${PACKAGE}.tar.gz
+        URL=$(url_exists_archive http://corpora.fi.muni.cz/noske/src/finlib ${FILE})
+        install ${FILE} ${PACKAGE} ${URL} "tar xzf" "--with-pcre --prefix=$DEPS_PREFIX"
+        FINLIBPATH=${DEPSDIR}/finlib/${PACKAGE}
+        sudo ldconfig
+    fi
 
-    minisep "Installing manatee"
-    mkdir -p ${DEPSDIR}/manatee-open && cd ${DEPSDIR}/manatee-open
-    # package finlib will be used
-    CONFIGUREENV="CPPFLAGS=\"-I$DEPSINCLUDEDIR\" LDFLAGS=\"-L$DEPSLIBDIR\""
-    INSTALLENV="DESTDIR=\"/\""
     VER=2.139.3
     PACKAGE=manatee-open-${VER}
-    FILE=${PACKAGE}.tar.gz
-    URL=$(url_exists_archive http://corpora.fi.muni.cz/noske/src/manatee-open ${FILE})
-    install ${FILE} ${PACKAGE} ${URL} "tar xzf" "--with-pcre  --prefix=$DEPS_PREFIX --with-finlib=$FINLIBPATH"
-    sudo ldconfig
- 
+    if [[ ! -d ${DEPSDIR}/manatee-open/${PACKAGE} ]]; then
+        minisep "Installing manatee"
+        mkdir -p ${DEPSDIR}/manatee-open && cd ${DEPSDIR}/manatee-open
+        # package finlib will be used
+        CONFIGUREENV="CPPFLAGS=\"-I$DEPSINCLUDEDIR\" LDFLAGS=\"-L$DEPSLIBDIR\""
+        INSTALLENV="DESTDIR=\"/\""
+        FILE=${PACKAGE}.tar.gz
+        URL=$(url_exists_archive http://corpora.fi.muni.cz/noske/src/manatee-open ${FILE})
+        install ${FILE} ${PACKAGE} ${URL} "tar xzf" "--with-pcre  --prefix=$DEPS_PREFIX --with-finlib=$FINLIBPATH"
+        sudo ldconfig
+    fi
+
 fi
 
 minisep "Testing python manatee import - if it fails (and you need it), please update PYTHONPATH"
@@ -217,21 +216,6 @@ fi
 # =========
 # databases
 
-minisep "Installing (and running) mysqldb"
-MYSQL_VER=`mysql -V || true`
-if [[ "x$MYSQL_VER" == "x" ]]; then
-    sep
-    echo "Installing default mysql server with an example configuration..."
-    echo "SECURE IT!!!"
-    sep
-    sudo apt install -y mysql-server
-    sudo /etc/init.d/mysql start &
-fi
-
-sudo apt install -y libmysqlclient-dev
-pip install MySQL-python
-mysql -u${MYSQLUSER} -e 'CREATE DATABASE IF NOT EXISTS kontext;'
-
 minisep "Running redis"
 if [[ "x$REDIS_TEST_INSTANCE" == "xtrue" ]]; then
     sep
@@ -288,7 +272,7 @@ tail -100 ${LOG_PATH}
 
 # =========
 
-sudo chown -R ${USER}:${USER} ${DEPS_PREFIX}
+sudo chown -R ${USER}:${USER} ${DEPS_PREFIX} || echo "Invalid user/group - check ${DEPS_PREFIX} permissions"
 
 
 sep

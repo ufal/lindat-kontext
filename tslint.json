@@ -16,6 +16,7 @@
             false
         ],
 	"quotemark": [true, "single"],
+	"no-reference": false,
 	"prefer-const": false
     },
     "rulesDirectory": [],

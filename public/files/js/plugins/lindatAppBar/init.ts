@@ -20,20 +20,14 @@
 /// <reference path="../../../ts/declarations/rsvp.d.ts" />
 /// <reference path="../../../ts/declarations/jquery-cookie.d.ts" />
 
-
 import RSVP = require('vendor/rsvp');
-import aai = require('./aai-config');
 import locale = require('./locale');
 import $ = require('jquery');
 import JQueryCookie = require('vendor/jquery-cookie');
 
-export function create(pluginApi:Kontext.PluginApi):RSVP.Promise<Kontext.Plugin> {
-    return new RSVP.Promise((resolve:(ans:Kontext.Plugin)=>void, reject:(e:any)=>void) => {
-        aai.init();
+export function create(pluginApi: Kontext.PluginApi): RSVP.Promise<Kontext.Plugin> {
+    return new RSVP.Promise((resolve: (ans: Kontext.Plugin) => void, reject: (e: any) => void) => {
         locale.init($, JQueryCookie);
         resolve(null);
     });
 }
-
-
-

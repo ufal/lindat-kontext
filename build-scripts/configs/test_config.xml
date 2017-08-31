@@ -11,6 +11,7 @@
         </css>
         <fonts>
             <item>https://fonts.googleapis.com/css?family=Cousine:400|Roboto:300,400,400italic,700,700italic|Roboto+Condensed:400,700&amp;subset=latin,latin-ext</item>
+            <item>/files/themes/lindat/css/font-awesome.min.css</item>
         </fonts>
     </theme>
     <global>
@@ -34,6 +35,7 @@
         <conc_line_max_group_num>99</conc_line_max_group_num>
         <calc_backend conf="/opt/kontext/installation/conf/celeryconfig.py">celery</calc_backend>
         <action_path_prefix>/kontext</action_path_prefix>
+        <cookie_path_prefix>/</cookie_path_prefix>
         <static_files_prefix>/files</static_files_prefix>
         <use_conc_toolbar>1</use_conc_toolbar>
     </global>
@@ -91,18 +93,24 @@
             <host extension-by="default">127.0.0.1</host>
             <port extension-by="default">6379</port>
             <id extension-by="default">1</id>
+            <shards>auth:8</shards>
         </db>
         <auth>
             <module>lindat_auth</module>
+            <js_module>lindatAuth</js_module>
+            <!-- The default list of corpora is loaded from corparch/file plugin -->
             <auth_cookie_name>kontext_session</auth_cookie_name>
             <anonymous_user_id>0</anonymous_user_id>
-            <login_url>/kontext/user/login</login_url>
-            <logout_url>/kontext/user/logoutx</logout_url>
-            <corptree_path extension-by="lindat">/opt/kontext/installation/conf/corplist.xml</corptree_path>
-            <auth_db_host extension-by="lindat">localhost</auth_db_host>
-            <auth_db_username extension-by="lindat">root</auth_db_username>
-            <auth_db_password extension-by="lindat"/>
-            <auth_db_name extension-by="lindat">kontext</auth_db_name>
+            <login_url>/user/loginx?redirectTo=</login_url>
+            <logout_url>/user/logoutx</logout_url>
+            <metadataFeed extension-by="lindat">https://lindat.mff.cuni.cz/repository/xmlui/discojuice/feeds</metadataFeed>
+            <service_name extension-by="lindat">LINDAT-KONTEXT Login</service_name>
+            <response_url extension-by="lindat"></response_url>
+            <local_action extension-by="lindat">/user/loginx</local_action>
+            <external_deps extension-by="lindat">
+                <lib name="discojuice" shim="jquery">//lindat.mff.cuni.cz/aai/discojuice/discojuice-2.1.en.min</lib>
+                <lib name="aai" shim="jquery, discojuice">//lindat.mff.cuni.cz/aai/aai</lib>
+            </external_deps>
         </auth>
         <getlang>
             <module>ucnk_getlang</module>
@@ -143,6 +151,8 @@
             <module>default_sessions</module>
             <ttl>14400</ttl>
         </sessions>
+	<subcmixer/>
+	<syntax_viewer/>
         <corparch>
             <module>lindat_corparch</module>
             <js_module>lindatCorparch</js_module>
