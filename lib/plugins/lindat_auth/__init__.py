@@ -70,7 +70,7 @@ class FederatedAuthWithFailover(AbstractSemiInternalAuth):
             Try to find the user using two methods.
         """
         if username is not None and 0 < len(username):
-            if username in FederatedAuthWithFailover.RESERVED_USER:
+            if username == FederatedAuthWithFailover.RESERVED_USER:
                 _logger.warn("Reserved username used [%s]!", username)
                 return self.anonymous_user()
             user_d = self._failover_auth.auth(self._db, username, password)
