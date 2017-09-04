@@ -42,9 +42,9 @@ def pos_ctxs(min_hitlen, max_hitlen, max_ctx=3):
         ctxs.append({'n': _('Node'), 'ctx': '0~0>0'})
     else:
         ctxs.extend([{'n': 'Node %i' % c, 'ctx': '%i<0' % c}
-                    for c in range(1, max_hitlen + 1)])
+                     for c in range(1, max_hitlen + 1)])
     ctxs.extend([{'n': _('%iR') % c, 'ctx': '%i>0' % c}
-                for c in range(1, max_ctx + 1)])
+                 for c in range(1, max_ctx + 1)])
     return ctxs
 
 
@@ -98,7 +98,7 @@ def _min_conc_unfinished(pidfile, minsize):
                 if data.get('finished') == 1:  # whole conc
                     return False
             elif data.get('concsize') >= minsize:
-                    return False
+                return False
         return True
     else:
         return False
@@ -167,7 +167,8 @@ def _get_cached_conc(corp, subchash, q, pid_dir, minsize):
                 if not _min_conc_unfinished(pidfile, minsize):
                     conc = PyConc(conccorp, 'l', cachefile, orig_corp=corp)
             except ConcCalculationControlException as ex:
-                logging.getLogger(__name__).error('Failed to join unfinished calculation: {0}'.format(ex))
+                logging.getLogger(__name__).error(
+                    'Failed to join unfinished calculation: {0}'.format(ex))
                 cache_map.del_entry(subchash, q)
                 del_silent(cachefile)
                 del_silent(pidfile)
@@ -329,7 +330,8 @@ def get_conc_desc(corpus, q=None, subchash=None, translate=True, skip_internals=
 
     if q is None:
         q = []
-    _t = lambda s: _(s) if translate else lambda s: s
+
+    def _t(s): return _(s) if translate else lambda s: s
 
     desctext = {'q': _t('Query'),
                 'a': _t('Query'),
@@ -353,7 +355,8 @@ def get_conc_desc(corpus, q=None, subchash=None, translate=True, skip_internals=
             last_user_op_idx = i - 1
             while is_align_op:
                 if last_user_op_idx >= 0:
-                    desc[last_user_op_idx] = desc[last_user_op_idx][:-1] + (size,)  # update previous op. size
+                    desc[last_user_op_idx] = desc[last_user_op_idx][:-1] + \
+                        (size,)  # update previous op. size
                 i += 3  # ignore aligned corpus operation, i is now the next valid operation
                 is_align_op, size = detect_internal_op(q, i)
             if i > len(q) - 1:
@@ -433,7 +436,8 @@ def get_detail_context(corp, pos, hitlen=1, detail_left_ctx=40, detail_right_ctx
     region_right = tokens2strclass(cr.region(pos + hitlen,
                                              pos + hitlen + detail_right_ctx))
     for seg in region_left + region_kwic + region_right:
-        seg['str'] = import_string(seg['str'].replace('===NONE===', ''), from_encoding=corpus_encoding)
+        seg['str'] = import_string(seg['str'].replace(
+            '===NONE===', ''), from_encoding=corpus_encoding)
     for seg in region_kwic:
         if not seg['class']:
             seg['class'] = 'coll'
@@ -458,12 +462,12 @@ def fcs_scan(corpname, scan_query, max_ter, start):
     aux function for federated content search: operation=scan
     """
     if not scan_query:
-        raise Exception(7, '', 'Mandatory parameter not supplied')
+        raise Exception(7, 'scan_query', 'Mandatory parameter not supplied')
     query = scan_query.replace('+', ' ')  # convert URL spaces
     exact_match = False
     if 'exact' in query.lower() and not '=' in query:  # lemma ExacT "dog"
         pos = query.lower().index('exact')  # first occurence of EXACT
-        query = query[:pos] + '=' + query[pos+5:]  # 1st exact > =
+        query = query[:pos] + '=' + query[pos + 5:]  # 1st exact > =
         exact_match = True
     corp = manatee.Corpus(corpname)
     attrs = corp.get_conf('ATTRLIST').split(',')  # list of available attrs

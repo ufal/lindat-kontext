@@ -187,6 +187,10 @@ class Actions(Kontext):
         supported_args = ['operation', 'stylesheet', 'version', 'extraRequestData']
 
         try:
+            # check operation
+            operation = req.args.get("operation", "explain")
+            data["operation"] = operation
+
             # check version
             version = req.args.get("version", None)
             if version is not None and current_version < float(version):
@@ -240,8 +244,6 @@ class Actions(Kontext):
                 raise Exception(71, 'recordPacking', 'Unsupported record packing')
 
             # provide info about service
-            operation = req.args.get("operation", "explain")
-            data["operation"] = operation
             if operation == "explain":
                 self._check_args(
                     req, supported_args,
