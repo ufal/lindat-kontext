@@ -62,11 +62,13 @@ import l10n
 import manatee
 from functools import partial
 
+
 class ManateeCorpusInfo(object):
     """
     Represents a subset of corpus information
     as provided by manatee.Corpus instance
     """
+
     def __init__(self, corpus, canonical_id):
         self.encoding = corpus.get_conf('ENCODING')
         import_string = partial(l10n.import_string, from_encoding=self.encoding)
@@ -82,6 +84,7 @@ class ManateeCorpora(object):
     """
     A caching source of ManateeCorpusInfo instances.
     """
+
     def __init__(self):
         self._cache = {}
 
@@ -95,6 +98,7 @@ class ManateeCorpora(object):
             # probably a misconfigured/missing corpus
             return ManateeCorpusInfo(EmptyCorpus(corpname=canonical_corpus_id),
                                      canonical_corpus_id)
+
 
 class EmptyCorpus(object):
     """
@@ -159,6 +163,7 @@ class EmptyCorpus(object):
     def size(self):
         return 0
 
+
 class CorptreeParser(object):
     """
     Parses an XML specifying corpora hierarchy
@@ -191,7 +196,7 @@ class CorptreeParser(object):
             data['ident'] = elm.attrib['ident'].lower()
             data['name'] = elm.attrib['name'] if 'name' in elm.attrib else data['ident']
             data['features'] = elm.attrib['features']
-            data['repo'] = elm.attrib['repo']
+            data['repo'] = elm.attrib['repo'] if 'repo' in elm.attrib else ''
             data['parallel'] = elm.attrib['parallel'] if 'parallel' in elm.attrib else 'other'
             data['pmltq'] = elm.attrib['pmltq'] if 'pmltq' in elm.attrib else 'no'
             self._metadata[data['ident']] = self.parse_node_metadata(elm)
@@ -233,18 +238,25 @@ class TreeCorparch(AbstractCorporaArchive):
             for corpus_info in group['corplist']:
                 if 'corplist' not in corpus_info:
                     corpus_info['name'] = self._manatee_corpora.get_info(corpus_info['ident']).name
-                    corpus_info['description'] = self._manatee_corpora.get_info(corpus_info['ident']).description
-                    corpus_info['size'] = int(self._manatee_corpora.get_info(corpus_info['ident']).size)
+                    corpus_info['description'] = self._manatee_corpora.get_info(
+                        corpus_info['ident']).description
+                    corpus_info['size'] = int(
+                        self._manatee_corpora.get_info(corpus_info['ident']).size)
                     corpus_info['formatted_size'] = '{:,}'.format(corpus_info['size'])
-                    corpus_info['language'] = self._manatee_corpora.get_info(corpus_info['ident']).lang
+                    corpus_info['language'] = self._manatee_corpora.get_info(
+                        corpus_info['ident']).lang
                     self._data['sort_corplist'].append(corpus_info)
                 else:
                     for subcorpus_info in corpus_info['corplist']:
-                        subcorpus_info['name'] = self._manatee_corpora.get_info(subcorpus_info['ident']).name
-                        subcorpus_info['description'] = self._manatee_corpora.get_info(subcorpus_info['ident']).description
-                        subcorpus_info['size'] = int(self._manatee_corpora.get_info(subcorpus_info['ident']).size)
+                        subcorpus_info['name'] = self._manatee_corpora.get_info(
+                            subcorpus_info['ident']).name
+                        subcorpus_info['description'] = self._manatee_corpora.get_info(
+                            subcorpus_info['ident']).description
+                        subcorpus_info['size'] = int(
+                            self._manatee_corpora.get_info(subcorpus_info['ident']).size)
                         subcorpus_info['formatted_size'] = '{:,}'.format(subcorpus_info['size'])
-                        subcorpus_info['language'] = self._manatee_corpora.get_info(subcorpus_info['ident']).lang
+                        subcorpus_info['language'] = self._manatee_corpora.get_info(
+                            subcorpus_info['ident']).lang
                         if subcorpus_info['parallel'] == 'default':
                             self._data['sort_corplist'].append(subcorpus_info)
                             corpus_info.update(subcorpus_info)
@@ -274,7 +286,7 @@ class TreeCorparch(AbstractCorporaArchive):
     def initial_search_params(self, query, filter_dict=None):
         return {}
 
+
 def create_instance(conf):
     plugin_conf = conf.get('plugins', 'corparch')
     return TreeCorparch(corplist_path=plugin_conf['file'])
-
