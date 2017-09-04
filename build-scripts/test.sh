@@ -27,6 +27,14 @@ if [[ "x$INSTANCE_TEST" == "xtrue" ]]; then
         echo
     done
 
+    echo "============================================"
+    # simple blackbox fcs test
+    curl -vs "${URL}/fcs/v1?version=1.2&operation=searchRetrieve&query=klaus" | grep "fcs:DataView"
+    curl -vs "${URL}/fcs/v1?version=1.2&operation=scan&scanClause=fcs.resource=root" | grep "sru:displayTerm"
+    curl -vs "${URL}/fcs/v1?version=1.2&operation=explain" | grep "zr:title"
+
+
+    # =========================================================================
     tail /opt/kontext/log/kontext.log || true
 
 fi

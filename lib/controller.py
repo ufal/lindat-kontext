@@ -21,6 +21,7 @@ KonText controller and related auxiliary objects
 
 import os
 import sys
+import urlparse
 from types import MethodType, DictType, ListType, TupleType
 from inspect import isclass
 import Cookie
@@ -893,7 +894,8 @@ class Controller(object):
                     return self.process_method(reload_template, pos_args, named_args)
         method = getattr(self, methodname)
         try:
-            default_tpl_path = '%s/%s.tmpl' % (self.get_mapping_url_prefix()[1:], methodname)
+            url_prefix = self.get_mapping_url_prefix()[1:].strip('/')
+            default_tpl_path = '%s/%s.tmpl' % (url_prefix, methodname)
             if not action_metadata.get('legacy', False):
                 # new-style actions use werkzeug.wrappers.Request
                 method_ans = method(self._request)
