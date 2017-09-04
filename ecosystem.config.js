@@ -2,12 +2,12 @@ module.exports = {
   apps:[
           {
               "exec_mode": "fork_mode",
-              "cwd": "./",
-              "script": "public/app.py",
+              "cwd": "./public",
+              "script": "gunicorn",
               "name": "kontext" + (process.env.DPNAME || ""),
               "autorestart": true,
               "exec_interpreter": "python",
-              "args": "--address 0.0.0.0 --port " + (process.env.PORT || 5000),
+              "args": "-c " + process.cwd() + "/conf/gunicorn-conf.py app:application",
               "kill_timeout": 3200
           }
       ],

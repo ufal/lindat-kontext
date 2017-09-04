@@ -12,3 +12,4 @@ libltdl-dev
 build-essential
 tcl
 libxml2-utils
+gunicorn
