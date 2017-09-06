@@ -43,7 +43,7 @@ module.exports = {
               "ref"  : "origin/kontext-dev",
               "path" : "/opt/kontext/deploy",
               "pre-deploy-local": "ssh -fN -L8878:kontext-new:22 " + process.env.DPUSER + "@quest.ms.mff.cuni.cz",
-              "post-deploy" : "npm install && grunt devel && PORT=8090 pm2 startOrRestart ecosystem.config.js",
+              "post-deploy" : "npm install && grunt production && PORT=8090 pm2 startOrRestart ecosystem.config.js",
               "post-deploy-local" : "lsof -t -i :8878 | xargs kill -9 ",
           },
           "staging-jm" : {
