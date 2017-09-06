@@ -46,6 +46,24 @@ module.exports = {
               "post-deploy" : "npm install && grunt production && PORT=8090 pm2 startOrRestart ecosystem.config.js",
               "post-deploy-local" : "lsof -t -i :8878 | xargs kill -9 ",
           },
+          "staging-kira" : {
+              "user" : process.env.DPUSER || "kontext",
+              "host" : [
+                  {
+                      "host": "127.0.0.1",
+                      "port": "8877"
+                  }
+                ],
+              "repo" : "https://github.com/ufal/lindat-kontext.git",
+              "ref"  : "origin/kontext-dev",
+              "path" : "/opt/kontext-kira/deploy",
+              "pre-deploy-local": "ssh -fN -L8877:kontext-dev:22 " + process.env.DPUSER + "@quest.ms.mff.cuni.cz",
+              "post-deploy" : "npm install && grunt devel && DPNAME=-jm PORT=10005 pm2 startOrRestart ecosystem.config.js",
+              "post-deploy-local" : "lsof -t -i :8878 | xargs kill -9 ",
+              "env" : {
+                "NODE_ENV": "staging",
+              }
+          },
           "staging-jm" : {
               "user" : process.env.DPUSER || "kontext",
               "host" : [
