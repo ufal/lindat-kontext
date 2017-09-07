@@ -74,7 +74,7 @@ module.exports = {
                 ],
               "repo" : "https://github.com/ufal/lindat-kontext.git",
               "ref"  : "origin/issue_57",
-              "path" : "/opt/kontext-jm/deploy",
+              "path" : "/opt/kontext-kira/deploy",
               "pre-deploy-local": "ssh -fN -L8877:kontext-dev:22 " + process.env.DPUSER + "@quest.ms.mff.cuni.cz",
               "post-deploy" : "npm install && grunt devel && DPNAME=-jm PORT=10002 pm2 startOrRestart ecosystem.config.js",
               "post-deploy-local" : "lsof -t -i :8877 | xargs kill -9 ",
