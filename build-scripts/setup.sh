@@ -200,7 +200,7 @@ fi
 
 # =========
 # Test configuration
-cd $FCS
+cd $FS
 python scripts/validate_setup.py conf/config.xml
 
 # =========
