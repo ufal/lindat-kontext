@@ -187,6 +187,7 @@ fi
 minisep "Using task queue celery for specific async. processing"
 sudo pip install Celery
 cp $FS/conf/celeryconfig.sample.py $FS/conf/celeryconfig.py
+cp $FS/conf/beatconfig.sample.py $FS/conf/beatconfig.py
 
 
 minisep "Using beat provided sample configs"

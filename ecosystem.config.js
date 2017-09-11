@@ -25,6 +25,20 @@ module.exports = {
                 "--time-limit=480 " +
                 "--concurrency=4 ",
               "kill_timeout": 3200
+          },
+          {
+              "exec_mode": "fork_mode",
+              "cwd": "./conf",
+              "script": "celery",
+              "name": "kontext-cron-tasker" + (process.env.DPNAME || ""),
+              "autorestart": false,
+              "exec_interpreter": "python",
+              "args": "worker " +
+                "-A beatconfig beat " +
+                "--loglevel=INFO " +
+                "-s " + process.cwd() + "/../../pids/cron-schedule" +
+                "--pidfile=" + process.cwd() + "/../../pids/cron-%n.pid ",
+              "kill_timeout": 3200
           }
       ],
       "deploy" : {
