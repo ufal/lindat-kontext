@@ -87,6 +87,7 @@
         </default_corpora>
         <use_db_whitelist>1</use_db_whitelist>
         <fcs_search_attributes>lemma,lc,word</fcs_search_attributes>
+        <default_shuffle>0</default_shuffle>
     </corpora>
     <plugins>
         <db>

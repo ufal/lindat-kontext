@@ -278,6 +278,10 @@ class Kontext(Controller):
     def _init_default_settings(options):
         if 'shuffle' not in options:
             options['shuffle'] = 1
+            try:
+                options['shuffle'] = int(settings.get('corpora', 'default_shuffle'))
+            except:
+                pass
 
     def _setup_user_paths(self, user_file_id):
         if not self.user_is_anonymous():
