@@ -9,6 +9,22 @@ module.exports = {
               "exec_interpreter": "python",
               "args": "-c " + process.cwd() + "/conf/gunicorn-conf.py app:application",
               "kill_timeout": 3200
+          },
+          {
+              "exec_mode": "fork_mode",
+              "cwd": "./deploy/current/",
+              "script": "celery",
+              "name": "kontext-async-tasker" + (process.env.DPNAME || ""),
+              "autorestart": false,
+              "exec_interpreter": "python",
+              "args": "worker " +
+                "-A worker:app " +
+                "--loglevel=INFO " +
+                "--logfile=" + process.cwd() + "/log/celery.log " +
+                "--pidfile=" + process.cwd() + "/pids/%n.pid " +
+                "--time-limit=480 " +
+                "--concurrency=4 ",
+              "kill_timeout": 3200
           }
       ],
       "deploy" : {

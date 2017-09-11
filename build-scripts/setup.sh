@@ -164,8 +164,10 @@ sep
 
 minisep "Creating data dir structure"
 sudo mkdir -p /tmp/kontext-upload
-mkdir -p ${DATADIR}/{subcorp,cache,registry} ${DATADIR}/corpora/{conc,speech,vert}
-mkdir -p ${CACHEDIR}/{freqs-precalc,freqs-cache}
+mkdir -p ${KONTEXT_PREFIX}/pids/
+mkdir -p ${DATADIR}/{subcorp,cache,registry}
+mkdir -p ${DATADIR}/corpora/{conc,speech,vert}
+mkdir -p ${CACHEDIR}/{freqs-precalc,freqs-cache,colls-cache}
 
 
 # =========
@@ -180,7 +182,14 @@ if [[ ! -f ${CONFIGDIR}/redis.conf ]]; then
     ln -sf ${THISDIR}/configs/redis.conf ${CONFIGDIR}/redis.conf
 fi
 
-#minisep "Using beat provided sample configs"
+
+# celery - first, install it
+minisep "Using task queue celery for specific async. processing"
+sudo pip install Celery
+cp $FS/conf/celeryconfig.sample.py $FS/conf/celeryconfig.py
+
+
+minisep "Using beat provided sample configs"
 #cp $FS/conf/beatconfig.sample.py $FS/conf/beatconfig.py
 
 
@@ -188,6 +197,11 @@ if [[ ! -d ${KONTEXTDIR} ]]; then
     ln -s ${FS} ${KONTEXTDIR}
 fi
 
+
+# =========
+# Test configuration
+cd $FCS
+python scripts/validate_setup.py conf/config.xml
 
 # =========
 # configuration from config.xml
