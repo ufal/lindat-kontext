@@ -28,17 +28,15 @@ module.exports = {
           },
           {
               "exec_mode": "fork_mode",
-              "cwd": "./conf",
+              "cwd": "./scripts/celery",
               "script": "celery",
               "name": "kontext-cron-tasker" + (process.env.DPNAME || ""),
               "autorestart": false,
               "exec_interpreter": "python",
-              "args": "worker " +
-                "-A beatconfig beat " +
+              "args": "beat " +
+                "-A tasks " +
                 "--loglevel=INFO " +
-                "-s " + process.cwd() + "/../../pids/cron-schedule" +
-                "--pidfile=" + process.cwd() + "/../../pids/cron-%n.pid ",
-              "kill_timeout": 3200
+                "-s " + process.cwd() + "/../../pids/cron-schedule ",
           }
       ],
       "deploy" : {
