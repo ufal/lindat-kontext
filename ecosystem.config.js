@@ -12,7 +12,7 @@ module.exports = {
           },
           {
               "exec_mode": "fork_mode",
-              "cwd": "./deploy/current/",
+              "cwd": "./",
               "script": "celery",
               "name": "kontext-async-tasker" + (process.env.DPNAME || ""),
               "autorestart": false,
@@ -20,8 +20,8 @@ module.exports = {
               "args": "worker " +
                 "-A worker:app " +
                 "--loglevel=INFO " +
-                "--logfile=" + process.cwd() + "/log/celery.log " +
-                "--pidfile=" + process.cwd() + "/pids/%n.pid " +
+                "--logfile=" + process.cwd() + "/../../log/celery.log " +
+                "--pidfile=" + process.cwd() + "/../../pids/%n.pid " +
                 "--time-limit=480 " +
                 "--concurrency=4 ",
               "kill_timeout": 3200
@@ -89,7 +89,7 @@ module.exports = {
                   }
                 ],
               "repo" : "https://github.com/ufal/lindat-kontext.git",
-              "ref"  : "origin/kontext-dev",
+              "ref"  : "origin/jm",
               "path" : "/opt/kontext-jm/deploy",
               "pre-deploy-local": "ssh -fN -L8877:kontext-dev:22 " + process.env.DPUSER + "@quest.ms.mff.cuni.cz",
               "post-deploy" : "npm install && grunt devel && DPNAME=-jm PORT=10002 pm2 startOrRestart ecosystem.config.js",
