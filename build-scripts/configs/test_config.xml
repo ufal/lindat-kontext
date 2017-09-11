@@ -62,7 +62,7 @@
         </values>
     </logging>
     <corpora>
-        <calc_pid_dir>/tmp/kontext-pid</calc_pid_dir>
+        <calc_pid_dir>/opt/kontext/pids</calc_pid_dir>
         <users_subcpath>/opt/kontext/data/subcorp</users_subcpath>
         <conc_dir>/opt/kontext/bits/stored-conc</conc_dir>
         <manatee_registry>/opt/kontext/data/registry</manatee_registry>
