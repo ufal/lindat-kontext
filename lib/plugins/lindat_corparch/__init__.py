@@ -184,8 +184,6 @@ class CorptreeParser(object):
         ans.bib_struct = elm.attrib.get('bib_struct', None)
         ans.collator_locale = elm.attrib.get('collator_locale', 'en_US')
         ans.sample_size = elm.attrib.get('sample_size', -1)
-        ans.metadata = None
-        ans.citation_info = None
         return ans
 
     def parse_node(self, elm):
@@ -271,7 +269,14 @@ class TreeCorparch(AbstractCorporaArchive):
         pass
 
     def get_corpus_info(self, corp_id, language=None):
-        return BrokenCorpusInfo()
+        if corp_id:
+            # get rid of path-like corpus ID prefix
+            corp_id = corp_id.split('/')[-1].lower()
+            if corp_id in self._metadata:
+                    return self._metadata[corp_id]
+            raise ValueError('Missing configuration data for %s' % corp_id)
+        else:
+            return BrokenCorpusInfo()
 
     def get_list(self, user_allowed_corpora):
         return sorted(self._metadata.keys())
