@@ -206,7 +206,7 @@ export function init(dispatcher, mixins, corpusInfoStore, PopupBoxComponent) {
                         <h4>
                             {this.translate('global__corpus_as_resource_{corpus}', {corpus: this.props.corpname})}
                         </h4>
-                        <div dangerouslySetInnerHTML={{__html: this.props.data.default_ref}} />
+                        <div dangerouslySetInnerHTML={{__html: this.translate('repo_citation') + this.props.data.default_ref}} />
                         {
                             this.props.data.article_ref
                             ?   <div>

@@ -173,6 +173,16 @@ class CorptreeParser(object):
         self._metadata = {}
 
     @staticmethod
+    def _get_repo_citation(handle):
+        """
+        Format the handle into "citation string"
+        In future this method will use repo api to fetch the citation (should be async on demand)
+        :param handle:
+        :return:
+        """
+        return '<a href="{0}">{0}</a>'.format(handle)
+
+    @staticmethod
     def parse_node_metadata(elm):
         ans = CorpusInfo()
         ans.id = elm.attrib['ident'].lower()
@@ -184,6 +194,8 @@ class CorptreeParser(object):
         ans.bib_struct = elm.attrib.get('bib_struct', None)
         ans.collator_locale = elm.attrib.get('collator_locale', 'en_US')
         ans.sample_size = elm.attrib.get('sample_size', -1)
+        ans.citation_info.default_ref = CorptreeParser._get_repo_citation(
+            elm.attrib['repo']) if 'repo' in elm.attrib else None
         return ans
 
     def parse_node(self, elm):
@@ -273,7 +285,7 @@ class TreeCorparch(AbstractCorporaArchive):
             # get rid of path-like corpus ID prefix
             corp_id = corp_id.split('/')[-1].lower()
             if corp_id in self._metadata:
-                    return self._metadata[corp_id]
+                return self._metadata[corp_id]
             raise ValueError('Missing configuration data for %s' % corp_id)
         else:
             return BrokenCorpusInfo()
