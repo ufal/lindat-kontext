@@ -177,7 +177,7 @@ class CorptreeParser(object):
         ans = CorpusInfo()
         ans.id = elm.attrib['ident'].lower()
         ans.name = elm.attrib['name'] if 'name' in elm.attrib else ans.id
-        ans.web = elm.attrib['web'] if 'web' in elm.attrib else None
+        ans.web = elm.attrib['web'] if 'web' in elm.attrib else elm.attrib['repo'] if 'repo' in elm.attrib else None
         ans.sentence_struct = elm.attrib['sentence_struct'] if 'sentence_struct' in elm.attrib else None
         ans.tagset = elm.attrib.get('tagset', None)
         ans.speech_segment = elm.attrib.get('speech_segment', None)
