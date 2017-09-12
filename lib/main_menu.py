@@ -570,7 +570,7 @@ class MenuGenerator(object):
             (MainMenu.CONCORDANCE.name, dict(
                 label=_('Concordance'),
                 items=exp(self.curr_conc, self.sorting, self.shuffle, self.sample, self.query_overview,
-                          self.query_undo),
+                          ),#self.query_undo), TODO XXX commented for ufal/lindat-kontext#85
                 disabled=is_disabled(MainMenu.CONCORDANCE)
             )),
             (MainMenu.FILTER.name, dict(
