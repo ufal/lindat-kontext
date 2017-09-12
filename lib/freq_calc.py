@@ -169,7 +169,8 @@ def build_arf_db(corp, attrname):
         for m in ('frq', 'arf', 'docf'):
             logfilename_m = create_log_path(base_path, m)
             write_log_header(corp, logfilename_m)
-            res = app.send_task('worker.compile_%s' % m, (corp.corpname, subc_path, attrname, logfilename_m))
+            res = app.send_task('worker.compile_%s' %
+                                m, (corp.corpname, subc_path, attrname, logfilename_m))
             task_ids.append(res.id)
         return task_ids
 
@@ -220,7 +221,8 @@ class FreqCalcCache(object):
         return os.path.join(settings.get('corpora', 'freqs_cache_dir'), filename)
 
     def get(self, fcrit, flimit, freq_sort, ml, ftt_include_empty, rel_mode, collator_locale):
-        cache_path = self._cache_file_path(fcrit, flimit, freq_sort, ml, ftt_include_empty, rel_mode, collator_locale)
+        cache_path = self._cache_file_path(
+            fcrit, flimit, freq_sort, ml, ftt_include_empty, rel_mode, collator_locale)
         if os.path.isfile(cache_path):
             with open(cache_path, 'rb') as f:
                 data = pickle.load(f)
@@ -281,7 +283,7 @@ def calculate_freqs(args):
     conc_size = calc_result['conc_size']
     lastpage = None
     if len(data) == 1:  # a single block => pagination
-        total_length = len(data[0]['Items'])
+        total_length = len(data[0]['Items']) if 'Items' in data[0] else 0
         items_per_page = args.fmaxitems
         fstart = (args.fpage - 1) * args.fmaxitems + args.line_offset
         fmaxitems = args.fmaxitems * args.fpage + 1 + args.line_offset
@@ -291,8 +293,8 @@ def calculate_freqs(args):
             lastpage = 0
         ans = [dict(Total=total_length,
                     TotalPages=int(math.ceil(total_length / float(items_per_page))),
-                    Items=data[0]['Items'][fstart:fmaxitems - 1],
-                    Head=data[0]['Head'])]
+                    Items=data[0]['Items'][fstart:fmaxitems - 1] if 'Items' in data[0] else [],
+                    Head=data[0].get('Head', []))]
     else:
         ans = data
         fstart = None
