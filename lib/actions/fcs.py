@@ -143,6 +143,9 @@ class Actions(Kontext):
         kwic_args = kwiclib.KwicPageArgs(Args(), base_attr=Kontext.BASE_ATTR)
         page = kwic.kwicpage(kwic_args)  # convert concordance
 
+        # start starts with 1
+        start -= 1
+
         if len(page['Lines']) < start:
             raise Exception(61, 'startRecord', 'First record position out of range')
         return [
@@ -215,7 +218,7 @@ class Actions(Kontext):
                     raise Exception(6, 'maximumTerms', 'Unsupported parameter value')
             data["maximumTerms"] = maximumTerms
 
-            startRecord = req.args.get("startRecord", 0)
+            startRecord = req.args.get("startRecord", 1)
             if "startRecord" in req.args:
                 try:
                     startRecord = int(startRecord)
