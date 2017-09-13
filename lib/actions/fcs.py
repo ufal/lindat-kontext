@@ -179,7 +179,7 @@ class Actions(Kontext):
             "operation": None,
             "numberOfRecords": 0,
             "server_name": pr.hostname,
-            "server_port": pr.port,
+            "server_port": pr.port or 80,
             "database": req.path,
             "maximumRecords": None,
             "maximumTerms": None,
