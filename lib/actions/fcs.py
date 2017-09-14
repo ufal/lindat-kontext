@@ -63,7 +63,7 @@ class Actions(Kontext):
             resource_info['landingPageURI'] = c.get_conf('INFOHREF')
             # TODO(jm) - Languages copied (and slightly fixed) from 0.5 - should be checked
             resource_info['language'] = Languages.get_iso_code(c.get_conf('LANGUAGE'))
-            resource_info['description'] = c.get_conf('INFO')
+            resource_info['description'] = import_str(c.get_conf('INFO'))
             resources.append((corpus_id, corpus_title, resource_info))
         return resources
 
