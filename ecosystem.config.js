@@ -119,7 +119,7 @@ module.exports = {
                   }
                 ],
               "repo" : "https://github.com/ufal/lindat-kontext.git",
-              "ref"  : "origin/issue_57",
+              "ref"  : "origin/kontext-dev",
               "path" : "/opt/kontext-ansa/deploy",
               "pre-deploy-local": "ssh -fN -L8877:kontext-dev:22 " + process.env.DPUSER + "@quest.ms.mff.cuni.cz",
               "post-deploy" : "npm install && grunt devel && DPNAME=-ansa PORT=10003 pm2 startOrRestart ecosystem.config.js",
