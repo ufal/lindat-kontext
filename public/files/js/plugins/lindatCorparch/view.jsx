@@ -168,6 +168,13 @@ export function init(dispatcher, mixins, treeStore) {
             }
         },
 
+        _access : function(access) {
+            if (access !== 'all') {
+                return <span className="glyphicon glyphicon-lock"></span>
+
+            }
+        },
+
         render : function () {
             return <div className="leaf" style={{background: this._myColor(), opacity: this._myOpacity()}} data-features={this.props.features} data-lang={this.props.language} >
                     <div className="row">
@@ -207,6 +214,7 @@ export function init(dispatcher, mixins, treeStore) {
                             </div>
                         </a>
                         <div className="col-xs-3 col-md-2 actions text-right">
+                            {this._access(this.props.access)}
                             {this._pmltq(this.props.pmltq)}
                             <a href={this.props.repo} className="md-transparent" title={"Download " + this.props.name}>
                                 <span className="glyphicon glyphicon-save"></span>
@@ -249,7 +257,7 @@ export function init(dispatcher, mixins, treeStore) {
                         return <TreeLeaf key={i} name={item['name']} ident={item['ident']}
                                          size={item['formatted_size']} features={item['features']}
                                          language={item['language']} description={item['description']}
-                                         repo={item['repo']} pmltq={item['pmltq']}
+                                         repo={item['repo']} pmltq={item['pmltq']} access={item['access']}
                                          activeLanguage={this.props.activeLanguage}
                                          onActiveLanguageSet={this.props.onActiveLanguageSet}
                                          onActiveLanguageDrop={this.props.onActiveLanguageDrop}
@@ -282,7 +290,7 @@ export function init(dispatcher, mixins, treeStore) {
                     return <TreeLeaf key={i} name={item['name']} ident={item['ident']} 
                                      size={item['formatted_size']} features={item['features']} 
                                      language={item['language']} description={item['description']}
-                                     repo={item['repo']} pmltq={item['pmltq']}
+                                     repo={item['repo']} pmltq={item['pmltq']} access={item['access']}
                                      activeLanguage={this.props.activeLanguage}
                                      onActiveLanguageSet={this.props.onActiveLanguageSet}
                                      onActiveLanguageDrop={this.props.onActiveLanguageDrop}
