@@ -194,7 +194,7 @@ class CorptreeParser(object):
             data['ident'] = elm.attrib['ident'].lower()
             data['name'] = elm.attrib['name'] if 'name' in elm.attrib else data['ident']
             data['features'] = elm.attrib['features']
-            data['access'] = elm.attrib['access']
+            data['access'] = elm.attrib.get('access', 'anonymous')
             data['repo'] = elm.attrib['repo'] if 'repo' in elm.attrib else ''
             data['parallel'] = elm.attrib['parallel'] if 'parallel' in elm.attrib else 'other'
             data['pmltq'] = elm.attrib['pmltq'] if 'pmltq' in elm.attrib else 'no'
@@ -274,7 +274,7 @@ class TreeCorparch(AbstractCorporaArchive):
             # get rid of path-like corpus ID prefix
             corp_id = corp_id.split('/')[-1].lower()
             if corp_id in self._metadata:
-                    return self._metadata[corp_id]
+                return self._metadata[corp_id]
             raise ValueError('Missing configuration data for %s' % corp_id)
         else:
             return BrokenCorpusInfo()
