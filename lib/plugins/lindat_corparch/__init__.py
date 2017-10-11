@@ -194,7 +194,8 @@ class CorptreeParser(object):
             data['ident'] = elm.attrib['ident'].lower()
             data['name'] = elm.attrib['name'] if 'name' in elm.attrib else data['ident']
             data['features'] = elm.attrib['features']
-            data['access'] = elm.attrib.get('access', 'anonymous')
+            data['access'] = [group.strip()
+                              for group in elm.attrib.get('access', 'anonymous').split(',')]
             data['repo'] = elm.attrib['repo'] if 'repo' in elm.attrib else ''
             data['parallel'] = elm.attrib['parallel'] if 'parallel' in elm.attrib else 'other'
             data['pmltq'] = elm.attrib['pmltq'] if 'pmltq' in elm.attrib else 'no'
