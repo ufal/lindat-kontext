@@ -10,6 +10,8 @@
 import logging
 import os
 import plugins
+from actions import corpora
+from controller import exposed
 from plugins.abstract.auth import AbstractSemiInternalAuth
 from plugins.abstract import PluginException
 
@@ -96,7 +98,8 @@ class FederatedAuthWithFailover(AbstractSemiInternalAuth):
 
     def permitted_corpora(self, user_id):
         # TODO(jm) based on user_id
-        return self._public_corplist
+        # fetch groups based on user_id (manual and shib based) intersect with corplist
+        return {'user_id': user_id, 'permitted_corpora': ['a_corpus', 'b_corpus']}
 
     def is_administrator(self, user_id):
         # TODO(jm)
@@ -161,6 +164,18 @@ class FederatedAuthWithFailover(AbstractSemiInternalAuth):
             if self._conf['lindat:response_url'] else '',
             'local_action': self._conf['lindat:local_action'],
         }
+
+    def export_actions(self):
+        return {corpora.Corpora: [ajax_get_permitted_corpora]}
+# =============================================================================
+
+
+@exposed(return_type='json', skip_corpus_init=True)
+def ajax_get_permitted_corpora(ctrl, request):
+    """
+    An exposed HTTP action showing permitted corpora required by client-side widget.
+    """
+    return plugins.get('auth').permitted_corpora(ctrl._session_get('user', 'id'))
 
 
 # =============================================================================
