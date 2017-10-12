@@ -413,7 +413,8 @@ export function init(dispatcher, mixins, treeStore) {
             if (action === 'TREE_CORPARCH_DATA_CHANGED') {
                 this.setState({
                     active: true,
-                    data: store.getData()
+                    data: store.getData(),
+                    permitted_corp: store.getPermittedCorp()
                 });
             }
         },
@@ -449,7 +450,8 @@ export function init(dispatcher, mixins, treeStore) {
         _changeListener : function (store, action) {
             if (action === 'TREE_CORPARCH_DATA_CHANGED') {
                 this.setState({
-                    data: store.getData()
+                    data: store.getData(),
+                    permitted_corp: store.getPermittedCorp()
                 });
             }
         },
@@ -505,6 +507,8 @@ export function init(dispatcher, mixins, treeStore) {
         },
 
         render : function () {
+            //TODO some real work with permitted_corp here and in widget render
+            console.log(this.state.permitted_corp);
             return (
                 <div className="corp-tree-component">
                     <div className="row tab-nav">
