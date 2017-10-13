@@ -265,7 +265,7 @@ class DeafultCorplistProvider(CorplistProvider):
         if query is False:  # False means 'use default values'
             query = ''
         ans = {'rows': []}
-        permitted_corpora = self._auth.permitted_corpora(user_id)
+        permitted_corpora = self._auth.permitted_corpora(plugin_api.user_dict)
         used_keywords = set()
         all_keywords_map = dict(self._corparch.all_keywords)
         if filter_dict.get('minSize'):
@@ -684,8 +684,8 @@ class CorpusArchive(AbstractSearchableCorporaArchive):
         """
         self._lang(getattr(controller_obj, 'ui_lang', None))
 
-    def _export_featured(self, user_id):
-        permitted_corpora = self._auth.permitted_corpora(user_id)
+    def _export_featured(self, plugin_api):
+        permitted_corpora = self._auth.permitted_corpora(plugin_api.user_dict)
 
         def is_featured(o):
             return o['metadata'].get('featured', False)

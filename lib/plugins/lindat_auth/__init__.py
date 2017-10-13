@@ -96,7 +96,7 @@ class FederatedAuthWithFailover(AbstractSemiInternalAuth):
         self._sessions.delete(session)
         session.clear()
 
-    def permitted_corpora(self, user_id):
+    def permitted_corpora(self, user_dict):
         """
         Returns a dictionary containing corpora IDs user can access.
 
@@ -105,7 +105,7 @@ class FederatedAuthWithFailover(AbstractSemiInternalAuth):
         a dict canonical_corpus_id=>corpus_id
         """
         # fetch groups based on user_id (manual and shib based) intersect with corplist
-        groups = self.get_groups_for(user_id)
+        groups = self.get_groups_for(user_dict)
         return dict([(self.canonical_corpname(corpora['ident']), corpora['ident']) for corpora in self._corplist
                      if len(set(corpora['access']).intersection(set(groups))) > 0])
 
@@ -176,9 +176,10 @@ class FederatedAuthWithFailover(AbstractSemiInternalAuth):
     def export_actions(self):
         return {corpora.Corpora: [ajax_get_permitted_corpora]}
 
-    def get_groups_for(self, user_id):
+    def get_groups_for(self, user_dict):
         groups = ['anonymous']
         # TODO use the user_id to find additional groups
+        user_id = user_dict['id']
         if not self.is_anonymous(user_id):
             groups.append('authenticated')
         return groups

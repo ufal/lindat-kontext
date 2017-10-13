@@ -549,7 +549,7 @@ class Kontext(Controller):
         self.args.__dict__.update(na)
 
     def _check_corpus_access(self, path, form, action_metadata):
-        allowed_corpora = plugins.get('auth').permitted_corpora(self._session_get('user', 'id'))
+        allowed_corpora = plugins.get('auth').permitted_corpora(self._session_get('user'))
         if not action_metadata.get('skip_corpus_init', False):
             self.args.corpname, fallback_url = self._determine_curr_corpus(form, allowed_corpora)
             if fallback_url:
@@ -736,7 +736,7 @@ class Kontext(Controller):
         auth = plugins.get('auth')
         if cn not in corp_list and isinstance(auth, plugins.abstract.auth.AbstractRemoteAuth):
             auth.refresh_user_permissions(self._plugin_api)
-            corp_list = auth.permitted_corpora(self._session_get('user', 'id'))
+            corp_list = auth.permitted_corpora(self._session_get('user'))
         # 2) try alternative corpus configuration (e.g. with restricted access)
         # automatic restricted/unrestricted corpus name selection
         # according to user rights
@@ -813,7 +813,7 @@ class Kontext(Controller):
         returns:
         a dict (canonical_id, id)
         """
-        return plugins.get('auth').permitted_corpora(self._session_get('user', 'id'))
+        return plugins.get('auth').permitted_corpora(self._session_get('user'))
 
     def _load_fav_items(self):  # TODO implementation-specific
         return plugins.get('user_items').get_user_items(self._session_get('user', 'id'))
@@ -1350,6 +1350,10 @@ class PluginApi(object):
     @property
     def user_id(self):
         return self._session.get('user', {'id': None}).get('id')
+
+    @property
+    def user_dict(self):
+        return self._session.get('user', {'id': None})
 
     @property
     def user_is_anonymous(self):
