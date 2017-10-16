@@ -160,17 +160,13 @@ export function init(dispatcher, mixins, treeStore) {
         },
         
         _clickHandler : function () {
-            if (typeof this.props.permittedCorp[this.props.ident] === "undefined") {
-                console.log('Access forbidden!')
-            }
-            else {
             dispatcher.dispatch({
                 actionType: 'TREE_CORPARCH_LEAF_NODE_CLICKED',
                 props: {
                     ident: this.props.ident
                 }
             });
-            }
+
         },
         
         _pmltq : function (pmltq) {
@@ -242,7 +238,6 @@ export function init(dispatcher, mixins, treeStore) {
         
         _renderChildren : function () {
                 return this.props.corplist.map((item, i) => {
-                    //console.log(item['name'], item['corplist'], item['level']);
                     if (item['corplist'].size > 0) {
                         if (item['level'] === 'outer') {
                             return <TreeNode key={i} name={item['name']} ident={item['ident']}
@@ -358,7 +353,8 @@ export function init(dispatcher, mixins, treeStore) {
                         {this.props.name}
                     </a>
                     { this.props.active ?
-                        <WidgetItemList name={this.props.name} corplist={this.props.corplist} />
+                        <WidgetItemList name={this.props.name} corplist={this.props.corplist}
+                                        permittedCorp={this.props.permittedCorp}/>
                         : null }
                 </li>
             );
@@ -379,7 +375,12 @@ export function init(dispatcher, mixins, treeStore) {
         },
 
         render : function () {
-            return <li className="leaf"><a onClick={this._clickHandler}>{this.props.name}</a></li>;
+            if (typeof this.props.permittedCorp[this.props.ident] === "undefined") {
+                return <li className="leaf"><a style={{color:"gray"}} onClick={this._clickHandler}>{this.props.name}</a></li>;
+            }
+            else {
+                return <li className="leaf"><a onClick={this._clickHandler}>{this.props.name}</a></li>;
+            }
         }
     });
 
@@ -391,10 +392,12 @@ export function init(dispatcher, mixins, treeStore) {
             return this.props.corplist.map((item, i) => {
                 if (item['corplist'].size > 0) {
                     return <WidgetTreeNode key={i} name={item['name']} ident={item['ident']}
-                                        corplist={item['corplist']} active={item['active']} />;
+                                        corplist={item['corplist']} active={item['active']}
+                                        permittedCorp={this.props.permittedCorp}/>;
 
                 } else {
-                    return <WidgetTreeLeaf key={i} name={item['name']} ident={item['ident']} />;
+                    return <WidgetTreeLeaf key={i} name={item['name']} ident={item['ident']}
+                                           permittedCorp={this.props.permittedCorp}/>;
                 }
             });
         },
@@ -452,7 +455,7 @@ export function init(dispatcher, mixins, treeStore) {
                     <button className="switch" type="button" onClick={this._buttonClickHandler}>{this.props.currentCorpus}</button>
                     <input type="hidden" name="corpname" value={this.props.corpname} />
                     {this.state.active ? <WidgetItemList htmlClass="corp-tree"
-                        corplist={this.state.data['corplist']} /> : null}
+                        corplist={this.state.data['corplist']} permittedCorp={this.state.permittedCorp} /> : null}
                 </div>
             );
         }
@@ -521,8 +524,6 @@ export function init(dispatcher, mixins, treeStore) {
         },
 
         render : function () {
-            //TODO some real work with permittedCorp here and in widget render
-            console.log(this.state.permittedCorp);
             return (
                 <div className="corp-tree-component">
                     <div className="row tab-nav">
