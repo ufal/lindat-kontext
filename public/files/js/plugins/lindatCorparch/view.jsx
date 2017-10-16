@@ -40,7 +40,8 @@ export function init(dispatcher, mixins, treeStore) {
                                   activeFeat={this.props.activeFeat}
                                   activeLanguage={this.props.activeLanguage} 
                                   onActiveLanguageSet={this.props.onActiveLanguageSet}
-                                  onActiveLanguageDrop={this.props.onActiveLanguageDrop}/>
+                                  onActiveLanguageDrop={this.props.onActiveLanguageDrop}
+                                  permittedCorp={this.props.permittedCorp}/>
                         </div>
                 </div>
             );
@@ -92,7 +93,8 @@ export function init(dispatcher, mixins, treeStore) {
                                   activeFeat={this.props.activeFeat}
                                   activeLanguage={this.props.activeLanguage} 
                                   onActiveLanguageSet={this.props.onActiveLanguageSet}
-                                  onActiveLanguageDrop={this.props.onActiveLanguageDrop} />
+                                  onActiveLanguageDrop={this.props.onActiveLanguageDrop}
+                                  permittedCorp={this.props.permittedCorp}/>
                     </div>
                 </div>
             );
@@ -117,7 +119,12 @@ export function init(dispatcher, mixins, treeStore) {
         
         _myColor: function() {
             if (this.state.hover) {
-                return "#d8eff7";
+                if (typeof this.props.permittedCorp[this.props.ident] !== "undefined" ) {
+                    return "#d8eff7";
+                }
+                else {
+                    return "#ffcccc";
+                }
             }
         },
         
@@ -153,12 +160,17 @@ export function init(dispatcher, mixins, treeStore) {
         },
         
         _clickHandler : function () {
+            if (typeof this.props.permittedCorp[this.props.ident] === "undefined") {
+                console.log('Access forbidden!')
+            }
+            else {
             dispatcher.dispatch({
                 actionType: 'TREE_CORPARCH_LEAF_NODE_CLICKED',
                 props: {
                     ident: this.props.ident
                 }
             });
+            }
         },
         
         _pmltq : function (pmltq) {
@@ -168,10 +180,9 @@ export function init(dispatcher, mixins, treeStore) {
             }
         },
 
-        _access : function(access) {
-            if (access !== 'all') {
-                return <span className="glyphicon glyphicon-lock"></span>
-
+        _access : function(permittedCorp) {
+            if (typeof this.props.permittedCorp[this.props.ident] === "undefined" ) {
+                return <span className="glyphicon glyphicon-lock" style={{color: "red"}}></span>
             }
         },
 
@@ -214,7 +225,7 @@ export function init(dispatcher, mixins, treeStore) {
                             </div>
                         </a>
                         <div className="col-xs-3 col-md-2 actions text-right">
-                            {this._access(this.props.access)}
+                            {this._access(this.props.permittedCorp)}
                             {this._pmltq(this.props.pmltq)}
                             <a href={this.props.repo} className="md-transparent" title={"Download " + this.props.name}>
                                 <span className="glyphicon glyphicon-save"></span>
@@ -241,7 +252,8 @@ export function init(dispatcher, mixins, treeStore) {
                                              onActiveLanguageSet={this.props.onActiveLanguageSet}
                                              onActiveLanguageDrop={this.props.onActiveLanguageDrop}
                                              onActiveFeatSet={this.props.onActiveFeatSet}
-                                             onActiveFeatDrop={this.props.onActiveFeatDrop}/>;
+                                             onActiveFeatDrop={this.props.onActiveFeatDrop}
+                                             permittedCorp={this.props.permittedCorp}/>;
                         }
                         else {
                             return <SubTreeNode key={i} name={item['name']} ident={item['ident']}
@@ -251,7 +263,8 @@ export function init(dispatcher, mixins, treeStore) {
                                                 onActiveLanguageSet={this.props.onActiveLanguageSet}
                                                 onActiveLanguageDrop={this.props.onActiveLanguageDrop}
                                                 onActiveFeatSet={this.props.onActiveFeatSet}
-                                                onActiveFeatDrop={this.props.onActiveFeatDrop}/>;
+                                                onActiveFeatDrop={this.props.onActiveFeatDrop}
+                                                permittedCorp={this.props.permittedCorp}/>;
                         }
                     } else {
                         return <TreeLeaf key={i} name={item['name']} ident={item['ident']}
@@ -263,7 +276,8 @@ export function init(dispatcher, mixins, treeStore) {
                                          onActiveLanguageDrop={this.props.onActiveLanguageDrop}
                                          activeFeat={this.props.activeFeat}
                                          onActiveFeatSet={this.props.onActiveFeatSet}
-                                         onActiveFeatDrop={this.props.onActiveFeatDrop}/>;
+                                         onActiveFeatDrop={this.props.onActiveFeatDrop}
+                                         permittedCorp={this.props.permittedCorp}/>;
                     }
                 });
         },
@@ -296,7 +310,8 @@ export function init(dispatcher, mixins, treeStore) {
                                      onActiveLanguageDrop={this.props.onActiveLanguageDrop}
                                      activeFeat={this.props.activeFeat}
                                      onActiveFeatSet={this.props.onActiveFeatSet}
-                                     onActiveFeatDrop={this.props.onActiveFeatDrop} />;
+                                     onActiveFeatDrop={this.props.onActiveFeatDrop}
+                                     permittedCorp={this.props.permittedCorp}/>;
             });
         },
 
@@ -414,7 +429,7 @@ export function init(dispatcher, mixins, treeStore) {
                 this.setState({
                     active: true,
                     data: store.getData(),
-                    permitted_corp: store.getPermittedCorp()
+                    permittedCorp: store.getPermittedCorp()
                 });
             }
         },
@@ -449,15 +464,14 @@ export function init(dispatcher, mixins, treeStore) {
 
         _changeListener : function (store, action) {
             if (action === 'TREE_CORPARCH_DATA_CHANGED') {
-                this.setState({
-                    data: store.getData(),
-                    permitted_corp: store.getPermittedCorp()
+                this.setState({data: store.getData(),
+                               permittedCorp: store.getPermittedCorp()
                 });
             }
         },
 
         getInitialState : function () {
-            return {data: null, sorted: false, activeLanguage: null, activeFeat: null};
+            return {data: null, sorted: false, activeLanguage: null, activeFeat: null, permittedCorp: null};
         },
 
         handleActiveLanguageSet: function(language) {
@@ -507,8 +521,8 @@ export function init(dispatcher, mixins, treeStore) {
         },
 
         render : function () {
-            //TODO some real work with permitted_corp here and in widget render
-            console.log(this.state.permitted_corp);
+            //TODO some real work with permittedCorp here and in widget render
+            console.log(this.state.permittedCorp);
             return (
                 <div className="corp-tree-component">
                     <div className="row tab-nav">
@@ -540,6 +554,7 @@ export function init(dispatcher, mixins, treeStore) {
                                   activeFeat={this.state.activeFeat}
                                   onActiveFeatSet={this.handleActiveFeatSet}
                                   onActiveFeatDrop={this.handleActiveFeatDrop}
+                                  permittedCorp={this.state.permittedCorp}
                         />
                     </div>
                     <div style={{display: this._byDefault()}}>
@@ -551,6 +566,7 @@ export function init(dispatcher, mixins, treeStore) {
                                   activeFeat={this.state.activeFeat}
                                   onActiveFeatSet={this.handleActiveFeatSet}
                                   onActiveFeatDrop={this.handleActiveFeatDrop}
+                                  permittedCorp={this.state.permittedCorp}
                         />
                     </div>
                 </div>

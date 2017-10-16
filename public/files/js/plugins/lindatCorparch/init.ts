@@ -131,7 +131,6 @@ export class TreeWidgetStore extends util.SimplePageStore {
                             this.permitted_corp[canonical_corpus_id] = permitted_corp[canonical_corpus_id];
                         }
                     }
-
                 } else {
                     let errored = corptree_data.contains_errors ? corptree_data : permitted_corp;
                     this.pluginApi.showMessage('error', errored.messages.join('\n'));
@@ -146,6 +145,7 @@ export class TreeWidgetStore extends util.SimplePageStore {
     getData(): Node {
         return this.data;
     }
+
     getPermittedCorp(): Immutable.Map<string, string> {
         return this.permitted_corp;
     }
