@@ -193,7 +193,7 @@ def ajax_get_permitted_corpora(ctrl, request):
     """
     An exposed HTTP action showing permitted corpora required by client-side widget.
     """
-    return plugins.get('auth').permitted_corpora(ctrl._session_get('user', 'id'))
+    return plugins.get('auth').permitted_corpora(ctrl._session_get('user'))
 
 
 # =============================================================================
