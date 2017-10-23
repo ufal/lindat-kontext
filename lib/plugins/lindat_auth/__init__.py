@@ -66,6 +66,8 @@ class FederatedAuthWithFailover(AbstractSemiInternalAuth):
         self._failover_auth = failover
         self._logout_url = conf['logout_url']
         self._conf = conf
+        self._entitlement2group = {entitlement: group for entitlement, group
+                                   in map(_e2g_splitter, self._conf.get('lindat:entitlements_to_groups', []))}
 
     def validate_user(self, plugin_api, username, password):
         """
@@ -80,14 +82,12 @@ class FederatedAuthWithFailover(AbstractSemiInternalAuth):
             user_d = self._auth(plugin_api)
 
         if user_d is not None:
-            user_id = int(user_d["id"])
-            return {
-                'id': user_id,
-                'user': user_d.get("username", "unknown"),
-                'fullname': user_d.get("fullname", "Mr. No Name")
-            }
-
-        return self.anonymous_user()
+            user_d['id'] = int(user_d['id'])
+            user_d['user'] = user_d.get("username", "unknown")
+            user_d['fullname'] = user_d.get("fullname", "Mr. No Name")
+            return user_d
+        else:
+            return self.anonymous_user()
 
     def get_logout_url(self, return_url=None):
         return self._logout_url
@@ -161,6 +161,15 @@ class FederatedAuthWithFailover(AbstractSemiInternalAuth):
                 return None
             user_d = db_user_d
 
+        if 'groups' in user_d:
+            groups = user_d['groups'].split(';')
+        else:
+            groups = []
+        shib_groups = self._get_shibboleth_groups_from_entitlement_vals(uni(_get_non_empty_header(
+            plugin_api.get_environ, "HTTP_ENTITLEMENT") or ""))
+        groups = groups + shib_groups
+        user_d['groups'] = groups
+
         return user_d
 
     def export(self, plugin_api):
@@ -177,15 +186,23 @@ class FederatedAuthWithFailover(AbstractSemiInternalAuth):
         return {corpora.Corpora: [ajax_get_permitted_corpora]}
 
     def get_groups_for(self, user_dict):
-        groups = ['anonymous']
-        # TODO use the user_id to find additional groups
+        groups = [u'anonymous']
         user_id = user_dict['id']
         if not self.is_anonymous(user_id):
-            groups.append('authenticated')
+            groups.append(u'authenticated')
+            if 'groups' in user_dict:
+                groups = groups + user_dict['groups']
         return groups
+
+    def _get_shibboleth_groups_from_entitlement_vals(self, entitlement_string):
+        return [self._entitlement2group[entitlement] for entitlement in entitlement_string.split(';')
+                if entitlement in self._entitlement2group]
 
 
 # =============================================================================
+def _e2g_splitter(i):
+    parts = i.split('=', 2)
+    return parts[0].strip(), parts[1].strip()
 
 
 @exposed(return_type='json', skip_corpus_init=True)

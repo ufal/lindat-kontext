@@ -113,6 +113,9 @@
                 <lib name="discojuice" shim="jquery">//lindat.mff.cuni.cz/aai/discojuice/discojuice-2.1.en.min</lib>
                 <lib name="aai" shim="jquery, discojuice">//lindat.mff.cuni.cz/aai/aai</lib>
             </external_deps>
+            <entitlements_to_groups extension-by="lindat">
+                <entitlement_to_group>staff@org1297.mff.cuni.cz=ufal</entitlement_to_group>
+            </entitlements_to_groups>
         </auth>
         <getlang>
             <module>ucnk_getlang</module>
