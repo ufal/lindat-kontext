@@ -376,7 +376,9 @@ export function init(dispatcher, mixins, treeStore) {
 
         render : function () {
             if (typeof this.props.permittedCorp[this.props.ident] === "undefined") {
-                return <li className="leaf"><a style={{color:"gray"}} onClick={this._clickHandler}>{this.props.name}</a></li>;
+                return <li className="leaf"><a onClick={this._clickHandler} style={{color:"gray"}}>
+                        <img className="lock-sign" src={'files/img/locked.svg'} />
+                        {this.props.name}</a></li>;
             }
             else {
                 return <li className="leaf"><a onClick={this._clickHandler}>{this.props.name}</a></li>;
