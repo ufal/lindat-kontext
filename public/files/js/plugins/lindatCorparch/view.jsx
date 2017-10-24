@@ -365,6 +365,8 @@ export function init(dispatcher, mixins, treeStore) {
 
     let WidgetTreeLeaf = React.createClass({
 
+        mixins : mixins,
+
         _clickHandler : function () {
             dispatcher.dispatch({
                 actionType: 'TREE_CORPARCH_LEAF_NODE_CLICKED',
@@ -374,10 +376,15 @@ export function init(dispatcher, mixins, treeStore) {
             });
         },
 
+        _getLock : function () {
+            let path = 'img/locked.svg';
+            return this.createStaticUrl(path);
+        },
+
         render : function () {
             if (typeof this.props.permittedCorp[this.props.ident] === "undefined") {
                 return <li className="leaf"><a onClick={this._clickHandler} style={{color:"gray"}}>
-                        <img className="lock-sign" src={'files/img/locked.svg'} />
+                        <img className="lock-sign" src={this._getLock()} />
                         {this.props.name}</a></li>;
             }
             else {
