@@ -752,8 +752,10 @@ class Kontext(Controller):
             # Force anonymous users to log in if there is a cn
             if auth.is_anonymous(self._session_get('user', 'id')):
                 # XXX might be lindat specific
-                fallback = '%s%sfirst_form?corpname=%s' % (
-                    auth.get_login_url(), self.get_root_url(), cn)
+                login_url = auth.get_login_url()
+                if login_url.startswith('/'):
+                    login_url = login_url[1:]
+                fallback = '%s%sfirst_form?corpname=%s' % (login_url, self.get_root_url(), cn)
             else:
                 from plugins.abstract import auth
                 raise auth.AuthException(_('Corpus access denied'))
