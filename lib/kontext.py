@@ -755,8 +755,8 @@ class Kontext(Controller):
                 fallback = '%s%s%sfirst_form?corpname=%s' % (self.get_root_url()[:-1], auth.get_login_url(),
                                                              self.get_root_url(), cn)
             else:
-                cn = ''
-                fallback = '%scorpora/corplist' % self.get_root_url()  # TODO hardcoded '/corpora/'
+                from plugins.abstract import auth
+                raise auth.AuthException(_('Corpus access denied'))
         return cn, fallback
 
     def _attach_aligned_corpora_info(self, exp_data):
