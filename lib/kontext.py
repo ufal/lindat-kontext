@@ -749,8 +749,14 @@ class Kontext(Controller):
                 cn = corp_list[canonical_name]
                 fallback = None
         else:
-            cn = ''
-            fallback = '%scorpora/corplist' % self.get_root_url()  # TODO hardcoded '/corpora/'
+            # Force anonymous users to log in if there is a cn
+            if cn and auth.is_anonymous(self._session_get('user', 'id')):
+                # XXX might be lindat specific
+                fallback = '%s%s%sfirst_form?corpname=%s' % (self.get_root_url()[:-1], auth.get_login_url(),
+                                                             self.get_root_url(), cn)
+            else:
+                cn = ''
+                fallback = '%scorpora/corplist' % self.get_root_url()  # TODO hardcoded '/corpora/'
         return cn, fallback
 
     def _attach_aligned_corpora_info(self, exp_data):

@@ -65,6 +65,7 @@ class FederatedAuthWithFailover(AbstractSemiInternalAuth):
         self._corplist = corplist
         self._failover_auth = failover
         self._logout_url = conf['logout_url']
+        self._login_url = conf['login_url']
         self._conf = conf
         self._entitlement2group = {entitlement: group for entitlement, group
                                    in map(_e2g_splitter, self._conf.get('lindat:entitlements_to_groups', []))}
@@ -91,6 +92,9 @@ class FederatedAuthWithFailover(AbstractSemiInternalAuth):
 
     def get_logout_url(self, return_url=None):
         return self._logout_url
+
+    def get_login_url(self, return_url=None):
+        return self._login_url
 
     def logout(self, session):
         self._sessions.delete(session)
