@@ -179,7 +179,7 @@ class FederatedAuthWithFailover(AbstractSemiInternalAuth):
     def export(self, plugin_api):
         return {
             'metadataFeed': self._conf['lindat:metadataFeed'],
-            'login_url': self._conf['login_url'],
+            'login_url': plugin_api.root_url() + self._conf['login_url'],
             'service_name': self._conf['lindat:service_name'],
             'response_url': self._conf['lindat:response_url']
             if self._conf['lindat:response_url'] else '',
