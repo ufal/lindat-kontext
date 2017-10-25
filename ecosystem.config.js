@@ -87,7 +87,7 @@ module.exports = {
               "ref"  : "origin/corpora_auth",
               "path" : "/opt/kontext-kira/deploy",
               "pre-deploy-local": "ssh -fN -L8877:kontext-dev:22 " + process.env.DPUSER + "@quest.ms.mff.cuni.cz",
-              "post-deploy" : "npm install && grunt devel && DPNAME=-kira PORT=10005 pm2 startOrRestart ecosystem.config.js",
+              "post-deploy" : "npm install && grunt production && DPNAME=-kira PORT=10005 pm2 startOrRestart ecosystem.config.js",
               "post-deploy-local" : "lsof -t -i :8877 | xargs kill -9 ",
               "env" : {
                 "NODE_ENV": "staging",
