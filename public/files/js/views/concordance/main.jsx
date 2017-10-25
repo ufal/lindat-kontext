@@ -363,6 +363,7 @@ export function init(dispatcher, mixins, lineStore, lineSelectionStore, userInfo
         _renderMouseOverInfo : function () {
             let mouseoverImg;
             let mouseoverAlt;
+            console.log(userInfoStore.getCredentials());
             if (this.props.usesMouseoverAttrs) {
                 mouseoverImg = 'img/mouseover-available.svg';
                 mouseoverAlt = this.translate('options__attribs_are_on_mouseover_{attrs}',
