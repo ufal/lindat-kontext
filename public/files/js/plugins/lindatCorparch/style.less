@@ -46,6 +46,11 @@
         img.state-flag {
             padding-right: 0.4em;
         }
+
+        img.lock-sign {
+            padding-right: 0.4em;
+            width: 1em;
+        }
     }
 }
 
@@ -106,6 +111,18 @@
           -khtml-opacity: 0.5;
           /* Good browsers */
           opacity: 0.5;
+          &.lock {
+            /* IE 8 */
+            -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+            /* IE 5-7 */
+            filter: alpha(opacity=80);
+            /* Netscape */
+            -moz-opacity: 0.8;
+            /* Safari 1.x */
+            -khtml-opacity: 0.8;
+            /* Good browsers */
+            opacity: 0.8;
+          }
         }
       }
       .actions a:hover {

@@ -34,11 +34,7 @@ export function create(pluginApi: Kontext.PluginApi): RSVP.Promise<Kontext.Plugi
         let opts: AAI.AaiOptions = {};
 
         opts.metadataFeed = pluginConfig.metadataFeed;
-        // if ever port is needed (eg. testing other tomcat) it should be in responseUrl and target
-        opts.port = (window.location.port === '' ? '' : ':' + window.location.port);
-        opts.host = window.location.protocol + '//' + window.location.hostname;
-        opts.target = opts.host + opts.port + pluginConfig.login_url +
-            encodeURIComponent(window.location.href);
+        opts.target = pluginConfig.login_url + encodeURIComponent(window.location.href);
         opts.serviceName = pluginConfig.service_name;
         opts.responseUrl = pluginConfig.response_url;
         opts.localauth =

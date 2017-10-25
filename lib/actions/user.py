@@ -49,7 +49,7 @@ class User(Kontext):
                                                                   request.form.get('password', None))
 
         if self._session['user'].get('id', None):
-            self._redirect('%sfirst_form' % (self.get_root_url(), ))
+            self._redirect(request.args.get('redirectTo', '%sfirst_form' % (self.get_root_url(), )))
         else:
             self.disabled_menu_items = (MainMenu.NEW_QUERY, MainMenu.VIEW,
                                         MainMenu.SAVE, MainMenu.CORPORA, MainMenu.CONCORDANCE,

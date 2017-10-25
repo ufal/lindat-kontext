@@ -20,14 +20,15 @@ declare module RSVP {
 
     export class Promise<T> {
 
-        constructor(action:(resolve:(v:T)=>void, reject:(e:any)=>void)=>void);
+        constructor(action: (resolve: (v: T) => void, reject: (e: any) => void) => void);
 
-        then<V>(onFulfilled?:(v:T)=>V, onRejected?:(err:any)=>any):Promise<V>;
-        then<V>(onFulfilled?:(v:T)=>Promise<V>, onRejected?:(err:any)=>any):Promise<V>;
+        then<V>(onFulfilled?: (v: T) => V, onRejected?: (err: any) => any): Promise<V>;
+        then<V>(onFulfilled?: (v: T) => Promise<V>, onRejected?: (err: any) => any): Promise<V>;
     }
+
+    export function all(promises: any): any;
 }
 
-
-declare module "vendor/rsvp" {
+declare module 'vendor/rsvp' {
     export = RSVP;
 }

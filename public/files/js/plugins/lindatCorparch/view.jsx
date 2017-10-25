@@ -40,7 +40,8 @@ export function init(dispatcher, mixins, treeStore) {
                                   activeFeat={this.props.activeFeat}
                                   activeLanguage={this.props.activeLanguage} 
                                   onActiveLanguageSet={this.props.onActiveLanguageSet}
-                                  onActiveLanguageDrop={this.props.onActiveLanguageDrop}/>
+                                  onActiveLanguageDrop={this.props.onActiveLanguageDrop}
+                                  permittedCorp={this.props.permittedCorp}/>
                         </div>
                 </div>
             );
@@ -92,7 +93,8 @@ export function init(dispatcher, mixins, treeStore) {
                                   activeFeat={this.props.activeFeat}
                                   activeLanguage={this.props.activeLanguage} 
                                   onActiveLanguageSet={this.props.onActiveLanguageSet}
-                                  onActiveLanguageDrop={this.props.onActiveLanguageDrop} />
+                                  onActiveLanguageDrop={this.props.onActiveLanguageDrop}
+                                  permittedCorp={this.props.permittedCorp}/>
                     </div>
                 </div>
             );
@@ -117,7 +119,12 @@ export function init(dispatcher, mixins, treeStore) {
         
         _myColor: function() {
             if (this.state.hover) {
-                return "#d8eff7";
+                if (typeof this.props.permittedCorp[this.props.ident] !== "undefined" ) {
+                    return "#d8eff7";
+                }
+                else {
+                    return "#ffcccc";
+                }
             }
         },
         
@@ -159,12 +166,19 @@ export function init(dispatcher, mixins, treeStore) {
                     ident: this.props.ident
                 }
             });
+
         },
         
         _pmltq : function (pmltq) {
             if (pmltq !== 'no') {
             return <a href={this.props.pmltq} className="md-transparent" title={"Inspect " + this.props.name}>
                     <span className="glyphicon lindat-pmltq-logo">&nbsp;</span></a>
+            }
+        },
+
+        _access : function(permittedCorp) {
+            if (typeof this.props.permittedCorp[this.props.ident] === "undefined" ) {
+                return <span className="glyphicon glyphicon-lock" style={{color: "red"}}></span>
             }
         },
 
@@ -207,6 +221,7 @@ export function init(dispatcher, mixins, treeStore) {
                             </div>
                         </a>
                         <div className="col-xs-3 col-md-2 actions text-right">
+                            {this._access(this.props.permittedCorp)}
                             {this._pmltq(this.props.pmltq)}
                             <a href={this.props.repo} className="md-transparent" title={"Download " + this.props.name}>
                                 <span className="glyphicon glyphicon-save"></span>
@@ -223,7 +238,6 @@ export function init(dispatcher, mixins, treeStore) {
         
         _renderChildren : function () {
                 return this.props.corplist.map((item, i) => {
-                    //console.log(item['name'], item['corplist'], item['level']);
                     if (item['corplist'].size > 0) {
                         if (item['level'] === 'outer') {
                             return <TreeNode key={i} name={item['name']} ident={item['ident']}
@@ -233,7 +247,8 @@ export function init(dispatcher, mixins, treeStore) {
                                              onActiveLanguageSet={this.props.onActiveLanguageSet}
                                              onActiveLanguageDrop={this.props.onActiveLanguageDrop}
                                              onActiveFeatSet={this.props.onActiveFeatSet}
-                                             onActiveFeatDrop={this.props.onActiveFeatDrop}/>;
+                                             onActiveFeatDrop={this.props.onActiveFeatDrop}
+                                             permittedCorp={this.props.permittedCorp}/>;
                         }
                         else {
                             return <SubTreeNode key={i} name={item['name']} ident={item['ident']}
@@ -243,19 +258,21 @@ export function init(dispatcher, mixins, treeStore) {
                                                 onActiveLanguageSet={this.props.onActiveLanguageSet}
                                                 onActiveLanguageDrop={this.props.onActiveLanguageDrop}
                                                 onActiveFeatSet={this.props.onActiveFeatSet}
-                                                onActiveFeatDrop={this.props.onActiveFeatDrop}/>;
+                                                onActiveFeatDrop={this.props.onActiveFeatDrop}
+                                                permittedCorp={this.props.permittedCorp}/>;
                         }
                     } else {
                         return <TreeLeaf key={i} name={item['name']} ident={item['ident']}
                                          size={item['formatted_size']} features={item['features']}
                                          language={item['language']} description={item['description']}
-                                         repo={item['repo']} pmltq={item['pmltq']}
+                                         repo={item['repo']} pmltq={item['pmltq']} access={item['access']}
                                          activeLanguage={this.props.activeLanguage}
                                          onActiveLanguageSet={this.props.onActiveLanguageSet}
                                          onActiveLanguageDrop={this.props.onActiveLanguageDrop}
                                          activeFeat={this.props.activeFeat}
                                          onActiveFeatSet={this.props.onActiveFeatSet}
-                                         onActiveFeatDrop={this.props.onActiveFeatDrop}/>;
+                                         onActiveFeatDrop={this.props.onActiveFeatDrop}
+                                         permittedCorp={this.props.permittedCorp}/>;
                     }
                 });
         },
@@ -282,13 +299,14 @@ export function init(dispatcher, mixins, treeStore) {
                     return <TreeLeaf key={i} name={item['name']} ident={item['ident']} 
                                      size={item['formatted_size']} features={item['features']} 
                                      language={item['language']} description={item['description']}
-                                     repo={item['repo']} pmltq={item['pmltq']}
+                                     repo={item['repo']} pmltq={item['pmltq']} access={item['access']}
                                      activeLanguage={this.props.activeLanguage}
                                      onActiveLanguageSet={this.props.onActiveLanguageSet}
                                      onActiveLanguageDrop={this.props.onActiveLanguageDrop}
                                      activeFeat={this.props.activeFeat}
                                      onActiveFeatSet={this.props.onActiveFeatSet}
-                                     onActiveFeatDrop={this.props.onActiveFeatDrop} />;
+                                     onActiveFeatDrop={this.props.onActiveFeatDrop}
+                                     permittedCorp={this.props.permittedCorp}/>;
             });
         },
 
@@ -335,7 +353,8 @@ export function init(dispatcher, mixins, treeStore) {
                         {this.props.name}
                     </a>
                     { this.props.active ?
-                        <WidgetItemList name={this.props.name} corplist={this.props.corplist} />
+                        <WidgetItemList name={this.props.name} corplist={this.props.corplist}
+                                        permittedCorp={this.props.permittedCorp}/>
                         : null }
                 </li>
             );
@@ -346,6 +365,8 @@ export function init(dispatcher, mixins, treeStore) {
 
     let WidgetTreeLeaf = React.createClass({
 
+        mixins : mixins,
+
         _clickHandler : function () {
             dispatcher.dispatch({
                 actionType: 'TREE_CORPARCH_LEAF_NODE_CLICKED',
@@ -355,8 +376,20 @@ export function init(dispatcher, mixins, treeStore) {
             });
         },
 
+        _getLock : function () {
+            let path = 'img/locked.svg';
+            return this.createStaticUrl(path);
+        },
+
         render : function () {
-            return <li className="leaf"><a onClick={this._clickHandler}>{this.props.name}</a></li>;
+            if (typeof this.props.permittedCorp[this.props.ident] === "undefined") {
+                return <li className="leaf"><a onClick={this._clickHandler} style={{color:"gray"}}>
+                        <img className="lock-sign" src={this._getLock()} />
+                        {this.props.name}</a></li>;
+            }
+            else {
+                return <li className="leaf"><a onClick={this._clickHandler}>{this.props.name}</a></li>;
+            }
         }
     });
 
@@ -368,10 +401,12 @@ export function init(dispatcher, mixins, treeStore) {
             return this.props.corplist.map((item, i) => {
                 if (item['corplist'].size > 0) {
                     return <WidgetTreeNode key={i} name={item['name']} ident={item['ident']}
-                                        corplist={item['corplist']} active={item['active']} />;
+                                        corplist={item['corplist']} active={item['active']}
+                                        permittedCorp={this.props.permittedCorp}/>;
 
                 } else {
-                    return <WidgetTreeLeaf key={i} name={item['name']} ident={item['ident']} />;
+                    return <WidgetTreeLeaf key={i} name={item['name']} ident={item['ident']}
+                                           permittedCorp={this.props.permittedCorp}/>;
                 }
             });
         },
@@ -405,7 +440,8 @@ export function init(dispatcher, mixins, treeStore) {
             if (action === 'TREE_CORPARCH_DATA_CHANGED') {
                 this.setState({
                     active: true,
-                    data: store.getData()
+                    data: store.getData(),
+                    permittedCorp: store.getPermittedCorp()
                 });
             }
         },
@@ -428,7 +464,7 @@ export function init(dispatcher, mixins, treeStore) {
                     <button className="switch" type="button" onClick={this._buttonClickHandler}>{this.props.currentCorpus}</button>
                     <input type="hidden" name="corpname" value={this.props.corpname} />
                     {this.state.active ? <WidgetItemList htmlClass="corp-tree"
-                        corplist={this.state.data['corplist']} /> : null}
+                        corplist={this.state.data['corplist']} permittedCorp={this.state.permittedCorp} /> : null}
                 </div>
             );
         }
@@ -440,14 +476,14 @@ export function init(dispatcher, mixins, treeStore) {
 
         _changeListener : function (store, action) {
             if (action === 'TREE_CORPARCH_DATA_CHANGED') {
-                this.setState({
-                    data: store.getData()
+                this.setState({data: store.getData(),
+                               permittedCorp: store.getPermittedCorp()
                 });
             }
         },
 
         getInitialState : function () {
-            return {data: null, sorted: false, activeLanguage: null, activeFeat: null};
+            return {data: null, sorted: false, activeLanguage: null, activeFeat: null, permittedCorp: null};
         },
 
         handleActiveLanguageSet: function(language) {
@@ -528,6 +564,7 @@ export function init(dispatcher, mixins, treeStore) {
                                   activeFeat={this.state.activeFeat}
                                   onActiveFeatSet={this.handleActiveFeatSet}
                                   onActiveFeatDrop={this.handleActiveFeatDrop}
+                                  permittedCorp={this.state.permittedCorp}
                         />
                     </div>
                     <div style={{display: this._byDefault()}}>
@@ -539,6 +576,7 @@ export function init(dispatcher, mixins, treeStore) {
                                   activeFeat={this.state.activeFeat}
                                   onActiveFeatSet={this.handleActiveFeatSet}
                                   onActiveFeatDrop={this.handleActiveFeatDrop}
+                                  permittedCorp={this.state.permittedCorp}
                         />
                     </div>
                 </div>

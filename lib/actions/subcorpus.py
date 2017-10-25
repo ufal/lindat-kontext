@@ -57,7 +57,7 @@ class Subcorpus(Kontext):
         }
         """
         return ' '.join(map(lambda item: ('!within' if item['negated'] else 'within') + ' <%s %s />' % (
-                item['structure_name'], item['attribute_cql']),
+            item['structure_name'], item['attribute_cql']),
             filter(lambda item: bool(item), data)))
 
     def _create_subcorpus(self, request):
@@ -90,7 +90,8 @@ class Subcorpus(Kontext):
             tmp = ['<%s %s />' % item for item in tt_query]
             aligned_corpora = request.form.getlist('aligned_corpora')
             if len(aligned_corpora) > 0:
-                tmp.extend(map(lambda cn: '%s: []' % export_string(cn, to_encoding=corp_encoding), aligned_corpora))
+                tmp.extend(map(lambda cn: '%s: []' % export_string(
+                    cn, to_encoding=corp_encoding), aligned_corpora))
             full_cql = ' within '.join(tmp)
             full_cql = 'aword,[] within %s' % full_cql
             full_cql = import_string(full_cql, from_encoding=corp_encoding)
@@ -125,7 +126,8 @@ class Subcorpus(Kontext):
                 import multiprocessing
                 worker = subc_calc.CreateSubcorpusTask(user_id=self._session_get('user', 'id'),
                                                        corpus_id=self.args.corpname)
-                multiprocessing.Process(target=functools.partial(worker.run, tt_query, imp_cql, path)).start()
+                multiprocessing.Process(target=functools.partial(
+                    worker.run, tt_query, imp_cql, path)).start()
                 result = {}
         else:
             raise UserActionException(_('Nothing specified!'))
@@ -233,7 +235,7 @@ class Subcorpus(Kontext):
         filter_args = dict(show_deleted=bool(int(request.args.get('show_deleted', 0))),
                            corpname=request.args.get('corpname'))
         data = []
-        user_corpora = plugins.get('auth').permitted_corpora(self._session_get('user', 'id')).values()
+        user_corpora = plugins.get('auth').permitted_corpora(self._session_get('user')).values()
         related_corpora = set()
         for corp in user_corpora:
             try:
@@ -263,9 +265,11 @@ class Subcorpus(Kontext):
 
         if plugins.has_plugin('subc_restore'):
             try:
-                full_list = plugins.get('subc_restore').extend_subc_list(self._plugin_api, data, filter_args, 0)
+                full_list = plugins.get('subc_restore').extend_subc_list(
+                    self._plugin_api, data, filter_args, 0)
             except Exception as e:
-                logging.getLogger(__name__).error('subc_restore plug-in failed to list queries: %s' % e)
+                logging.getLogger(__name__).error(
+                    'subc_restore plug-in failed to list queries: %s' % e)
                 full_list = data
         else:
             full_list = data
@@ -274,7 +278,8 @@ class Subcorpus(Kontext):
         if sort_key in ('size', 'created'):
             full_list = sorted(full_list, key=lambda x: x[sort_key], reverse=rev)
         else:
-            full_list = l10n.sort(full_list, loc=self.ui_lang, key=lambda x: x[sort_key], reverse=rev)
+            full_list = l10n.sort(full_list, loc=self.ui_lang,
+                                  key=lambda x: x[sort_key], reverse=rev)
         unfinished_corpora = filter(lambda at: not at.is_finished(),
                                     self.get_async_tasks(category=AsyncTaskStatus.CATEGORY_SUBCORPUS))
         ans = dict(
@@ -317,4 +322,3 @@ class Subcorpus(Kontext):
         else:
             self.add_system_message('error', _('Unsupported operation (plug-in not present)'))
         return {}
-
