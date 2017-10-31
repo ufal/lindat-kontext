@@ -34,7 +34,10 @@ export function create(pluginApi: Kontext.PluginApi): RSVP.Promise<Kontext.Plugi
         let opts: AAI.AaiOptions = {};
 
         opts.metadataFeed = pluginConfig.metadataFeed;
-        opts.target = pluginConfig.login_url + encodeURIComponent(window.location.href);
+        // We need to double encode the window.location.href as it has url params
+        // and we put it into url param (returnTo)
+        opts.target = pluginConfig.login_url + 
+                      encodeURIComponent(encodeURIComponent(window.location.href));
         opts.serviceName = pluginConfig.service_name;
         opts.responseUrl = pluginConfig.response_url;
         opts.localauth =
