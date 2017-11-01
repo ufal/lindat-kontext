@@ -39,7 +39,7 @@ export function create(pluginApi: Kontext.PluginApi): RSVP.Promise<Kontext.Plugi
         opts.responseUrl = pluginConfig.response_url;
         opts.localauth =
             '<form method="post" action="' + pluginConfig.local_action + '"> ' +
-            '<p>Sign in using your local account obtained from the LINDAT/CLARIN administrator.</p>' +
+            '<p>Sign in using your local account obtained from the administrator.</p>' +
             '<p style="margin: 5px; color: #888" >' +
             '<input type="text" name="username" style="font-size: 160%; width: 100%" id="login" /> ' +
             '<label for="login">Username</label>' +

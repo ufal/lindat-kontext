@@ -539,13 +539,13 @@ export function init(dispatcher, mixins, treeStore) {
                         <div className="col-xs-9">
                             <ul className="nav nav-tabs">
                                 <li role="presentation">
-                                    <a href="#LINDAT monolingual corpora" title="Jump to group LINDAT monolingual corpora">LINDAT monolingual corpora</a>
+                                    <a href="#LINDAT monolingual corpora" title="Jump to group monolingual corpora">Monolingual Corpora</a>
                                 </li>
                                 <li role="presentation">
-                                    <a href="#LINDAT parallel corpora" title="Jump to group LINDAT parallel corpora">LINDAT parallel corpora</a>
+                                    <a href="#LINDAT parallel corpora" title="Jump to group parallel corpora">Parallel Corpora</a>
                                 </li>
                                 <li role="presentation">
-                                    <a href="#LINDAT speech corpora" title="Jump to group LINDAT speech corpora">LINDAT speech corpora</a>
+                                    <a href="#LINDAT speech corpora" title="Jump to group speech corpora">Speech Corpora</a>
                                 </li>
                             </ul>
                         </div>
