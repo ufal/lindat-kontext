@@ -173,17 +173,29 @@ class CorptreeParser(object):
         self._metadata = {}
 
     @staticmethod
+    def _get_repo_citation(handle):
+        """
+        Format the handle into "citation string"
+        In future this method will use repo api to fetch the citation (should be async on demand)
+        :param handle:
+        :return:
+        """
+        return '<a href="{0}">{0}</a>'.format(handle)
+
+    @staticmethod
     def parse_node_metadata(elm):
         ans = CorpusInfo()
         ans.id = elm.attrib['ident'].lower()
         ans.name = elm.attrib['name'] if 'name' in elm.attrib else ans.id
-        ans.web = elm.attrib['web'] if 'web' in elm.attrib else None
+        ans.web = elm.attrib['web'] if 'web' in elm.attrib else elm.attrib['repo'] if 'repo' in elm.attrib else None
         ans.sentence_struct = elm.attrib['sentence_struct'] if 'sentence_struct' in elm.attrib else None
         ans.tagset = elm.attrib.get('tagset', None)
         ans.speech_segment = elm.attrib.get('speech_segment', None)
         ans.bib_struct = elm.attrib.get('bib_struct', None)
         ans.collator_locale = elm.attrib.get('collator_locale', 'en_US')
         ans.sample_size = elm.attrib.get('sample_size', -1)
+        ans.citation_info.default_ref = CorptreeParser._get_repo_citation(
+            elm.attrib['repo']) if 'repo' in elm.attrib else None
         return ans
 
     def parse_node(self, elm):
