@@ -364,7 +364,7 @@ def texttype_values(corp, subcorpattrs, maxlistsize, shrink_list=False, collator
 
                 if hsep:  # hierarchical
                     attrval['hierarchical'] = hsep
-                    attrval['Values'] = get_attr_hierarchy(vals, hsep, multisep)
+                    attrval['Values'] = get_attr_hierarchy([x["v"] for x in vals], hsep, multisep)
                 elif conf_bool(corp.get_conf(n + '.NUMERIC')):
                     attrval['Values'] = sorted(vals, key=lambda item: item['v'])
                 elif collator_locale:
