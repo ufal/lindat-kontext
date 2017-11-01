@@ -224,7 +224,7 @@ sep
 minisep "Installing lindat-common theme"
 if [[ ! -d ${THEMEDIR}/lindat-common ]]; then
     cd ${THEMEDIR}
-    git clone --depth 1 https://github.com/ufal/lindat-common.git -b releases lindat-common
+    git clone --depth 1 https://github.com/ufal/lindat-common.git -b no-tracking-release lindat-common
 fi
 
 
