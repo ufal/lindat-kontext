@@ -50,7 +50,7 @@ module.exports = {
                   }
                 ],
               "repo" : "https://github.com/ufal/lindat-kontext.git",
-              "ref"  : "origin/kontext-dev",
+              "ref"  : process.env.DPBRANCH || "origin/kontext-dev",
               "path" : "/opt/kontext-staging/deploy",
               "pre-deploy-local": "ssh -fN -L8877:kontext-dev:22 " + process.env.DPUSER + "@quest.ms.mff.cuni.cz",
               "post-deploy" : "npm install && grunt production && DPNAME=-staging PORT=10001 pm2 startOrRestart ecosystem.config.js",
@@ -69,7 +69,7 @@ module.exports = {
                   }
                 ],
               "repo" : "https://github.com/ufal/lindat-kontext.git",
-              "ref"  : "origin/kontext-dev",
+              "ref"  : process.env.DPBRANCH || "origin/kontext-dev",
               "path" : "/opt/kontext/deploy",
               "pre-deploy-local": "ssh -fN -L8878:kontext-new:22 " + process.env.DPUSER + "@quest.ms.mff.cuni.cz",
               "post-deploy" : "npm install && grunt production && PORT=8090 pm2 startOrRestart ecosystem.config.js",
@@ -84,7 +84,7 @@ module.exports = {
                   }
                 ],
               "repo" : "https://github.com/ufal/lindat-kontext.git",
-              "ref"  : "origin/kontext-dev",
+              "ref"  : process.env.DPBRANCH || "origin/kontext-dev",
               "path" : "/opt/kontext-kira/deploy",
               "pre-deploy-local": "ssh -fN -L8877:kontext-dev:22 " + process.env.DPUSER + "@quest.ms.mff.cuni.cz",
               "post-deploy" : "npm install && grunt devel && DPNAME=-kira PORT=10005 pm2 startOrRestart ecosystem.config.js",
@@ -102,7 +102,7 @@ module.exports = {
                   }
                 ],
               "repo" : "https://github.com/ufal/lindat-kontext.git",
-              "ref"  : "origin/jm",
+              "ref"  : process.env.DPBRANCH || "origin/jm",
               "path" : "/opt/kontext-jm/deploy",
               "pre-deploy-local": "ssh -fN -L8877:kontext-dev:22 " + process.env.DPUSER + "@quest.ms.mff.cuni.cz",
               "post-deploy" : "npm install && grunt devel && DPNAME=-jm PORT=10002 pm2 startOrRestart ecosystem.config.js",
@@ -120,7 +120,7 @@ module.exports = {
                   }
                 ],
               "repo" : "https://github.com/ufal/lindat-kontext.git",
-              "ref"  : "origin/kontext-dev",
+              "ref"  : process.env.DPBRANCH || "origin/kontext-dev",
               "path" : "/opt/kontext-ansa/deploy",
               "pre-deploy-local": "ssh -fN -L8877:kontext-dev:22 " + process.env.DPUSER + "@quest.ms.mff.cuni.cz",
               "post-deploy" : "npm install && grunt devel && DPNAME=-ansa PORT=10003 pm2 startOrRestart ecosystem.config.js",
