@@ -127,7 +127,8 @@ class User(Kontext):
         self.disabled_menu_items = (MainMenu.VIEW, MainMenu.SAVE,
                                     MainMenu.CONCORDANCE, MainMenu.FILTER, MainMenu.FREQUENCY,
                                     MainMenu.COLLOCATIONS)
-        num_records = int(settings.get('plugins', 'query_storage').get('page_num_records', 0))
+        num_records = int(settings.get('plugins', 'query_storage').get('default:page_num_records',
+                                                                       0))
 
         if not offset:
             offset = 0
