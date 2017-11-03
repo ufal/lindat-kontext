@@ -18,6 +18,7 @@ from translation import ugettext as _
 import plugins
 import corplib
 
+
 class Options(Kontext):
 
     def __init__(self, request, ui_lang):
@@ -72,7 +73,8 @@ class Options(Kontext):
         out['attr_allpos'] = self.args.attr_allpos
         out['attr_vmode'] = self.args.attr_vmode
         availstruct = corp.get_conf('STRUCTLIST').split(',')
-        structlist = set(self.args.structs.split(',')).union(set([x.split('.')[0] for x in self.args.structattrs]))
+        structlist = set(self.args.structs.split(',')).union(
+            set([x.split('.')[0] for x in self.args.structattrs]))
         out['Availstructs'] = [{'n': n,
                                 'sel': 'selected' if n in structlist else '',
                                 'label': corp.get_conf(n + '.LABEL')}
@@ -121,13 +123,14 @@ class Options(Kontext):
                                 setstructs=setstructs,
                                 setrefs=setrefs,
                                 structattrs=structattrs)
-        self._save_options(['attrs', 'attr_vmode', 'ctxattrs', 'structs', 'refs', 'structattrs'], self.args.corpname)
+        self._save_options(['attrs', 'attr_vmode', 'ctxattrs', 'structs',
+                            'refs', 'structattrs'], self.args.corpname)
         if self.args.format == 'json':
             return {}
         elif self.args.q:
             self._redirect_to_conc()
         else:
-            self._redirect('/first_form')
+            self._redirect(self.get_root_url() + '/first_form')
 
     @exposed(access_level=1, legacy=True)
     def viewopts(self):
