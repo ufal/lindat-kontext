@@ -42,11 +42,11 @@ class Actions(Kontext):
 
     def _corpora_info(self, value, max_items):
         resources = []
-        corpora_list = [value]
+        corpora_d = {value: value}
         if value == 'root':
-            corpora_list = plugins.get('auth').permitted_corpora(self._session_get('user'))
+            corpora_d = plugins.get('auth').permitted_corpora(self._session_get('user'))
 
-        for i, corpus_id in enumerate(corpora_list):
+        for i, corpus_id in enumerate(corpora_d):
             if i >= max_items:
                 break
             resource_info = {}
