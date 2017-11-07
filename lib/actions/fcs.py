@@ -152,7 +152,7 @@ class Actions(Kontext):
             for kwicline in page['Lines']
         ][start:][:max_rec]
 
-    @exposed(return_type='xml', template="fcs/v1_complete.tmpl")
+    @exposed(return_type='xml', template="fcs/v1_complete.tmpl", skip_corpus_init=True)
     def v1(self, req):
         current_version = 1.2
 
@@ -167,6 +167,7 @@ class Actions(Kontext):
         # None values should be filled in later
         data = {
             "corpname": corpname,
+            "corppid": None,
             "version": current_version,
             "recordPacking": "xml",
             "result": [],
@@ -280,6 +281,10 @@ class Actions(Kontext):
                     else:
                         _logger.warning(
                             "Requested unavailable corpus [%s], defaulting to [%s]", req_corpname, corpname)
+                    data["corpname"] = corpname
+
+                corp_conf_info = plugins.get('corparch').get_corpus_info(corpname)
+                data["corppid"] = corp_conf_info.get("web", "")
                 query = req.args.get("query", "")
                 corpus = self.cm.get_Corpus(corpname)
                 if 0 == len(query):
@@ -305,7 +310,7 @@ class Actions(Kontext):
 
         return data
 
-    @exposed(return_type='text/xsl', template="fcs/fcs2html.tmpl")
+    @exposed(return_type='text/xsl', template="fcs/fcs2html.tmpl", skip_corpus_init=True)
     def fcs2html(self, req):
         """
             Returns XSL template for rendering FCS XML.
