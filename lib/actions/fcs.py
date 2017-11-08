@@ -42,20 +42,14 @@ class Actions(Kontext):
 
     def _corpora_info(self, value, max_items):
         resources = []
+        corpora_list = [value]
         if value == 'root':
-            corpora_list = plugins.get('corparch').get_all(self._session_get('user', 'id'))
-            if "sort_corplist" in corpora_list:
-                corpora_list = corpora_list["sort_corplist"]
-            else:
-                corpora_list = corpora_list["corplist"]
-        else:
-            corpora_list = [{"ident": value}]
+            corpora_list = plugins.get('auth').permitted_corpora(self._session_get('user'))
 
-        for i, corpora_d in enumerate(corpora_list):
+        for i, corpus_id in enumerate(corpora_list):
             if i >= max_items:
                 break
             resource_info = {}
-            corpus_id = corpora_d['ident']
             c = self.cm.get_Corpus(corpus_id)
             import_str = partial(l10n.import_string, from_encoding=c.get_conf('ENCODING'))
             corpus_title = import_str(c.get_conf('NAME'))
@@ -280,10 +274,12 @@ class Actions(Kontext):
                 )
                 if "x-cmd-context" in req.args:
                     req_corpname = req.args["x-cmd-context"]
-                    user_corpora = plugins.get('auth').permitted_corpora(
-                        self._session_get('user', 'id')).values()
+                    user_corpora = plugins.get('auth').permitted_corpora(self._session_get('user'))
                     if req_corpname in user_corpora:
                         corpname = req_corpname
+                    else:
+                        _logger.warning(
+                            "Requested unavailable corpus [%s], defaulting to [%s]", req_corpname, corpname)
                 query = req.args.get("query", "")
                 corpus = self.cm.get_Corpus(corpname)
                 if 0 == len(query):
