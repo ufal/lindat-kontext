@@ -56,6 +56,8 @@ suites.append(unittest.TestLoader().loadTestsFromTestCase(FixedDictTest), 'Fixed
 # ############# plugins
 from plugins_tests import default_user_items_test
 suites.append(unittest.TestLoader().loadTestsFromModule(default_user_items_test), 'default_user_items_test')
+from plugins_tests import treex_view
+suites.append(unittest.TestLoader().loadTestsFromModule(treex_view), 'treex_view')
 
 # ############# templating/filters
 from templating_tests.filters_test import FiltersTest

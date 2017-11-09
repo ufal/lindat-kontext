@@ -178,6 +178,10 @@ if [[ ! -f ${CONFIGDIR}/config.xml ]]; then
     ln -sf ${THISDIR}/configs/test_config.xml ${CONFIGDIR}/config.xml
 fi
 
+if [[ ! -f ${CONFIGDIR}/syntax-viewer.json ]]; then
+    ln -sf ${THISDIR}/configs/syntax-viewer.json ${CONFIGDIR}/syntax-viewer.json
+fi
+
 if [[ ! -f ${CONFIGDIR}/redis.conf ]]; then
     ln -sf ${THISDIR}/configs/redis.conf ${CONFIGDIR}/redis.conf
 fi

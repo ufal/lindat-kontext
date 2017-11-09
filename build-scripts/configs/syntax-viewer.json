@@ -1,0 +1,30 @@
+{
+  "corpora": {
+
+    "pdt_30_cs_a": {
+      "sentenceStruct": "s",
+      "emptyValuePlaceholders": ["_"],
+      "trees": [
+        {
+          "id": "default",
+          "name": "Default",
+          "wordAttr": "word",
+          "parentAttr": "parent",
+          "labelTemplates": ["#{#009EE0}%s", "#{#F0680B}[%s]", "#{#010101}%s", "#{#E2007A}%s"],
+          "layerType": "t",
+          "detailAttrs": ["*"],
+          "attrRefs": {
+            "eparent": ["word"]
+          },
+          "nodeAttrs": ["word", "afun"],
+          "rootNode": {
+            "id": "root",
+            "word": "#",
+            "afun": "AuxS",
+            "parent": null
+          }
+        }
+      ]
+    }
+ }
+}
