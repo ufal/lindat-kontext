@@ -178,7 +178,7 @@ export function init(dispatcher, mixins, treeStore) {
 
         _access : function(permittedCorp) {
             if (typeof this.props.permittedCorp[this.props.ident] === "undefined" ) {
-                return <span className="glyphicon glyphicon-lock" style={{color: "red"}}></span>
+                return <span className="glyphicon glyphicon-lock"></span>
             }
         },
 
@@ -202,7 +202,7 @@ export function init(dispatcher, mixins, treeStore) {
                         </div>
                     </div>
                     <div className="row">
-                        <a className="corpus-main-info col-xs-9 col-md-10" onMouseOver={this._mouseOver} onMouseOut={this._mouseOut} onClick={this._clickHandler} title={"Search in " + this.props.name}>
+                        <a className="corpus-main-info col-xs-9 col-md-10 signon" onMouseOver={this._mouseOver} onMouseOut={this._mouseOut} onClick={this._clickHandler} title={"Search in " + this.props.name}>
                             <div className="row">
                                 <div className="col-xs-3 tokens">
                                     Size
@@ -212,6 +212,7 @@ export function init(dispatcher, mixins, treeStore) {
                                 </div>
                                 <div className="col-xs-9 details">
                                     <h3 className="title">
+                                        {this._access(this.props.permittedCorp)}
                                         {this.props.name}
                                     </h3>
                                     <div className="desc">
@@ -221,7 +222,6 @@ export function init(dispatcher, mixins, treeStore) {
                             </div>
                         </a>
                         <div className="col-xs-3 col-md-2 actions text-right">
-                            {this._access(this.props.permittedCorp)}
                             {this._pmltq(this.props.pmltq)}
                             <a href={this.props.repo} className="md-transparent" title={"Download " + this.props.name}>
                                 <span className="glyphicon glyphicon-save"></span>
