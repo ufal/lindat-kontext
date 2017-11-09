@@ -237,6 +237,10 @@ class RedisDb(KeyValueStorage):
         """
         return self.redis.incr(name, amount)
 
+    def keys(self, pattern='*'):
+        """Returns a list of keys matching ``pattern``"""
+        return self.redis.keys(pattern)
+
 
 class RedisDbManager(RedisDb):
     """

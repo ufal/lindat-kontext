@@ -346,18 +346,32 @@ export function init(dispatcher, mixins, lineStore, lineSelectionStore, userInfo
             this.setState({currViewAttrs: lineStore.getViewAttrs()});
         },
 
+        _userInfoStoreChangeHandler: function(store, action){
+            if(action === 'USER_INFO_REFRESHED') {
+                this.setState({
+                    userInfo: store.getCredentials()
+                });
+            }
+        },
+
         getInitialState : function () {
             return {
                 currViewAttrs: lineStore.getViewAttrs()
             };
         },
 
-        componentDidMount : function () {
+        componentWillMount : function () {
             lineStore.addChangeListener(this._storeChangeHandler);
+            userInfoStore.addChangeListener(this._userInfoStoreChangeHandler);
+            dispatcher.dispatch({
+                actionType: 'USER_INFO_REQUESTED',
+                props: {}
+            });
         },
 
         componentWillUnmount : function () {
             lineStore.removeChangeListener(this._storeChangeHandler);
+            userInfoStore.removeChangeListener(this._userInfoStoreChangeHandler);
         },
 
         _renderMouseOverInfo : function () {
@@ -381,9 +395,12 @@ export function init(dispatcher, mixins, lineStore, lineSelectionStore, userInfo
                 <div className="conc-toolbar">
                     <span className="separ">|</span>
                     {this._renderMouseOverInfo()}
-                    <a onClick={this.props.onViewOptionsClick}>
-                        {this.translate('concview__change_display_settings')}
-                    </a>
+                    {this.state.userInfo && this.state.userInfo.id > 0 ?
+                        <a onClick={this.props.onViewOptionsClick}>
+                            {this.translate('concview__change_display_settings')}
+                        </a>
+                        : null
+                    }
                 </div>
             );
         }

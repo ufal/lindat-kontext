@@ -45,7 +45,25 @@ class FederatedAuthWithFailover(AbstractSemiInternalAuth):
     RESERVED_USER = '__user_count'
 
     def get_user_info(self, user_id):
-        raise NotImplementedError()
+        user_info = self.anonymous_user()
+        if not self.is_anonymous(user_id):
+            # FIXME gets all the data and walks through
+            usernames = self._db.keys()
+            anon_id = self.anonymous_user().get('id')
+            for username in usernames:
+                try:
+                    db_user_d = self._db.hash_get_all(username)
+                    if int(db_user_d.get('id', anon_id)) == user_id:
+                        user_info = {
+                            'id': user_id,
+                            'user': db_user_d.get('username', 'N/A'),
+                            'fullname': db_user_d.get('fullname', 'N/A')
+                        }
+                except:
+                    pass
+        # FIXME ajax_user_info wants 'username', anonymous_user has just 'user'
+        user_info['username'] = user_info['user']
+        return user_info
 
     def __init__(self, corplist, db, sessions, conf, failover):
         """
