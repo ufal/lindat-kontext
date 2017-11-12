@@ -41,7 +41,9 @@ export function init(dispatcher, mixins, treeStore) {
                                   activeLanguage={this.props.activeLanguage} 
                                   onActiveLanguageSet={this.props.onActiveLanguageSet}
                                   onActiveLanguageDrop={this.props.onActiveLanguageDrop}
-                                  permittedCorp={this.props.permittedCorp}/>
+                                  permittedCorp={this.props.permittedCorp}
+                                  context={this.props.context}
+                        />
                         </div>
                 </div>
             );
@@ -94,7 +96,9 @@ export function init(dispatcher, mixins, treeStore) {
                                   activeLanguage={this.props.activeLanguage} 
                                   onActiveLanguageSet={this.props.onActiveLanguageSet}
                                   onActiveLanguageDrop={this.props.onActiveLanguageDrop}
-                                  permittedCorp={this.props.permittedCorp}/>
+                                  permittedCorp={this.props.permittedCorp}
+                                  context={this.props.context}
+                        />
                     </div>
                 </div>
             );
@@ -160,13 +164,17 @@ export function init(dispatcher, mixins, treeStore) {
         },
         
         _clickHandler : function () {
+            if (typeof this.props.permittedCorp[this.props.ident] === "undefined") {
+                this.props.context.find('#discojuice_overlay').show();
+                this.props.context.find('.discojuice').show();
+            } else {
             dispatcher.dispatch({
                 actionType: 'TREE_CORPARCH_LEAF_NODE_CLICKED',
                 props: {
                     ident: this.props.ident
                 }
             });
-
+            }
         },
         
         _pmltq : function (pmltq) {
@@ -179,6 +187,12 @@ export function init(dispatcher, mixins, treeStore) {
         _access : function(permittedCorp) {
             if (typeof this.props.permittedCorp[this.props.ident] === "undefined" ) {
                 return <span className="glyphicon glyphicon-lock"></span>
+            }
+        },
+
+        _download_sign: function(permittedCorp) {
+            if (typeof this.props.permittedCorp[this.props.ident] === "undefined" ) {
+                return 'none';
             }
         },
 
@@ -202,7 +216,7 @@ export function init(dispatcher, mixins, treeStore) {
                         </div>
                     </div>
                     <div className="row">
-                        <a className="corpus-main-info col-xs-9 col-md-10 signon" onMouseOver={this._mouseOver} onMouseOut={this._mouseOut} onClick={this._clickHandler} title={"Search in " + this.props.name}>
+                        <a className="corpus-main-info col-xs-9 col-md-10" onMouseOver={this._mouseOver} onMouseOut={this._mouseOut} onClick={this._clickHandler} title={"Search in " + this.props.name}>
                             <div className="row">
                                 <div className="col-xs-3 tokens">
                                     Size
@@ -223,7 +237,7 @@ export function init(dispatcher, mixins, treeStore) {
                         </a>
                         <div className="col-xs-3 col-md-2 actions text-right">
                             {this._pmltq(this.props.pmltq)}
-                            <a href={this.props.repo} className="md-transparent" title={"Download " + this.props.name}>
+                            <a href={this.props.repo} className="md-transparent" title={"Download " + this.props.name} style={{display: this._download_sign(this.props.permittedCorp)}}>
                                 <span className="glyphicon glyphicon-save"></span>
                             </a>
                         </div>
@@ -248,7 +262,9 @@ export function init(dispatcher, mixins, treeStore) {
                                              onActiveLanguageDrop={this.props.onActiveLanguageDrop}
                                              onActiveFeatSet={this.props.onActiveFeatSet}
                                              onActiveFeatDrop={this.props.onActiveFeatDrop}
-                                             permittedCorp={this.props.permittedCorp}/>;
+                                             permittedCorp={this.props.permittedCorp}
+                                             context={this.props.context}
+                                    />;
                         }
                         else {
                             return <SubTreeNode key={i} name={item['name']} ident={item['ident']}
@@ -259,7 +275,9 @@ export function init(dispatcher, mixins, treeStore) {
                                                 onActiveLanguageDrop={this.props.onActiveLanguageDrop}
                                                 onActiveFeatSet={this.props.onActiveFeatSet}
                                                 onActiveFeatDrop={this.props.onActiveFeatDrop}
-                                                permittedCorp={this.props.permittedCorp}/>;
+                                                permittedCorp={this.props.permittedCorp}
+                                                context={this.props.context}
+                            />;
                         }
                     } else {
                         return <TreeLeaf key={i} name={item['name']} ident={item['ident']}
@@ -272,7 +290,9 @@ export function init(dispatcher, mixins, treeStore) {
                                          activeFeat={this.props.activeFeat}
                                          onActiveFeatSet={this.props.onActiveFeatSet}
                                          onActiveFeatDrop={this.props.onActiveFeatDrop}
-                                         permittedCorp={this.props.permittedCorp}/>;
+                                         permittedCorp={this.props.permittedCorp}
+                                         context={this.props.context}
+                        />;
                     }
                 });
         },
@@ -483,7 +503,7 @@ export function init(dispatcher, mixins, treeStore) {
         },
 
         getInitialState : function () {
-            return {data: null, sorted: false, activeLanguage: null, activeFeat: null, permittedCorp: null};
+            return {data: null, sorted: false, activeLanguage: null, activeFeat: null, permittedCorp: null, context: this.props.context};
         },
 
         handleActiveLanguageSet: function(language) {
@@ -515,7 +535,7 @@ export function init(dispatcher, mixins, treeStore) {
             }
             return "none";
         },
-        
+
         _sortClickHandler : function() {
             this.setState({sorted: !this.state.sorted});
         },
@@ -565,6 +585,7 @@ export function init(dispatcher, mixins, treeStore) {
                                   onActiveFeatSet={this.handleActiveFeatSet}
                                   onActiveFeatDrop={this.handleActiveFeatDrop}
                                   permittedCorp={this.state.permittedCorp}
+                                  context={this.state.context}
                         />
                     </div>
                     <div style={{display: this._byDefault()}}>
@@ -577,6 +598,7 @@ export function init(dispatcher, mixins, treeStore) {
                                   onActiveFeatSet={this.handleActiveFeatSet}
                                   onActiveFeatDrop={this.handleActiveFeatDrop}
                                   permittedCorp={this.state.permittedCorp}
+                                  context={this.state.context}
                         />
                     </div>
                 </div>

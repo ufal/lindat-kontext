@@ -213,6 +213,7 @@ export class CorplistPage implements Customized.CorplistPage {
             wrapper,
             {
                 currentCorpus: this.pluginApi.getConf<string>('humanCorpname'),
+                context: $('body'),
             }
         );
     }
