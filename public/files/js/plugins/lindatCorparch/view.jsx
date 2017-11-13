@@ -171,7 +171,7 @@ export function init(dispatcher, mixins, treeStore) {
         
         _pmltq : function (pmltq) {
             if (pmltq !== 'no') {
-            return <a href={this.props.pmltq} className="md-transparent" title={"Inspect " + this.props.name}>
+            return <a href={this.props.pmltq} className="md-transparent" title={"Inspect " + this.props.name + " in PML-TQ"}>
                     <span className="glyphicon lindat-pmltq-logo">&nbsp;</span></a>
             }
         },
