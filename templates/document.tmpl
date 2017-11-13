@@ -178,7 +178,8 @@ define('conf', [], function () {
         "$_('In CQL mode you can use Shift+ENTER to enter a new line')"
     ];
     conf.queryTypesHints = {
-        iqueryrow : "$_('Query type <em>basic</em> is suitable for getting to know the corpus. It searches for the input expression as a word form case-insensitively; if it is also a canonical dictionary form (lemma), all its word forms are searched as well.')"
+        iqueryrow : "$_('Query type <em>basic</em> is suitable for getting to know the corpus. It searches for the input expression as a word form case-insensitively; if it is also a canonical dictionary form (lemma), all its word forms are searched as well.')",
+        phraserow : "$_('Query type <em>phrase</em> is suitable who the hell knows for.')"
     };
     conf.ttIntervalChars = #filter $Jsonize#$getVar('interval_chars', [])#end filter#;
     conf.menuData = #filter $Jsonize#$menu_data#end filter#;

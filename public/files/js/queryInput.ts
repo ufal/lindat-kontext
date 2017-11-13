@@ -329,7 +329,8 @@ export class QueryFormTweaks {
             }
         });
         jqFocusElem.val(oldval);
-        if (newid === 'iqueryrow') {
+        $('#queryselector').parent().find('.context-help').remove();
+        if (newid === 'iqueryrow' || newid === 'phraserow') {
             const imgElm = window.document.createElement('img');
             $(imgElm)
                 .addClass('over-img')
@@ -343,15 +344,13 @@ export class QueryFormTweaks {
             $(window.document.getElementById('queryselector'))
                 .after(linkElm);
             popupBox.bind(linkElm,
-                hints['iqueryrow'],
+                hints[newid],
                 {
                     top: 'attached-bottom',
                     fontSize: '10pt',
                     width: '30%'
                 });
 
-        } else {
-            $('#queryselector').parent().find('.context-help').remove();
         }
         jqFocusElem.focus();
 
