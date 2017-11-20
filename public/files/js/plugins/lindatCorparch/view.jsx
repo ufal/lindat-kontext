@@ -176,6 +176,13 @@ export function init(dispatcher, mixins, treeStore) {
             }
         },
 
+        _download : function (repo) {
+            if (repo !== 'no') {
+            return <a href={this.props.repo} className="md-transparent" title={"Download " + this.props.name}>
+                    <span className="glyphicon glyphicon-save"></span></a>
+            }
+        },
+
         _access : function(permittedCorp) {
             if (typeof this.props.permittedCorp[this.props.ident] === "undefined" ) {
                 return <span className="glyphicon glyphicon-lock" style={{color: "red"}}></span>
@@ -223,9 +230,7 @@ export function init(dispatcher, mixins, treeStore) {
                         <div className="col-xs-3 col-md-2 actions text-right">
                             {this._access(this.props.permittedCorp)}
                             {this._pmltq(this.props.pmltq)}
-                            <a href={this.props.repo} className="md-transparent" title={"Download " + this.props.name}>
-                                <span className="glyphicon glyphicon-save"></span>
-                            </a>
+                            {this._download(this.props.repo)}
                         </div>
                     </div>
             </div>;
