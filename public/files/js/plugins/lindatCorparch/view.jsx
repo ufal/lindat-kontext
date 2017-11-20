@@ -170,14 +170,14 @@ export function init(dispatcher, mixins, treeStore) {
         },
         
         _pmltq : function (pmltq) {
-            if (pmltq !== 'no') {
+            if (pmltq !== 'no' & typeof this.props.permittedCorp[this.props.ident] !== "undefined" ) {
             return <a href={this.props.pmltq} className="md-transparent" title={"Inspect " + this.props.name + " in PML-TQ"}>
                     <span className="glyphicon lindat-pmltq-logo">&nbsp;</span></a>
             }
         },
 
         _download : function (repo) {
-            if (repo !== 'no') {
+            if (repo !== 'no' & typeof this.props.permittedCorp[this.props.ident] !== "undefined" ) {
             return <a href={this.props.repo} className="md-transparent" title={"Download " + this.props.name}>
                     <span className="glyphicon glyphicon-save"></span></a>
             }
