@@ -219,6 +219,8 @@ export function init(dispatcher, mixins, treeStore) {
                                 </div>
                                 <div className="col-xs-9 details">
                                     <h3 className="title">
+                                        {this._pmltq(this.props.pmltq)}
+                                        {this._download(this.props.repo)}
                                         {this._access(this.props.permittedCorp)}
                                         {this.props.name}
                                     </h3>
@@ -228,10 +230,6 @@ export function init(dispatcher, mixins, treeStore) {
                                 </div>
                             </div>
                         </a>
-                        <div className="col-xs-3 col-md-2 actions text-right">
-                            {this._pmltq(this.props.pmltq)}
-                            {this._download(this.props.repo)}
-                        </div>
                     </div>
             </div>;
         }
