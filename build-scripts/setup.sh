@@ -102,7 +102,7 @@ cd ${DEPSDIR}
 if [[ "x$MANATEE_FROM_PACKAGES" == "xtrue" ]]; then
     minisep "Installing manatee and dependencies"
     if [[ ! -d corpora.fi.muni.cz ]]; then
-        URL=http://corpora.fi.muni.cz/noske/deb/${MANATEE_OS_VERSION}
+        URL=https://corpora.fi.muni.cz/noske/deb/${MANATEE_OS_VERSION}
         for i in antlr3c finlib manatee-open; do
             wget -r --accept "*.deb" --level 1 ${URL}/${i}
         done
@@ -131,7 +131,7 @@ else
         minisep "Installing finlib"
         mkdir -p ${DEPSDIR}/finlib && cd ${DEPSDIR}/finlib
         FILE=${PACKAGE}.tar.gz
-        URL=$(url_exists_archive http://corpora.fi.muni.cz/noske/src/finlib ${FILE})
+        URL=$(url_exists_archive https://corpora.fi.muni.cz/noske/src/finlib ${FILE})
         install ${FILE} ${PACKAGE} ${URL} "tar xzf" "--with-pcre --prefix=$DEPS_PREFIX"
         FINLIBPATH=${DEPSDIR}/finlib/${PACKAGE}
         sudo ldconfig
@@ -146,7 +146,7 @@ else
         CONFIGUREENV="CPPFLAGS=\"-I$DEPSINCLUDEDIR\" LDFLAGS=\"-L$DEPSLIBDIR\""
         INSTALLENV="DESTDIR=\"/\""
         FILE=${PACKAGE}.tar.gz
-        URL=$(url_exists_archive http://corpora.fi.muni.cz/noske/src/manatee-open ${FILE})
+        URL=$(url_exists_archive https://corpora.fi.muni.cz/noske/src/manatee-open ${FILE})
         install ${FILE} ${PACKAGE} ${URL} "tar xzf" "--with-pcre  --prefix=$DEPS_PREFIX --with-finlib=$FINLIBPATH"
         sudo ldconfig
     fi
