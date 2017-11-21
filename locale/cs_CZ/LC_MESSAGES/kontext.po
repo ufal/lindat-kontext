@@ -1128,8 +1128,8 @@ msgid "Word Form"
 msgstr "Slovní tvar"
 
 #: cmpltmpl/document.py:1045 cmpltmpl/document.py:1280
-msgid "Character"
-msgstr "Podřetězec"
+msgid "Word Part"
+msgstr "Část slova"
 
 #: cmpltmpl/document.py:1056 cmpltmpl/document.py:1311
 #: cmpltmpl/query_history.py:198

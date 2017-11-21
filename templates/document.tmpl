@@ -179,10 +179,10 @@ define('conf', [], function () {
     ];
     conf.queryTypesHints = {
         iqueryrow : "$_('Query type <em>Basic</em>: search for the input expression as a word form case-insensitively; if it is also a canonical dictionary form (lemma), all its word forms are searched for as well.')",
-        lemmarow : "$_('Query type <em>Lemma</em>: case sensitive search by a canonical dictionary form (lemma); all its word forms will be present in search results. Query supports regular expressions.')",
-        phraserow : "$_(r'Query type <em>Phrase</em>: search for a given sequence of word forms; the search is case-insensitive by default; it can be overridden by the \"Match case\" option. Query supports regular expressions.')",
-        wordrow : "$_('Query type <em>Word form</em>: search for an individual word form; Query supports regular expressions.')",
-        charrow : "$_('Query type <em>Word part</em>: search for a string of characters anywhere within a word. Query is case sensitive and supports regular expressions.')",
+        lemmarow : "$_('Query type <em>Lemma</em>: case sensitive search by a canonical dictionary form (lemma); all its word forms will be present in search results. <br>Query supports regular expressions.')",
+        phraserow : "$_(r'Query type <em>Phrase</em>: search for a given sequence of word forms; the search is case insensitive by default; <br>Query supports regular expressions.')",
+        wordrow : "$_('Query type <em>Word form</em>: search for an individual word form. <br>Query supports regular expressions.')",
+        charrow : "$_('Query type <em>Word part</em>: search for a string of characters anywhere within a word. <br>Query supports regular expressions.')",
         cqlrow : "$_(r'Query type <em>CQL</em>: search for anything that is present in the annotation of the corpus, e.g. [attribute1=\"value1\" & attribute2=\"value2\"] [attribute3=\"value3\"] within &lt;s/&gt; will search for two successive words with the specified attribute values and appearing within a single sentence; attribute values may be regular expressions. <br>For more information, see <a href=\"https://wiki.korpus.cz/doku.php/en:pojmy:dotazovaci_jazyk?s[]=cql\" target=\"_blank\">documentation</a> and <a href=\"https://ufal.mff.cuni.cz/lindat-kontext\" target=\"_blank\">examples</a>.')"
     };
     conf.ttIntervalChars = #filter $Jsonize#$getVar('interval_chars', [])#end filter#;
