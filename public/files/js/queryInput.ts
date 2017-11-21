@@ -330,7 +330,7 @@ export class QueryFormTweaks {
         });
         jqFocusElem.val(oldval);
         $('#queryselector').parent().find('.context-help').remove();
-        if (newid === 'iqueryrow' || newid === 'phraserow') {
+        if (['iqueryrow', 'lemmarow', 'phraserow', 'wordrow', 'charrow', 'cqlrow'].indexOf(newid) > -1) {
             const imgElm = window.document.createElement('img');
             $(imgElm)
                 .addClass('over-img')

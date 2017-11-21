@@ -1195,15 +1195,21 @@ msgstr "defaultní nastavení"
 
 #: cmpltmpl/document.py:1794
 msgid ""
-"Query type <em>basic</em> is suitable for getting to know the corpus. It "
-"searches for the input expression as a word form case-insensitively; if it "
-"is also a canonical dictionary form (lemma), all its word forms are searched "
-"as well."
+"Query type <em>Basic</em>: search for the input expression as a word "
+"form case-insensitively; if it is also a canonical dictionary form (lemma), "
+"all its word forms are searched for as well."
 msgstr ""
-"Typ dotazu <em>základní</em> je vhodný pro první seznámení s korpusem. "
-"Vyhledá vložený výraz jako slovní tvar bez ohledu na velikost písmen; jde-li "
-"zároveň o základní slovníkový tvar (lemma), vyhledají se také všechny jeho "
-"tvary."
+"Vyhledá vložený výraz jako slovní tvar bez ohledu na velikost písmen; "
+"jde-li zároveň o základní slovníkový tvar (lemma), vyhledají se také všechny jeho tvary. "
+"Bez regulárních výrazů."
+
+#: cmpltmpl/document.py:1795
+msgid ""
+"Query type <em>Lemma</em>: case sensitive search by a canonical dictionary form (lemma); "
+"all its word forms will be present in search results. Query supports regular expressions."
+msgstr ""
+"Vyhledá všechny pozice, jejichž lemma (slovníkový tvar) odpovídá vloženému řetězci "
+"(regulárnímu výrazu; rozlišuje malá a velká písmena); možnost upřesnit slovní druh."
 
 #: cmpltmpl/document.py:1871
 msgid "logout"

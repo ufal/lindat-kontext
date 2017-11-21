@@ -61,7 +61,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
                 #set $selected = ($querytype == 'wordrow') and 'selected="selected"' or ''
                 <option value="wordrow" data-type="word" $selected>$_("Word Form")</option>
                 #set $selected = ($querytype == 'charrow') and 'selected="selected"' or ''
-                <option value="charrow" data-type="char" $selected>$_("Character")</option>
+                <option value="charrow" data-type="char" $selected>$_("Word Part")</option>
                 #set $selected = ($querytype == 'cqlrow') and 'selected="selected"' or ''
                 <option value="cqlrow" data-type="cql" $selected>$_("CQL")</option>
             </select>
@@ -161,7 +161,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
     #set $hidden = ($querytype == 'charrow') and 'visible' or 'hidden'
     <tr class="required $hidden" id="charrow$suff">
-        <th>$_("Character"):</th>
+        <th>$_("Word Part"):</th>
         <td>
             <div class="query-area">
                 <ul class="query-toolbox">
