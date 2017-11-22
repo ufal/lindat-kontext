@@ -1199,17 +1199,54 @@ msgid ""
 "form case-insensitively; if it is also a canonical dictionary form (lemma), "
 "all its word forms are searched for as well."
 msgstr ""
-"Vyhledá vložený výraz jako slovní tvar bez ohledu na velikost písmen; "
-"jde-li zároveň o základní slovníkový tvar (lemma), vyhledají se také všechny jeho tvary. "
-"Bez regulárních výrazů."
+"Typ dotazu <em>Základní</em> vyhledá vložený výraz jako slovní tvar bez ohledu "
+"na velikost písmen; jde-li zároveň o základní slovníkový tvar (lemma), "
+"vyhledají se také všechny jeho tvary. Nepodporuje použití regulárních výrazů."
 
-#: cmpltmpl/document.py:1795
+#: cmpltmpl/document.py:
 msgid ""
 "Query type <em>Lemma</em>: case sensitive search by a canonical dictionary form (lemma); "
-"all its word forms will be present in search results. Query supports regular expressions."
+"all its word forms will be present in search results. <br>Query supports regular expressions."
 msgstr ""
-"Vyhledá všechny pozice, jejichž lemma (slovníkový tvar) odpovídá vloženému řetězci "
-"(regulárnímu výrazu; rozlišuje malá a velká písmena); možnost upřesnit slovní druh."
+"Typ dotazu <em>Lemma</em> vyhledá všechny tvary přiřazené k danému lemmatu (slovníkovovému tvaru). "
+"<br>Rozlišují se malá a velká písmena a je možné použít regulární výrazy."
+
+#: cmpltmpl/document.py:
+msgid ""
+"Query type <em>Phrase</em>: search for a given sequence of word forms; "
+"the search is case insensitive by default; <br>Query supports regular expressions."
+msgstr ""
+"Typ dotazu <em>Fráze</em> vyhledá zadanou posloupnost slovních tvarů; <br>Je možné použít regulární výrazy."
+
+#: cmpltmpl/document.py:
+msgid ""
+"Query type <em>Word form</em>: search for an individual word form. <br>Query supports regular expressions."
+msgstr ""
+"Typ dotazu <em>Slovní tvar</em> vyhledá přesně zadaný slovní tvar; <br>Je možné použít regulární výrazy."
+
+#: cmpltmpl/document.py:
+msgid ""
+"Query type <em>Word part</em>: search for a string of characters anywhere within a word. "
+"<br>Query supports regular expressions."
+msgstr ""
+"Typ dotazu <em>Část slova</em> vyhledá po sobě následující znaky v rámci jednoho slova. "
+"<br>Rozlišují se malá a velká písmena a je možné použít regulární výrazy."
+
+#: cmpltmpl/document.py:
+msgid ""
+"Query type <em>CQL</em>: search for anything that is present in the annotation of the corpus, e.g. "
+"[attribute1=\"value1\" & attribute2=\"value2\"] [attribute3=\"value3\"] within &lt;s/&gt; will search for "
+"two successive words with the specified attribute values and appearing within a single sentence; "
+"attribute values may be regular expressions. <br>For more information, see "
+"<a href=\"https://wiki.korpus.cz/doku.php/en:pojmy:dotazovaci_jazyk?s[]=cql\" target=\"_blank\">documentation</a> "
+"and <a href=\"https://ufal.mff.cuni.cz/lindat-kontext\" target=\"_blank\">examples</a>."
+msgstr ""
+"<em>CQL</em> je komplexní dotazovací jazyk umožňující práci s veškerou anotací, která je pro daný korpus dostupná. "
+"<br>Např. následující dotaz vyhledá dvě po sobě jdoucí pozice (slova) se zadanými hodnotami atributů a vyskytující "
+"se v jediné větě: <br>[atribut1=\"hodnota1\" & atribut2=\"hodnota1\"] [atribut3=\"hodnota3\"] within &lt;s/&gt; "
+"<br>Pro hodnoty atributů lze použít regulární výrazy. <br>Detailnější výklad naleznete "
+"<a href=\"https://wiki.korpus.cz/doku.php/en:pojmy:dotazovaci_jazyk?s[]=cql\" target=\"_blank\">v dokumentaci</a> "
+"and <a href=\"https://ufal.mff.cuni.cz/lindat-kontext\" target=\"_blank\">v příkladech</a>."
 
 #: cmpltmpl/document.py:1871
 msgid "logout"
