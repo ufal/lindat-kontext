@@ -25,6 +25,7 @@ class MaintenanceController(object):
         self.environ = self.request.environ
         self.ui_lang = ui_lang
         self.cookies = KonTextCookie(self.environ.get('HTTP_COOKIE', ''))
+        self._files_path = settings.get('global', 'static_files_prefix', u'../files')
 
     def _apply_theme(self):
         theme_name = settings.get('theme', 'name')
@@ -55,10 +56,12 @@ class MaintenanceController(object):
 
         return {
             'theme_name': settings.get('theme', 'name'),
-            'theme_css': [os.path.normpath('../files/themes/%s/%s' % (theme_name, p))
-                          for p in theme_css],
-            'theme_logo_path': os.path.normpath('../files/themes/%s/%s' % (theme_name, logo_img)),
-            'theme_logo_mouseover_path': os.path.normpath('../files/themes/%s/%s' % (theme_name,
+            #'theme_css': [os.path.normpath('../files/themes/%s/%s' % (theme_name, p))
+            #              for p in theme_css],
+            'theme_css': os.path.normpath(os.path.join(self._files_path, 'css', 'kontext.min.css')),
+            #'theme_logo_path': os.path.normpath('../files/themes/%s/%s' % (theme_name, logo_img)),
+            'theme_logo_path': os.path.normpath(os.path.join(self._files_path, 'themes', theme_name, logo_img)),
+            'theme_logo_mouseover_path': os.path.normpath(os.path.join(self._files_path, 'themes', theme_name,
                                                                                logo_alt_img)),
             'theme_logo_href': logo_href,
             'theme_logo_title': logo_title,
