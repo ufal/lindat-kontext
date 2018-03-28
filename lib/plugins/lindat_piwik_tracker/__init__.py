@@ -52,7 +52,7 @@ def create_instance(conf):
     #    context_path = conf.get('global', 'root_url_path').strip()
 
     if conf.get('global', 'action_path_prefix'):
-        context_path = conf.get('global', 'root_url_path').strip()
+        context_path = conf.get('global', 'action_path_prefix').strip()
 
     return Tracker(site_id, rest_site_id, tracking_api_url, context_path, methods_to_track, auth_token)
 
