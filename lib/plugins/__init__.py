@@ -12,7 +12,6 @@ def install_plugin(name, module, config):
         _plugins[name] = apply(module.create_instance, (config,))
     else:  # modules without @inject will get just the configuration
         _plugins[name] = apply(module.create_instance, (config,))
-    print(_plugins)
 
 
 def inject_plugin(name, obj):
