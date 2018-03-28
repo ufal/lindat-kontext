@@ -660,7 +660,7 @@ class Kontext(Controller):
         self._log_request(self._get_items_by_persistence(Parameter.PERSISTENT), '%s' % methodname,
                           proc_time=self._proc_time)
         if plugins.has_plugin('tracker'):
-            plugins.tracker.track(methodname, tmpl, result)
+            plugins.get_plugins['tracker'].track(methodname, tmpl, result)
 
     def _attach_query_metadata(self, tpl_out):
         """
