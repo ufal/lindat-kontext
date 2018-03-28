@@ -20,7 +20,7 @@ import re
 from piwikapi.tracking import PiwikTracker
 from piwikapi.tests.request import FakeRequest
 
-def create_instance(conf, *args):
+def create_instance(conf):
     """
     This function must be always implemented. Bonito uses it to create an instance of your
     authentication object. The settings module is passed as a parameter.
