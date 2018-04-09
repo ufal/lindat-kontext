@@ -23,8 +23,6 @@
 
 
 export function init():void {
-    return;
-    /*
     if (!(window.hasOwnProperty('aai'))) {
         throw 'Failed to find LINDAT/CLARIN AAI object. See https://redmine.ms.mff.cuni.cz/projects/lindat-aai for more details!';
     }
@@ -56,5 +54,4 @@ export function init():void {
             '<p  style="" ><input type="submit" style="margin: 20px 2px" name="submit" value="Sign in" /></p>' +
             '</form>';
     window['aai'].setup(opts);
-    */
 }
