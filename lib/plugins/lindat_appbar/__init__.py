@@ -31,10 +31,9 @@ class LindatTopBar(AbstractApplicationBar):
         return [dict(url=self.css_url)]
 
     def get_scripts(self, plugin_api):
-        import logging
-        logging.getLogger(__name__).warning('get_scripts...')
-        return ['//lindat.mff.cuni.cz/aai/discojuice/discojuice-2.1.en.min',
-                '//lindat.mff.cuni.cz/aai/aai']
+        return ['//code.jquery.com/jquery-3.3.1.min.js',
+                '//lindat.mff.cuni.cz/aai/discojuice/discojuice-2.1.en.min.js',
+                '//lindat.mff.cuni.cz/aai/aai.js']
 
     def get_contents(self, plugin_api, return_url):
         tpl_path = self.get_template(plugin_api.user_lang)
