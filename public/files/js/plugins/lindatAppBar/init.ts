@@ -27,7 +27,7 @@ export class LindatAppBar implements PluginInterfaces.ApplicationBar.IPlugin {
 }
 
 const create:PluginInterfaces.ApplicationBar.Factory = (pluginApi) => {
-    aai.init();
+    //aai.init();
     return new LindatAppBar();
 };
 
