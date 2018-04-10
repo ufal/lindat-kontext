@@ -75,6 +75,7 @@ if [[ "x$NODE_VER" == "x" ]]; then
 fi
 sudo ln -nsf /usr/bin/node /usr/bin/nodejs
 echo ${NODE_VER}
+which nodejs
 which npm || true
 
 
