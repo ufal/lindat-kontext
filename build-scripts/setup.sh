@@ -76,10 +76,12 @@ fi
 set -o verbose
 set -o xtrace
 sudo ln -nsf /usr/bin/node /usr/bin/nodejs
-ls -la /usr/bin/nodejs
+cat /usr/bin/nodejs
+ls -lah /usr/bin/nodejs
 echo $PATH
 echo ${NODE_VER}
-which nodejs
+which nodejs || echo "which failed"
+which node || echo "which failed"
 set +o verbose
 set +o xtrace
 which npm || true
