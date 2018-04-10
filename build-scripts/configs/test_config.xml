@@ -5,14 +5,19 @@
         <logo_mouseover>kontext-logo.svg</logo_mouseover>
         <logo_href>/kontext/</logo_href>
         <logo_inline_css>width: auto;height: 3em</logo_inline_css>
-        <css>
-            <item>//lindat.mff.cuni.cz/aai/discojuice/discojuice.css</item>
-            <item>lindat-common/public/css/lindat.css</item>
-        </css>
+        <css>/opt/kontext/installation/public/files/themes/lindat/style.css</css>
         <fonts>
             <item>https://fonts.googleapis.com/css?family=Cousine:400|Roboto:300,400,400italic,700,700italic|Roboto+Condensed:400,700&amp;subset=latin,latin-ext</item>
             <item>/files/themes/lindat/css/font-awesome.min.css</item>
         </fonts>
+          <external_css extension-by="lindat">
+            <item>//lindat.mff.cuni.cz/aai/discojuice/discojuice.css</item>
+          </external_css>
+          <external_js extension-by="lindat">
+              <item>//code.jquery.com/jquery-3.3.1.min.js</item>
+              <item>//lindat.mff.cuni.cz/aai/discojuice/discojuice-2.1.en.min.js</item>
+              <item>//lindat.mff.cuni.cz/aai/aai.js</item>
+          </external_js>
     </theme>
     <global>
         <deployment_id>20160421_b</deployment_id>
@@ -91,7 +96,7 @@
     </corpora>
     <plugins>
         <db>
-            <module>redis_db</module>
+            <module>lindat_db</module>
             <host extension-by="default">127.0.0.1</host>
             <port extension-by="default">6379</port>
             <id extension-by="default">1</id>
@@ -103,16 +108,12 @@
             <!-- The default list of corpora is loaded from corparch/file plugin -->
             <auth_cookie_name>kontext_session</auth_cookie_name>
             <anonymous_user_id>0</anonymous_user_id>
-            <login_url>user/loginx?redirectTo=</login_url>
+            <login_url>user/lindat_login?redirectTo=</login_url>
             <logout_url>/user/logoutx</logout_url>
             <metadataFeed extension-by="lindat">https://lindat.mff.cuni.cz/repository/xmlui/discojuice/feeds</metadataFeed>
             <service_name extension-by="lindat">LINDAT-KONTEXT Login</service_name>
             <response_url extension-by="lindat"></response_url>
-            <local_action extension-by="lindat">/user/loginx</local_action>
-            <external_deps extension-by="lindat">
-                <lib name="discojuice" shim="jquery">//lindat.mff.cuni.cz/aai/discojuice/discojuice-2.1.en.min</lib>
-                <lib name="aai" shim="jquery, discojuice">//lindat.mff.cuni.cz/aai/aai</lib>
-            </external_deps>
+            <local_action extension-by="lindat">/user/lindat_login</local_action>
             <entitlements_to_groups extension-by="lindat">
                 <entitlement_to_group>staff@org1297.mff.cuni.cz=ufal</entitlement_to_group>
             </entitlements_to_groups>
@@ -124,9 +125,9 @@
         </getlang>
         <query_storage>
             <module>default_query_storage</module>
-            <js_module>ucnkQueryStorage</js_module>
+            <js_module>defaultQueryStorage</js_module>
             <history_max_query_size>250</history_max_query_size>
-            <page_num_records extension-by="default">10</page_num_records>
+            <page_num_records>10</page_num_records>
             <page_append_records>5</page_append_records>
             <num_kept_records>10</num_kept_records>
         </query_storage>
@@ -157,7 +158,11 @@
             <ttl>14400</ttl>
         </sessions>
 	<subcmixer/>
-	<syntax_viewer/>
+    <syntax_viewer>
+        <module>ucnk_syntax_viewer</module>
+        <js_module>ucnkSyntaxViewer</js_module>
+        <config_path extension-by="default">/opt/kontext/configs/syntax-viewer.json</config_path>
+    </syntax_viewer>
         <corparch>
             <module>lindat_corparch</module>
             <js_module>lindatCorparch</js_module>
@@ -200,6 +205,9 @@
             <template_cs extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/lindat-common/cs/footer.htm</template_cs>
             <template_en extension-by="lindat">/opt/kontext/installation/public/files/themes/lindat/lindat-common/en/footer.htm</template_en>
         </footer_bar>
+        <token_connect />
+        <kwic_connect />
+        <issue_reporting />
         <status>
             <module>lindat_status</module>
         </status>
