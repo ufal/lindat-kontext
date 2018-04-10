@@ -75,6 +75,10 @@ if [[ "x$NODE_VER" == "x" ]]; then
 fi
 set -o verbose
 set -o xtrace
+
+ls -lah /usr/bin/node || echo "/usr/bin/node neexistuje"
+which node || echo "problem"
+
 sudo ln -nsf /usr/bin/node /usr/bin/nodejs
 cat /usr/bin/nodejs
 ls -lah /usr/bin/nodejs
