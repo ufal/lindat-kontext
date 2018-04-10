@@ -76,6 +76,8 @@ fi
 set -o verbose
 set -o xtrace
 sudo ln -nsf /usr/bin/node /usr/bin/nodejs
+ls -la /usr/bin/nodejs
+echo $PATH
 echo ${NODE_VER}
 which nodejs
 set +o verbose
