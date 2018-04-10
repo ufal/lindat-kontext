@@ -254,10 +254,8 @@ popd
 
 minisep "Compiling kontext"
 cd ${KONTEXTDIR}
-npm install -g grunt-cli
 npm install
-grunt devel
-
+make
 
 # =========
 # kontext start and pm2 process manager
