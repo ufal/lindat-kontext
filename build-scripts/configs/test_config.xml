@@ -164,12 +164,13 @@
         <config_path extension-by="default">/opt/kontext/configs/syntax-viewer.json</config_path>
     </syntax_viewer>
         <corparch>
-            <module>lindat_corparch</module>
-            <js_module>lindatCorparch</js_module>
+            <module>default_corparch</module>
+            <js_module>defaultCorparch</js_module>
             <file>/opt/kontext/installation/conf/corplist.xml</file>
             <root_elm_path>/corplist</root_elm_path>
             <tag_prefix extension-by="default">+</tag_prefix>
             <max_num_hints extension-by="default">10</max_num_hints>
+            <default_page_list_size extension-by="default">20</default_page_list_size>
         </corparch>
         <export>
             <csv>default_csv</csv>
