@@ -73,21 +73,8 @@ if [[ "x$NODE_VER" == "x" ]]; then
     curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - > /dev/null
     sudo apt-get install -y nodejs
 fi
-set -o verbose
-set -o xtrace
-
-ls -lah /usr/bin/node || echo "/usr/bin/node neexistuje"
-which node || echo "problem"
-
-sudo ln -nsf /usr/bin/node /usr/bin/nodejs
-cat /usr/bin/nodejs
-ls -lah /usr/bin/nodejs
-echo $PATH
+sudo ln -nsf $(which node) /usr/bin/nodejs
 echo ${NODE_VER}
-which nodejs || echo "which failed"
-which node || echo "which failed"
-set +o verbose
-set +o xtrace
 which npm || true
 
 
