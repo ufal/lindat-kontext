@@ -158,11 +158,7 @@
             <ttl>14400</ttl>
         </sessions>
 	<subcmixer/>
-    <syntax_viewer>
-        <module>ucnk_syntax_viewer</module>
-        <js_module>ucnkSyntaxViewer</js_module>
-        <config_path extension-by="default">/opt/kontext/configs/syntax-viewer.json</config_path>
-    </syntax_viewer>
+    <syntax_viewer/>
         <corparch>
             <module>default_corparch</module>
             <js_module>defaultCorparch</js_module>

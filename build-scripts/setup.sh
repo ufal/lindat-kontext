@@ -121,7 +121,7 @@ else
         minisep "Installing antlr"
         mkdir -p ${DEPSDIR}/antlr && cd ${DEPSDIR}/antlr
         FILE=${PACKAGE}.tar.gz
-        URL=http://www.antlr3.org/download/C/${FILE}
+        URL=https://www.antlr3.org/download/C/${FILE}
         install ${FILE} ${PACKAGE} ${URL} "tar xzf" "--enable-64bit --disable-abiflags --prefix=$DEPS_PREFIX"
         sudo ldconfig
     fi
