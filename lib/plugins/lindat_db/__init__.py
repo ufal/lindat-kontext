@@ -183,7 +183,14 @@ class RedisDb(KeyValueStorage):
         arguments:
         key -- data access key
         """
-        return dict((k, json.loads(v)) for k, v in self.redis.hgetall(key).items())
+        ret = {}
+        for k, v in self.redis.hgetall(key).items():
+            try:
+                val = json.loads(v)
+            except:
+                val = v
+            ret[k] = v
+        return ret
 
     def get(self, key, default=None):
         """
