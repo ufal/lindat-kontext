@@ -170,15 +170,22 @@ export function init(dispatcher, mixins, treeStore) {
         },
         
         _pmltq : function (pmltq) {
-            if (pmltq !== 'no') {
-            return <a href={this.props.pmltq} className="md-transparent" title={"Inspect " + this.props.name}>
+            if (pmltq !== 'no' & typeof this.props.permittedCorp[this.props.ident] !== "undefined" ) {
+            return <a href={this.props.pmltq} className="md-transparent" title={"Inspect " + this.props.name + " in PML-TQ"}>
                     <span className="glyphicon lindat-pmltq-logo">&nbsp;</span></a>
+            }
+        },
+
+        _download : function (repo) {
+            if (repo !== 'no' & typeof this.props.permittedCorp[this.props.ident] !== "undefined" ) {
+            return <a href={this.props.repo} className="md-transparent" title={"Download " + this.props.name}>
+                    <span className="glyphicon glyphicon-save"></span></a>
             }
         },
 
         _access : function(permittedCorp) {
             if (typeof this.props.permittedCorp[this.props.ident] === "undefined" ) {
-                return <span className="glyphicon glyphicon-lock" style={{color: "red"}}></span>
+                return <span className="glyphicon glyphicon-lock"></span>
             }
         },
 
@@ -212,6 +219,9 @@ export function init(dispatcher, mixins, treeStore) {
                                 </div>
                                 <div className="col-xs-9 details">
                                     <h3 className="title">
+                                        {this._pmltq(this.props.pmltq)}
+                                        {this._download(this.props.repo)}
+                                        {this._access(this.props.permittedCorp)}
                                         {this.props.name}
                                     </h3>
                                     <div className="desc">
@@ -220,13 +230,6 @@ export function init(dispatcher, mixins, treeStore) {
                                 </div>
                             </div>
                         </a>
-                        <div className="col-xs-3 col-md-2 actions text-right">
-                            {this._access(this.props.permittedCorp)}
-                            {this._pmltq(this.props.pmltq)}
-                            <a href={this.props.repo} className="md-transparent" title={"Download " + this.props.name}>
-                                <span className="glyphicon glyphicon-save"></span>
-                            </a>
-                        </div>
                     </div>
             </div>;
         }
