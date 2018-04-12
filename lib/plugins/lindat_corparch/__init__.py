@@ -226,11 +226,11 @@ class CorptreeParser(object):
 
 
 @exposed(return_type='json', skip_corpus_init=True)
-def ajax_get_corptree_data(ctrl, request):
+def ajax_get_corptree_data(self, request):
     """
     An exposed HTTP action required by client-side widget.
     """
-    return plugins.runtime.CORPARCH.instance.get_all(ctrl._session_get('user', 'id'))
+    return plugins.runtime.CORPARCH.instance.get_all(self.session_get('user', 'id'))
 
 
 class TreeCorparch(AbstractCorporaArchive):
@@ -282,7 +282,7 @@ class TreeCorparch(AbstractCorporaArchive):
     def setup(self, controller_obj):
         pass
 
-    def get_corpus_info(self, corp_id, language=None):
+    def get_corpus_info(self, language, corp_id):
         if corp_id:
             # get rid of path-like corpus ID prefix
             corp_id = corp_id.split('/')[-1].lower()

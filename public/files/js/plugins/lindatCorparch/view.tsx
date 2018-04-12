@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import React from 'react';
+import * as React from 'react';
 import {Kontext} from '../../types/common';
 import { ActionDispatcher } from '../../app/dispatcher';
 import {TreeWidgetModel} from './model';
@@ -25,10 +25,11 @@ import * as Immutable from 'immutable';
 export interface Views {
     CorptreeWidget:React.ComponentClass<{}>;
     CorptreePageComponent:React.ComponentClass<{}>;
+    FilterForm:React.SFC<{}>;
 }
 
 
-export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers, 
+export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
             treeModel:TreeWidgetModel):Views {
 
     // --------------------------------- <TreeNode /> --------------------------
@@ -44,22 +45,22 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
         onActiveFeatDrop:()=>void;
         onActiveLanguageSet:(lang:string)=>void;
         onActiveLanguageDrop:()=>void;
-        permittedCorp:Immutable.Map<string, string>;
+        permittedCorp:Immutable.List<string>;
 
     }> = (props) => {
 
-        
+
         return (
             <div className="node" id={props.name}>
                     <div className="header">
                     {props.name}
                     </div>
                     <div className="wrapper-inner">
-                    <ItemList name={props.name} corplist={props.corplist} 
+                    <ItemList name={props.name} corplist={props.corplist}
                                 onActiveFeatSet={props.onActiveFeatSet}
                                 onActiveFeatDrop={props.onActiveFeatDrop}
                                 activeFeat={props.activeFeat}
-                                activeLanguage={props.activeLanguage} 
+                                activeLanguage={props.activeLanguage}
                                 onActiveLanguageSet={props.onActiveLanguageSet}
                                 onActiveLanguageDrop={props.onActiveLanguageDrop}
                                 permittedCorp={props.permittedCorp}/>
@@ -76,7 +77,7 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
         activeFeat:string;
         activeLanguage:string;
         name:string;
-        permittedCorp:Immutable.Map<string, string>;
+        permittedCorp:Immutable.List<string>;
         corplist:any; // TODO type
         onActiveLanguageSet:(lang:string)=>void;
         onActiveLanguageDrop:()=>void;
@@ -113,20 +114,20 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
                 <div className="corpora-set-header toggle-below clickable">
                     <a onClick={this._clickHandler}>
                         <div className="corpus-details">Multiple corpora
-                        </div>                
+                        </div>
                         <div className="subnode">
                             <span className={this._getStateGlyph()}> </span>
                             {this.props.name}
                         </div>
                     </a>
                     <div className="to-toggle" style={this._getStateDisplay()}>
-                        <ItemList level="inner" 
+                        <ItemList level="inner"
                                 name={this.props.name}
-                                corplist={this.props.corplist} 
+                                corplist={this.props.corplist}
                                 onActiveFeatSet={this.props.onActiveFeatSet}
                                 onActiveFeatDrop={this.props.onActiveFeatDrop}
                                 activeFeat={this.props.activeFeat}
-                                activeLanguage={this.props.activeLanguage} 
+                                activeLanguage={this.props.activeLanguage}
                                 onActiveLanguageSet={this.props.onActiveLanguageSet}
                                 onActiveLanguageDrop={this.props.onActiveLanguageDrop}
                                 permittedCorp={this.props.permittedCorp}/>
@@ -141,9 +142,9 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
     class TreeLeaf extends React.Component<{
         access:any; // TODO ??
         ident:string;
-        permittedCorp:Immutable.Map<string, string>;
+        permittedCorp:Immutable.List<string>;
         activeLanguage:string;
-        language:Array<string>;
+        language:Immutable.List<string>;
         features:string;
         activeFeat:string;
         pmltq:string;
@@ -162,6 +163,10 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
             super(props);
             this.state = {hover:false, opaque: true};
             this._clickHandler = this._clickHandler.bind(this);
+            this._mouseOut = this._mouseOut.bind(this);
+            this._mouseOver = this._mouseOver.bind(this);
+            this._searchFeatClick = this._searchFeatClick.bind(this);
+            this._searchFeatDrop = this._searchFeatDrop.bind(this);
         }
 
         _mouseOver() {
@@ -171,10 +176,10 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
         _mouseOut() {
             this.setState({hover: false});
         }
-        
+
         _myColor() {
             if (this.state.hover) {
-                if (typeof this.props.permittedCorp.get(this.props.ident) !== "undefined" ) {
+                if (typeof this.props.permittedCorp.contains(this.props.ident)) {
                     return "#d8eff7";
                 }
                 else {
@@ -182,41 +187,45 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
                 }
             }
         }
-        
+
         _myOpacity() {
-            if ((this.props.activeLanguage !== null && !this.props.language.includes(this.props.activeLanguage)) || 
-                    this.props.activeFeat !== null && !this.props.features.includes(this.props.activeFeat) ) {
+            if ((this.props.activeLanguage !== null &&
+                    !this.props.language.includes(this.props.activeLanguage)) ||
+                    this.props.activeFeat !== null &&
+                    this.props.features.indexOf(this.props.activeFeat) === -1) {
                         return 0.1
                 }
             return 1;
         }
-        
+
         _searchLangClick(event:React.MouseEvent<HTMLButtonElement>) {
             this.props.onActiveLanguageSet(event.currentTarget.textContent);
         }
-        
+
         _searchLangDrop() {
             this.props.onActiveLanguageDrop();
         }
-        
+
         _searchFeatClick(event) {
             this.props.onActiveFeatSet(event.currentTarget.textContent);
         }
-        
+
         _searchFeatDrop() {
             this.props.onActiveFeatDrop();
         }
-        
+
         _showLangSign() {
-            if (this.props.language.includes(this.props.activeLanguage)) { return "inline"; }
+            if (this.props.language.includes(this.props.activeLanguage)) {
+                return "inline";
+            }
             return "none";
         }
-        
+
         _showFeatSign(feat) {
             if (feat === this.props.activeFeat) { return "inline"; }
             return "none";
         }
-        
+
         _clickHandler() {
             dispatcher.dispatch({
                 actionType: 'TREE_CORPARCH_LEAF_NODE_CLICKED',
@@ -225,23 +234,23 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
                 }
             });
         }
-        
+
         _pmltq(pmltq:string) {
-            if (pmltq !== 'no' && typeof this.props.permittedCorp.get(this.props.ident) !== "undefined" ) {
+            if (pmltq !== 'no' && typeof this.props.permittedCorp.contains(this.props.ident)) {
             return <a href={this.props.pmltq} className="md-transparent" title={"Inspect " + this.props.name + " in PML-TQ"}>
                     <span className="glyphicon lindat-pmltq-logo">&nbsp;</span></a>
             }
         }
 
         _download(repo:string) {
-            if (repo !== 'no' && typeof this.props.permittedCorp.get(this.props.ident) !== "undefined" ) {
+            if (repo !== 'no' && typeof this.props.permittedCorp.contains(this.props.ident)) {
             return <a href={this.props.repo} className="md-transparent" title={"Download " + this.props.name}>
                     <span className="glyphicon glyphicon-save"></span></a>
             }
         }
 
         _access(permittedCorp) {
-            if (typeof this.props.permittedCorp.get(this.props.ident) === "undefined" ) {
+            if (typeof this.props.permittedCorp.contains(this.props.ident)) {
                 return <span className="glyphicon glyphicon-lock"></span>
             }
         }
@@ -251,7 +260,7 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
                     <div className="row">
                         <div className="corpus-details col-xs-4">
                         Features:&nbsp;
-                            {this.props.features.split(',').map((item, index) => 
+                            {this.props.features.split(',').map((item, index) =>
                             (<div key={index} style={{display: "inline-block"}}>
                                 <span className="corpus-details-info corplist-search clickable underline-hover" data-search="features" onClick={this._searchFeatClick}>
                                 {item}
@@ -266,7 +275,7 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
                         </div>
                     </div>
                     <div className="row">
-                        <a className="corpus-main-info col-xs-9 col-md-10" onMouseOver={this._mouseOver} onMouseOut={this._mouseOut} onClick={this._clickHandler} title={"Search in " + this.props.name}>
+                        <div className="corpus-main-info col-xs-9 col-md-10" onMouseOver={this._mouseOver} onMouseOut={this._mouseOut} onClick={this._clickHandler} title={"Search in " + this.props.name}>
                             <div className="row">
                                 <div className="col-xs-3 tokens">
                                     Size
@@ -286,7 +295,7 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
                                     </div>
                                 </div>
                             </div>
-                        </a>
+                        </div>
                     </div>
             </div>;
         }
@@ -301,20 +310,20 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
         corplist:Array<string>;
         activeLanguage:string;
         activeFeat:string;
-        permittedCorp:Immutable.Map<string, string>;
+        permittedCorp:Immutable.List<string>;
         onActiveLanguageSet:(lang:string)=>void;
         onActiveLanguageDrop:()=>void;
         onActiveFeatSet:(feat:string)=>void;
         onActiveFeatDrop:()=>void;
 
     }> = (props) => {
-        
-        const _renderChildren = () => {
+
+        const renderChildren = () => {
                 return props.corplist.map((item, i) => {
                     if (item['corplist'].size > 0) {
                         if (item['level'] === 'outer') {
                             return <TreeNode key={i} name={item['name']} ident={item['ident']}
-                                             corplist={item['corplist']} 
+                                             corplist={item['corplist']}
                                              active={item['active']}
                                              activeFeat={props.activeFeat}
                                              activeLanguage={props.activeLanguage}
@@ -326,7 +335,7 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
                         }
                         else {
                             return <SubTreeNode key={i} name={item['name']} ident={item['ident']}
-                                                corplist={item['corplist']} 
+                                                corplist={item['corplist']}
                                                 active={item['active']}
                                                 activeFeat={props.activeFeat}
                                                 activeLanguage={props.activeLanguage}
@@ -340,7 +349,7 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
                         return <TreeLeaf key={i} name={item['name']} ident={item['ident']}
                                          size={item['formatted_size']} features={item['features']}
                                          language={item['language']} description={item['description']}
-                                         repo={item['repo']} pmltq={item['pmltq']} 
+                                         repo={item['repo']} pmltq={item['pmltq']}
                                          access={item['access']}
                                          activeLanguage={props.activeLanguage}
                                          onActiveLanguageSet={props.onActiveLanguageSet}
@@ -355,11 +364,11 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
 
         return (
             <div className={props.htmlClass}>
-                {this._renderChildren()}
+                {renderChildren()}
             </div>
         );
     };
-    
+
     // -------------------------------- <ItemListSorted /> -------------------------------
 
     class ItemListSorted extends React.Component<{
@@ -371,20 +380,20 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
         onActiveLanguageDrop:()=>void;
         onActiveFeatSet:(feat:string)=>void;
         onActiveFeatDrop:()=>void;
-        permittedCorp:Immutable.Map<string, string>;
+        permittedCorp:Immutable.List<string>;
 
     }, {htmlClass:string}> {
-        
+
         constructor(props) {
             super(props);
            this.state = {htmlClass: "corp-tree-sorted"};
         }
-        
+
         _renderChildren() {
             return this.props.corplist.map((item, i) => {
-                 
-                    return <TreeLeaf key={i} name={item['name']} ident={item['ident']} 
-                                     size={item['formatted_size']} features={item['features']} 
+
+                    return <TreeLeaf key={i} name={item['name']} ident={item['ident']}
+                                     size={item['formatted_size']} features={item['features']}
                                      language={item['language']} description={item['description']}
                                      repo={item['repo']} pmltq={item['pmltq']} access={item['access']}
                                      activeLanguage={this.props.activeLanguage}
@@ -414,7 +423,7 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
         ident:string;
         active:boolean;
         name:string;
-        permittedCorp:Immutable.Map<string, string>;
+        permittedCorp:Immutable.List<string>;
         corplist:Array<string>;
 
     }, {active:boolean}> {
@@ -448,7 +457,7 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
                         {this.props.name}
                     </a>
                     { this.props.active ?
-                        <WidgetItemList name={this.props.name} 
+                        <WidgetItemList name={this.props.name}
                                         corplist={this.props.corplist}
                                         permittedCorp={this.props.permittedCorp}/>
                         : null }
@@ -462,7 +471,7 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
     const WidgetTreeLeaf:React.SFC<{
         ident:string;
         name:string;
-        permittedCorp:Immutable.Map<string, string>;
+        permittedCorp:Immutable.List<string>;
     }> = (props) => {
 
         const clickHandler = () => {
@@ -495,7 +504,7 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
         name:string;
         htmlClass?:string;
         corplist:Array<string>;
-        permittedCorp:Immutable.Map<string, string>;
+        permittedCorp:Immutable.List<string>;
 
     }> = (props) => {
 
@@ -527,9 +536,9 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
         currentCorpus:string;
 
     }, {
-        active:boolean, 
-        data:any, 
-        permittedCorp:Immutable.Map<string, string>;
+        active:boolean,
+        data:any,
+        permittedCorp:Immutable.List<string>;
     }> {
 
         constructor(props) {
@@ -555,7 +564,7 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
             this.setState({
                 active: true,
                 data: treeModel.getData(),
-                permittedCorp: treeModel.getPermittedCorp()
+                permittedCorp: treeModel.getPermittedCorpora()
             });
         }
 
@@ -574,12 +583,12 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
                         {this.props.currentCorpus}
                     </button>
                     <input type="hidden" name="corpname" value={this.props.corpname} />
-                    {this.state.active ? 
-                            <WidgetItemList 
+                    {this.state.active ?
+                            <WidgetItemList
                                 htmlClass="corp-tree"
                                 name=""
-                                corplist={this.state.data['corplist']} 
-                                permittedCorp={this.state.permittedCorp} /> : 
+                                corplist={this.state.data['corplist']}
+                                permittedCorp={this.state.permittedCorp} /> :
                             null
                     }
                 </div>
@@ -592,10 +601,9 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
     class CorptreePageComponent extends React.Component<{
 
     }, {
-
         data:any;
         sorted:boolean;
-        permittedCorp:Immutable.Map<string, string>;
+        permittedCorp:Immutable.List<string>;
         activeLanguage:string;
         activeFeat:string;
     }> {
@@ -603,10 +611,10 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
         constructor(props) {
             super(props);
             this.state = {
-                data: null, 
-                sorted: false, 
-                activeLanguage: null, 
-                activeFeat: null, 
+                data: null,
+                sorted: false,
+                activeLanguage: null,
+                activeFeat: null,
                 permittedCorp: null
             };
             this._changeListener = this._changeListener.bind(this);
@@ -621,7 +629,7 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
                 data: treeModel.getData(),
                 sorted: this.state.sorted,
                 activeLanguage: this.state.activeLanguage,
-                permittedCorp: treeModel.getPermittedCorp()
+                permittedCorp: treeModel.getPermittedCorpora()
             });
         }
 
@@ -640,21 +648,21 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
         handleActiveFeatDrop() {
             this.setState({activeFeat: null});
         }
-        
+
         _bySize() {
             if (this.state.sorted) {
                 return "none";
             }
             return "inline";
         }
-        
+
         _byDefault() {
             if (this.state.sorted) {
                 return "inline";
             }
             return "none";
         }
-        
+
         _sortClickHandler() {
             this.setState({sorted: !this.state.sorted});
         }
@@ -723,8 +731,13 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
         }
     }
 
+    const FilterForm:React.SFC<{}> = (props) => {
+        return <div />;
+    }
+
     return {
         CorptreeWidget: CorptreeWidget,
-        CorptreePageComponent: CorptreePageComponent
+        CorptreePageComponent: CorptreePageComponent,
+        FilterForm: FilterForm
     };
 }

@@ -21,52 +21,54 @@ import * as Immutable from 'immutable';
 import {init as viewInit} from './view';
 import RSVP from 'rsvp';
 import * as React from 'react';
-declare var $:any;
 import {Kontext} from '../../types/common';
 import {IPluginApi, PluginInterfaces} from '../../types/plugins';
 import {StatefulModel} from '../../models/base';
 import {ActionPayload} from '../../app/dispatcher';
 import {TreeWidgetModel} from './model';
+import {Views as CorplistViews} from './view';
 
-/**
- * Creates a corplist widget which is a box containing two tabs
- *  1) user's favorite items
- *  2) corpus search tool
- *
- * @param selectElm A HTML SELECT element for default (= non JS) corpus selection we want to be replaced by this widget
- * @param pluginApi
- * @param targetAction An action KonText will follow once user clicks a tree item
- * @param options A configuration for the widget
- */
-export function create_old(selectElm: HTMLElement, targetAction: string, pluginApi:IPluginApi,
-                       options:Kontext.GeneralProps) {
-    
-}
+declare var reqire:any;
+require('./style.less'); //  webpack
 
-export class CorplistPage  {
+export class CorplistPage implements PluginInterfaces.Corparch.ICorplistPage  {
 
     private pluginApi:IPluginApi;
 
-    private treeStore:TreeWidgetModel;
+    private treeModel:TreeWidgetModel;
 
-    private viewsLib:any;
+    private components:CorplistViews;
 
     constructor(pluginApi:IPluginApi) {
         this.pluginApi = pluginApi;
-        this.treeStore = new TreeWidgetModel(pluginApi, (corpusIdent: string) => {
-            window.location.href = pluginApi.createActionUrl('first_form?corpname=' + corpusIdent);
+        this.treeModel = new TreeWidgetModel(pluginApi, (corpusIdent: string) => {
+            window.location.href = pluginApi.createActionUrl('first_form', [['corpname', corpusIdent]]);
         });
-        this.viewsLib = viewInit(pluginApi.dispatcher(), pluginApi.getComponentHelpers(),
-                this.treeStore);
+        this.components = viewInit(
+            pluginApi.dispatcher(),
+            pluginApi.getComponentHelpers(),
+            this.treeModel
+        );
     }
 
+    setData(data:any):void { // TODO type
+        this.treeModel.setData(data);
+    }
 
-    createList(targetElm: HTMLElement, properties: any):React.ComponentClass<{}> {
-        $('noscript').before('<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">');
-        $('#content').addClass('lindatCorparch-content');
-        $('.corplist').addClass('lindatCorparch-section');
+    getForm():React.SFC<{}> {
+        return this.components.FilterForm;
+    }
 
-        return this.viewsLib.CorptreePageComponent
+    getList():React.ComponentClass {
+        const noscElm = document.querySelector('noscript');
+        noscElm.insertAdjacentHTML('beforebegin', '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">');
+        const content = document.getElementById('content');
+        content.className += ' lindatCorparch-content';
+        const corplistElms = document.querySelectorAll('.corplist');
+        for (let i = 0; i < corplistElms.length; i += 1) {
+            corplistElms[i].className += ' lindatCorparch-section';
+        }
+        return this.components.CorptreePageComponent;
     }
 }
 
@@ -82,12 +84,12 @@ export class Plugin {
 
     createWidget(targetAction:string, corpSel:PluginInterfaces.Corparch.ICorpSelection,
             options:Kontext.GeneralProps):React.ComponentClass<{}> {
-    
+
         let treeStore = new TreeWidgetModel(this.pluginApi, (corpusIdent: string) => {
             window.location.href = this.pluginApi.createActionUrl(targetAction, [['corpname', corpusIdent]]);
         });
         let viewsLib = viewInit(
-                this.pluginApi.dispatcher(), 
+                this.pluginApi.dispatcher(),
                 this.pluginApi.getComponentHelpers(),
                 treeStore
         );
@@ -95,9 +97,7 @@ export class Plugin {
     }
 
     initCorplistPageComponents():PluginInterfaces.Corparch.ICorplistPage {
-        const cp = new CorplistPage(this.pluginApi);
-        cp.createForm();
-
+        return new CorplistPage(this.pluginApi);;
     }
 }
 
@@ -105,7 +105,7 @@ export class Plugin {
 const create:PluginInterfaces.Corparch.Factory = (pluginApi) => {
     return new Plugin(pluginApi);
 
-    
+
 }
 
 export default create;

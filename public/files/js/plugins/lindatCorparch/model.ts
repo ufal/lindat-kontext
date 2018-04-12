@@ -23,7 +23,7 @@ export class TreeWidgetModel extends StatefulModel {
 
     private data: Node;
 
-    private permitted_corp: any; //Map<string, string>
+    private permittedCorpora:Immutable.List<string>;
 
     private idMap:Immutable.Map<string, Node>;
 
@@ -80,35 +80,22 @@ export class TreeWidgetModel extends StatefulModel {
     }
 
     loadData() {
-        let corptree_data_prom: RSVP.Promise<any> = this.pluginApi.ajax<any>(
-            'GET',
-            this.pluginApi.createActionUrl('corpora/ajax_get_corptree_data'),
-            {},
-            { contentType : 'application/x-www-form-urlencoded' }
-        );
-        let permitted_corp_prom: RSVP.Promise<any> = this.pluginApi.ajax<any>(
-            'GET',
-            this.pluginApi.createActionUrl('corpora/ajax_get_permitted_corpora'),
-            {},
-            { contentType : 'application/x-www-form-urlencoded' }
-        );
-        return RSVP.all([corptree_data_prom, permitted_corp_prom]).then(
+        return RSVP.all([
+            this.pluginApi.ajax<any>(
+                'GET',
+                this.pluginApi.createActionUrl('corpora/ajax_get_corptree_data'),
+                {}
+            ),
+            this.pluginApi.ajax<any>(
+                'GET',
+                this.pluginApi.createActionUrl('corpora/ajax_get_permitted_corpora'),
+                {}
+            )
+        ]).then(
             (data) => {
-                let corptree_data = data[0];
-                let permitted_corp = data[1];
-                if (!corptree_data.contains_errors && !permitted_corp.contains_errors) {
-                    this.data = this.importTree(corptree_data);
-                    this.permitted_corp = {};
-                    for (let canonical_corpus_id in permitted_corp){
-                        if (permitted_corp.hasOwnProperty(canonical_corpus_id) &&
-                            typeof permitted_corp[canonical_corpus_id] === 'string'){
-                            this.permitted_corp[canonical_corpus_id] = permitted_corp[canonical_corpus_id];
-                        }
-                    }
-                } else {
-                    let errored = corptree_data.contains_errors ? corptree_data : permitted_corp;
-                    this.pluginApi.showMessage('error', errored.messages.join('\n'));
-                }
+                const [corptreeData, permittedCorpora] = data;
+                this.data = this.importTree(corptreeData);
+                this.permittedCorpora = Immutable.List<string>(Object.keys(permittedCorpora));
             },
             (error) => {
                 this.pluginApi.showMessage('error', error);
@@ -116,11 +103,15 @@ export class TreeWidgetModel extends StatefulModel {
         );
     }
 
-    getData(): Node {
+    setData(data:any):void {
+        // TODO
+    }
+
+    getData():Node {
         return this.data;
     }
 
-    getPermittedCorp():Immutable.Map<string, string> {
-        return this.permitted_corp;
+    getPermittedCorpora():Immutable.List<string> {
+        return this.permittedCorpora;
     }
 }
