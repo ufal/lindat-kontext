@@ -11,9 +11,9 @@ if [[ "x$INSTANCE_TEST" == "xtrue" ]]; then
 
     declare -a urls=(
     " "
-    "fullref"
-    "get_cached_conc_sizes"
-    "corpora/bibliography"
+    "fullref?corpname=ovm_cs_w"
+    "get_cached_conc_sizes?corpname=ovm_cs_w"
+    "corpora/bibliography?corpname=ovm_cs_w"
     )
 
     # not working properly in 0.9 (not according to standard)
