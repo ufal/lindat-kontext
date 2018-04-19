@@ -91,8 +91,11 @@
             <item>ovm_cs_w</item>
         </default_corpora>
         <use_db_whitelist>1</use_db_whitelist>
-        <fcs_search_attributes>lemma,lc,word</fcs_search_attributes>
-        <default_shuffle>0</default_shuffle>
+        <fcs_search_attributes>
+            <item>lemma</item>
+            <item>lc</item>
+            <item>word</item>
+        </fcs_search_attributes>
     </corpora>
     <plugins>
         <db>
@@ -160,9 +163,9 @@
 	<subcmixer/>
     <syntax_viewer/>
         <corparch>
-            <module>default_corparch</module>
-            <js_module>defaultCorparch</js_module>
-            <file>/opt/kontext/installation/conf/corplist.xml</file>
+            <module>lindat_corparch</module>
+            <js_module>lindatCorparch</js_module>
+            <file>/opt/kontext/deploy/current/conf/corplist.xml</file>
             <root_elm_path>/corplist</root_elm_path>
             <tag_prefix extension-by="default">+</tag_prefix>
             <max_num_hints extension-by="default">10</max_num_hints>
@@ -205,9 +208,6 @@
         <token_connect />
         <kwic_connect />
         <issue_reporting />
-        <status>
-            <module>lindat_status</module>
-        </status>
     </plugins>
 </kontext>
 
