@@ -31,7 +31,7 @@ if [[ "x$BUILDBACKEND" == "xdocker" ]]; then
     date
 
     IMAGE=registry.gitlab.com/misutka/docker-kontext-base:v2.158.8
-    docker pull $IMAGE
+    time docker pull $IMAGE
     docker run --name kontext -d -p ${PORT}:5000 --rm \
         -v $FS:/opt/kontext/log/ \
         -v $FS:/opt/kontext/installation \
@@ -44,7 +44,7 @@ if [[ "x$BUILDBACKEND" == "xdocker" ]]; then
     # sleep 180
     URL="http://$DOCKERIP:${PORT}/"
     echo "Waiting for $URL..."
-    wget --retry-connrefused --tries=20 -q --wait=10 --spider $URL
+    wget --show-progress --retry-connrefused --tries=30 -q --wait=10 --spider $URL
     
     date
 fi
