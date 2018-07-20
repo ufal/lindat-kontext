@@ -263,7 +263,7 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
         _access() {
             if (!this.props.permitted) {
                 return <button className="btn btn-default">
-                        <span className="glyphicon glyphicon-lock"></span>;
+                        <span className="glyphicon glyphicon-lock"></span>
                         </button>
             }
         }
