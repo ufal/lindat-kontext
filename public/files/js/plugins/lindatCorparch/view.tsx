@@ -252,20 +252,27 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
 
         _download(repo:string) {
             if (repo !== 'no' && this.props.permitted) {
-            return <a href={this.props.repo} className="md-transparent" title={"Download " + this.props.name}>
-                    <span className="glyphicon glyphicon-save"></span></a>
+                return <a href={this.props.repo} className="md-transparent" title={"Download " + this.props.name}>
+                    <button className="btn btn-default">
+                        <span className="glyphicon glyphicon-save"></span>
+                    </button>
+                </a>
             }
         }
 
         _access() {
             if (!this.props.permitted) {
-                return <span className="glyphicon glyphicon-lock"></span>;
+                return <button className="btn btn-default">
+                        <span className="glyphicon glyphicon-lock"></span>;
+                        </button>
             }
         }
 
         _syntax() {
             if (this.props.features.includes('syntax')) {
-                return <button className="btn btn-default lindat-pmltq-logo">&nbsp;</button>
+                return <button className="btn btn-default">
+                        <span className="lindat-pmltq-logo">&nbsp;</span>
+                        </button>
             }
             return null;
         }
@@ -294,7 +301,7 @@ export function init(dispatcher:ActionDispatcher, he:Kontext.ComponentHelpers,
                         </div>
                     </div>
                     <div className="row">
-                        <div className="corpus-main-info col-xs-9 col-md-10" onMouseOver={this._mouseOver} onMouseOut={this._mouseOut} onClick={this._clickHandler} title={"Search in " + this.props.name}>
+                        <div className="corpus-main-info col-xs-12 col-md-12" onMouseOver={this._mouseOver} onMouseOut={this._mouseOut} onClick={this._clickHandler} title={"Search in " + this.props.name}>
                             <div className="row">
                                 <div className="col-xs-3 tokens">
                                     Size
