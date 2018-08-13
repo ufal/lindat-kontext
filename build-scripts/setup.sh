@@ -1,5 +1,7 @@
 #!/bin/bash
 set -e -o pipefail
+set -o xtrace
+set -o verbose
 
 THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 echo "Working in `pwd`"

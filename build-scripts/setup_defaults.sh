@@ -2,6 +2,16 @@
 
 export FS=${THISDIR}/..
 
+# prereq
+
+if [[ -f ${FS}/apt-requirements.txt ]]; then
+    minisep "apt-ing"
+    sudo apt-get -qq update > /dev/null
+    minisep "apt-ing $FS/apt-requirements.txt"
+    sudo xargs apt-get -q install -y < ${FS}/apt-requirements.txt
+fi
+
+
 # allow multiple instances
 if [[ "x$KONTEXT_PREFIX" == "x" ]]; then
     export KONTEXT_PREFIX=/opt/kontext
@@ -66,8 +76,6 @@ cp $FS/conf/beatconfig.sample.py ${CONFIGDIR}/beatconfig.py
 # =========
 # Test configuration
 echo "Installing dependencies for validate_setup.py"
-sudo apt-get update -y -q  &> /dev/null && \
-    sudo apt-get install -y libxml2-utils python-lxml libxml2-dev libxslt1-dev python-dev git python-pip &> /dev/null
 pip install -U lxml  &> /dev/null
 
 cd $FS

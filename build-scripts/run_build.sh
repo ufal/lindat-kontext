@@ -26,13 +26,6 @@ fi
 # =========
 # prereq
 
-if [[ -f ${FS}/apt-requirements.txt ]]; then
-    minisep "apt-ing"
-    sudo apt-get -qq update > /dev/null
-    minisep "apt-ing $FS/apt-requirements.txt"
-    sudo xargs apt-get -q install -y < ${FS}/apt-requirements.txt
-fi
-
 if [[ -f ${FS}/requirements.txt ]]; then
     minisep "pip-ing"
     pip install -U --ignore-installed -r ${FS}/requirements.txt || echo "problematic pip"
