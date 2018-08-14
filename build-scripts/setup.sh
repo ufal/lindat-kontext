@@ -44,7 +44,7 @@ if [[ "x$BUILDBACKEND" == "xdocker" ]]; then
     # sleep 180
     URL="http://$DOCKERIP:${PORT}"
     echo "Waiting for $URL..."
-    wget --retry-connrefused --tries=40 --wait=10 --spider $URL/ || echo "WGET failed"
+    wget --retry-connrefused --tries=40 --wait=10 --level=1 --spider $URL/ || echo "WGET failed"
     
     echo "===="
     echo curl -v $URL/
@@ -53,8 +53,8 @@ if [[ "x$BUILDBACKEND" == "xdocker" ]]; then
     echo curl -v $URL/first_form
     curl -v $URL/first_form
     echo "===="
-    echo curl -v "$URL/first_form?corpname=ovm_cs_w"
-    curl -v "$URL/first_form?corpname=ovm_cs_w"
+    echo curl -v -s "$URL/first_form?corpname=ovm_cs_w"
+    curl -v -s "$URL/first_form?corpname=ovm_cs_w"
     echo "===="
 
     date
