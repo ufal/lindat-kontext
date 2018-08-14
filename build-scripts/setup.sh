@@ -53,6 +53,9 @@ if [[ "x$BUILDBACKEND" == "xdocker" ]]; then
     echo curl -v $URL/first_form
     curl -v $URL/first_form
     echo "===="
+    echo curl -v "$URL/first_form?corpname=ovm_cs_w"
+    curl -v "$URL/first_form?corpname=ovm_cs_w"
+    echo "===="
 
     date
 fi
