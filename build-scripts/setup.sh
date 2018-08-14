@@ -42,11 +42,17 @@ if [[ "x$BUILDBACKEND" == "xdocker" ]]; then
     echo "Using IP: $DOCKERIP"
     docker logs -f kontext &
     # sleep 180
-    URL="http://$DOCKERIP:${PORT}/"
+    URL="http://$DOCKERIP:${PORT}"
     echo "Waiting for $URL..."
-    wget --retry-connrefused --tries=40 --wait=10 --spider $URL || echo "WGET failed"
-    curl -v $URL
+    wget --retry-connrefused --tries=40 --wait=10 --spider $URL/ || echo "WGET failed"
+    
+    echo "===="
+    echo curl -v $URL/
+    curl -v $URL/
+    echo "===="
+    echo curl -v $URL/first_form
     curl -v $URL/first_form
+    echo "===="
 
     date
 fi
