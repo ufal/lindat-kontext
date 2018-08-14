@@ -44,7 +44,7 @@ if [[ "x$BUILDBACKEND" == "xdocker" ]]; then
     # sleep 180
     URL="http://$DOCKERIP:${PORT}/"
     echo "Waiting for $URL..."
-    wget --retry-connrefused --tries=20 --wait=20 --spider $URL || echo "WGET failed"
+    wget --retry-connrefused --tries=40 --wait=10 --spider $URL || echo "WGET failed"
     curl -v $URL
     curl -v $URL/first_form
 
