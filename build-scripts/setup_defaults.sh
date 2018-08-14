@@ -35,7 +35,7 @@ fi
 # data
 
 minisep "Creating data dir structure"
-sudo mkdir -p /tmp/kontext-upload
+mkdir -p /tmp/kontext-upload
 mkdir -p ${KONTEXT_PREFIX}/pids/
 mkdir -p ${DATADIR}/{subcorp,cache,registry}
 mkdir -p ${DATADIR}/corpora/{conc,speech,vert}
@@ -66,6 +66,7 @@ cp $FS/conf/beatconfig.sample.py ${CONFIGDIR}/beatconfig.py
 # =========
 # Test configuration
 echo "Installing dependencies for validate_setup.py"
+apt-get update -y -q &> /dev/null && apt install -y sudo || true
 sudo apt-get update -y -q  &> /dev/null && \
     sudo apt-get install -y libxml2-utils python-lxml libxml2-dev libxslt1-dev python-dev git python-pip &> /dev/null
 pip install -U lxml  &> /dev/null
