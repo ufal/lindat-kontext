@@ -3,7 +3,7 @@
 Tested: on Windows
 
 Follow https://www.jetbrains.com/help/pycharm/using-docker-compose-as-a-remote-interpreter.html but
-instead of using the example `Dockerfile` and `docker-compose.yml` use `Dockerfile-debug` and `docker-compose.yml`.
+instead of using the example `Dockerfile` and `docker-compose.yml` use `build-scripts/Dockerfile-debug` and `build-scripts/docker-compose.yml`.
 Both files should be copied to the main directory.
 
 The idea is simple, docker-compose.yml will start two containers, one containing redis 
