@@ -654,6 +654,7 @@ export function init({dispatcher, he, CorpusInfoBox, listModel}:CorplistViewModu
         render() {
             return (
                 <section className="inner">
+                    <div>{window.location.href}</div>
                     <div style={{height: '1em'}}>
                         {this._renderLoader()}
                     </div>
