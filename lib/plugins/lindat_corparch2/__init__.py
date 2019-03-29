@@ -258,7 +258,17 @@ class DefaultCorplistProvider(CorplistProvider):
         """
         return True
 
-    def search(self, plugin_api, query, offset=0, limit=None, filter_dict=None):
+    def _map_keywords(self, keywords):
+        return keywords
+
+
+def search(self, plugin_api, query, offset=0, limit=None, filter_dict=None):
+    external_keywords = filter_dict.getlist('keyword')
+    if len(external_keywords) != 0:
+        external_keywords = self._map_keywords(external_keywords)
+        query_substrs = []
+        query_keywords = external_keywords + [self.default_label]
+    else:
         if self.SESSION_KEYWORDS_KEY not in plugin_api.session:
             plugin_api.session[self.SESSION_KEYWORDS_KEY] = [self.default_label]
         initial_query = query
@@ -269,91 +279,91 @@ class DefaultCorplistProvider(CorplistProvider):
             query_keywords = plugin_api.session[self.SESSION_KEYWORDS_KEY]
         else:
             plugin_api.session[self.SESSION_KEYWORDS_KEY] = query_keywords
-        query = ' '.join(query_substrs) \
-                + ' ' + ' '.join('%s%s' % (self._tag_prefix, s) for s in query_keywords)
+    query = ' '.join(query_substrs) \
+            + ' ' + ' '.join('%s%s' % (self._tag_prefix, s) for s in query_keywords)
 
-        ans = {'rows': []}
-        permitted_corpora = self._auth.permitted_corpora(plugin_api.user_dict)
-        used_keywords = set()
-        all_keywords_map = dict(self._corparch.all_keywords(plugin_api.user_lang))
-        if filter_dict.get('minSize'):
-            min_size = l10n.desimplify_num(filter_dict.get('minSize'), strict=False)
-        else:
-            min_size = 0
-        if filter_dict.get('maxSize'):
-            max_size = l10n.desimplify_num(filter_dict.get('maxSize'), strict=False)
-        else:
-            max_size = None
+    ans = {'rows': []}
+    permitted_corpora = self._auth.permitted_corpora(plugin_api.user_dict)
+    used_keywords = set()
+    all_keywords_map = dict(self._corparch.all_keywords(plugin_api.user_lang))
+    if filter_dict.get('minSize'):
+        min_size = l10n.desimplify_num(filter_dict.get('minSize'), strict=False)
+    else:
+        min_size = 0
+    if filter_dict.get('maxSize'):
+        max_size = l10n.desimplify_num(filter_dict.get('maxSize'), strict=False)
+    else:
+        max_size = None
 
-        sorting_field = filter_dict.get('sortBySize', 'name')
+    sorting_field = filter_dict.get('sortBySize', 'name')
 
-        if offset is None:
-            offset = 0
-        else:
-            offset = int(offset)
+    if offset is None:
+        offset = 0
+    else:
+        offset = int(offset)
 
-        if limit is None:
-            limit = int(self._corparch.max_page_size)
-        else:
-            limit = int(limit)
+    if limit is None:
+        limit = int(self._corparch.max_page_size)
+    else:
+        limit = int(limit)
 
-        user_items = self._corparch.user_items.get_user_items(plugin_api)
+    user_items = self._corparch.user_items.get_user_items(plugin_api)
 
-        def fav_id(corpus_id):
-            for item in user_items:
-                if item.is_single_corpus and item.main_corpus_id == corpus_id:
-                    return item.ident
-            return None
+    def fav_id(corpus_id):
+        for item in user_items:
+            if item.is_single_corpus and item.main_corpus_id == corpus_id:
+                return item.ident
+        return None
 
-        query_substrs, query_keywords = parse_query(self._tag_prefix, query)
+    query_substrs, query_keywords = parse_query(self._tag_prefix, query)
 
-        normalized_query_substrs = [s.lower() for s in query_substrs]
-        for corp in self._corparch.get_list(plugin_api):
-            full_data = self._corparch.get_corpus_info(plugin_api.user_lang, corp['id'])
-            if not isinstance(full_data, BrokenCorpusInfo):
-                keywords = [k for k in full_data['metadata']['keywords'].keys()]
-                tests = []
-                found_in = []
+    normalized_query_substrs = [s.lower() for s in query_substrs]
+    for corp in self._corparch.get_list(plugin_api):
+        full_data = self._corparch.get_corpus_info(plugin_api.user_lang, corp['id'])
+        if not isinstance(full_data, BrokenCorpusInfo):
+            keywords = [k for k in full_data['metadata']['keywords'].keys()]
+            tests = []
+            found_in = []
 
-                tests.extend([k in keywords for k in query_keywords])
-                for s in normalized_query_substrs:
-                    # the name must be tested first to prevent the list 'found_in'
-                    # to be filled in case item matches both name and description
-                    if s in corp['name'].lower():
-                        tests.append(True)
-                    elif s in (corp['desc'].lower() if corp['desc'] else ''):
-                        tests.append(True)
-                        found_in.append('defaultCorparch__found_in_desc')
-                    else:
-                        tests.append(False)
-                tests.append(self.matches_size(corp, min_size, max_size))
-                tests.append(self._corparch.custom_filter(
-                    self._plugin_api, full_data, permitted_corpora))
+            tests.extend([k in keywords for k in query_keywords])
+            for s in normalized_query_substrs:
+                # the name must be tested first to prevent the list 'found_in'
+                # to be filled in case item matches both name and description
+                if s in corp['name'].lower():
+                    tests.append(True)
+                elif s in (corp['desc'].lower() if corp['desc'] else ''):
+                    tests.append(True)
+                    found_in.append('defaultCorparch__found_in_desc')
+                else:
+                    tests.append(False)
+            tests.append(self.matches_size(corp, min_size, max_size))
+            tests.append(self._corparch.custom_filter(
+                self._plugin_api, full_data, permitted_corpora))
 
-                if all(test for test in tests):
-                    corp['size'] = corp['size']
-                    corp['size_info'] = l10n.simplify_num(corp['size']) if corp['size'] else None
-                    corp['keywords'] = [(k, all_keywords_map[k]) for k in keywords]
-                    corp['found_in'] = found_in
-                    corp['fav_id'] = fav_id(corp['id'])
-                    # because of client-side fav/feat/search items compatibility
-                    corp['corpus_id'] = corp['id']
-                    corp['pmltq'] = full_data['pmltq']
-                    corp['repo'] = full_data['web']
-                    corp['access'] = full_data['access']
-                    corp['tokenConnect'] = full_data['token_connect']['providers']
-                    ans['rows'].append(corp)
-                    used_keywords.update(keywords)
-                    if not self.should_fetch_next(ans, offset, limit):
-                        break
+            if all(test for test in tests):
+                corp['size'] = corp['size']
+                corp['size_info'] = l10n.simplify_num(corp['size']) if corp['size'] else None
+                corp['keywords'] = [(k, all_keywords_map[k]) for k in keywords]
+                corp['found_in'] = found_in
+                corp['fav_id'] = fav_id(corp['id'])
+                # because of client-side fav/feat/search items compatibility
+                corp['corpus_id'] = corp['id']
+                corp['pmltq'] = full_data['pmltq']
+                corp['repo'] = full_data['web']
+                corp['access'] = full_data['access']
+                corp['tokenConnect'] = full_data['token_connect']['providers']
+                ans['rows'].append(corp)
+                used_keywords.update(keywords)
+                if not self.should_fetch_next(ans, offset, limit):
+                    break
 
-        ans['rows'], ans['nextOffset'] = self.cut_result(
-            self.sort(plugin_api, ans['rows'], field=sorting_field), offset, limit)
-        ans['keywords'] = l10n.sort(used_keywords, loc=plugin_api.user_lang)
-        ans['query'] = query
-        ans['current_keywords'] = query_keywords
-        ans['filters'] = dict(filter_dict)
-        return ans
+    ans['rows'], ans['nextOffset'] = self.cut_result(
+        self.sort(plugin_api, ans['rows'], field=sorting_field), offset, limit)
+    ans['keywords'] = l10n.sort(used_keywords, loc=plugin_api.user_lang)
+    ans['query'] = query
+    ans['current_keywords'] = query_keywords
+    ans['filters'] = dict(filter_dict)
+    return ans
 
 
 @exposed(return_type='json', access_level=1, skip_corpus_init=True)
@@ -735,13 +745,19 @@ class CorpusArchive(AbstractSearchableCorporaArchive):
         return ans
 
     def export(self, plugin_api):
+        external_keywords = plugin_api.request.args.getlist('keyword')
+        if len(external_keywords) != 0:
+            default_labels = [self.default_label]
+        else:
+            default_labels = [self.default_label] + external_keywords
+
         return dict(
             favorite=self.export_favorite(plugin_api),
             featured=self._export_featured(plugin_api),
             corpora_labels=[(k, lab, self.get_label_color(k))
                             for k, lab in self.all_keywords(plugin_api.user_lang)],
             initial_keywords = plugin_api.session.get(
-            self.SESSION_KEYWORDS_KEY, [self.default_label]),
+            self.SESSION_KEYWORDS_KEY, default_labels),
             tag_prefix=self._tag_prefix,
             max_num_hints=self._max_num_hints
         )
